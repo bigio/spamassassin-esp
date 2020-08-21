@@ -99,13 +99,13 @@ sub _read_configfile {
   if ( defined($conf->{sendgrid_feed}) && ( -f $conf->{sendgrid_feed} ) ) {
     open(F, '<', $conf->{sendgrid_feed});
     for ($!=0; <F>; $!=0) {
-        chomp;
-        #lines that start with pound are comments
-        next if(/^\s*\#/);
-        $sendgrid_id = $_;
-        if ( defined $sendgrid_id ) {
-          push @{$self->{ESP}->{SENDGRID}->{$sendgrid_id}}, $sendgrid_id;
-        }
+      chomp;
+      #lines that start with pound are comments
+      next if(/^\s*\#/);
+      $sendgrid_id = $_;
+      if ( defined $sendgrid_id ) {
+        push @{$self->{ESP}->{SENDGRID}->{$sendgrid_id}}, $sendgrid_id;
+      }
     }
 
     defined $_ || $!==0  or
@@ -119,25 +119,25 @@ sub _read_configfile {
 sub sendgrid_check {
   my ($self, $pms) = @_;
   my $sendgrid_id;
-  
+
   my $sg_eid = $pms->get("X-SG-EID", undef);
   return if not defined $sg_eid;
-  
+
   my $rulename = $pms->get_current_eval_rule_name();
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
-  
+
   if($envfrom =~ /bounces\+(\d+)\-/) {
     $sendgrid_id = $1;
-    # dbg("ENVFROM: $envfrom ID: $sendgrid_id");  
+    # dbg("ENVFROM: $envfrom ID: $sendgrid_id");
     if(defined $sendgrid_id) {
-	  if ( exists $self->{ESP}->{SENDGRID}->{$sendgrid_id} ) {
+      if ( exists $self->{ESP}->{SENDGRID}->{$sendgrid_id} ) {
         dbg("HIT! $sendgrid_id customer id found in Sendgrid Invaluement feed");
         $pms->test_log("Sendgrid id: $sendgrid_id");
         $pms->got_hit($rulename, "", ruletype => 'eval');
         return 1;
-      }	
-	}
-  } 
+      }
+    }
+  }
 }
 
 1;
