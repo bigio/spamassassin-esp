@@ -70,6 +70,8 @@ sub new {
 A file with all hacked Sendgrid accounts.
 Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt.
 
+=back
+
 =cut
 
 sub set_config {
