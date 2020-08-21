@@ -104,7 +104,7 @@ sub _read_configfile {
         next if(/^\s*\#/);
         $sendgrid_id = $_;
         if ( defined $sendgrid_id ) {
-          push @{$self->{ESP}->{$sendgrid_id}}, $sendgrid_id;
+          push @{$self->{ESP}->{SENDGRID}->{$sendgrid_id}}, $sendgrid_id;
         }
     }
 
@@ -130,7 +130,7 @@ sub sendgrid_check {
     $sendgrid_id = $1;
     # dbg("ENVFROM: $envfrom ID: $sendgrid_id");  
     if(defined $sendgrid_id) {
-	  if ( exists $self->{ESP}->{$sendgrid_id} ) {
+	  if ( exists $self->{ESP}->{SENDGRID}->{$sendgrid_id} ) {
         dbg("HIT! $sendgrid_id customer id found in Sendgrid Invaluement feed");
         $pms->test_log("Sendgrid id: $sendgrid_id");
         $pms->got_hit($rulename, "", ruletype => 'eval');
