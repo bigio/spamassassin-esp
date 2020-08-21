@@ -1,0 +1,3 @@
+if (version >= 4.000000)
+  loadplugin Mail::SpamAssassin::Plugin::Esp Esp.pm
+endif
