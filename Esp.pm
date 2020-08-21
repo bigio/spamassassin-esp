@@ -19,7 +19,7 @@
 
 =head1 NAME
 
-TinyURL - checks ESP hacked accounts
+Esp - checks ESP hacked accounts
 
 =head1 SYNOPSIS
 
