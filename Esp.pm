@@ -120,12 +120,14 @@ sub sendgrid_check {
   my ($self, $pms) = @_;
   my $sendgrid_id;
 
+  # All Sendgrid emails have the X-SG-EID header
   my $sg_eid = $pms->get("X-SG-EID", undef);
   return if not defined $sg_eid;
 
   my $rulename = $pms->get_current_eval_rule_name();
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
 
+  # Find the customer id from the Return-Path
   if($envfrom =~ /bounces\+(\d+)\-/) {
     $sendgrid_id = $1;
     # dbg("ENVFROM: $envfrom ID: $sendgrid_id");
