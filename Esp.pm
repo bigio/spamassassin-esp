@@ -68,6 +68,7 @@ sub new {
 =item sendgrid_feed [...]
 
 A file with all hacked Sendgrid accounts.
+More info at https://www.invaluement.com/serviceproviderdnsbl/.
 Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt.
 
 =back
