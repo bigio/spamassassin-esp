@@ -20,10 +20,12 @@
 # Author:  Giovanni Bechis <gbechis@apache.org>
 
 do_help=0
-while getopts "ho:" opt; do
+do_reload=0
+while getopts "ho:r" opt; do
     case $opt in
         h) do_help=1 ;;
         o) output=$OPTARG ;;
+	r) do_reload=1 ;;
         *) do_help=1
            exit 1
     esac
@@ -38,11 +40,16 @@ if [ "$do_help" -eq 1 ]; then
     exit
 fi
 
+MD5OLD=$(md5sum $output 2>&1)
 if [ ! -f $output ]; then
   curl https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt -o $output
-  exit
 else
   curl -z $output https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt -o $output
-  exit
 fi
+MD5NEW=$(md5sum $output 2>&1)
 
+if [ "$do_reload" -eq 1 ]; then
+  if [ "$MD5OLD" != "$MD5NEW" ]; then
+    pkill -HUP spamd
+  fi
+fi
