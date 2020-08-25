@@ -42,9 +42,9 @@ fi
 
 MD5OLD=$(md5sum $output 2>&1)
 if [ ! -f $output ]; then
-  curl https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt -o $output
+  curl -s -S https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt -o $output
 else
-  curl -z $output https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt -o $output
+  curl -s -S -z $output https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt -o $output
 fi
 MD5NEW=$(md5sum $output 2>&1)
 
