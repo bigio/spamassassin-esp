@@ -43,7 +43,7 @@ use Mail::SpamAssassin::PerMsgStatus;
 use vars qw(@ISA);
 our @ISA = qw(Mail::SpamAssassin::Plugin);
 
-my $VERSION = 0.1;
+my $VERSION = 0.2;
 
 sub dbg { Mail::SpamAssassin::Plugin::dbg ("Esp: @_"); }
 
@@ -71,6 +71,12 @@ A file with all hacked Sendgrid accounts.
 More info at https://www.invaluement.com/serviceproviderdnsbl/.
 Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt.
 
+=item sendgrid_domains_feed [...]
+
+A file with hacked domains managed by Sendgrid.
+More info at https://www.invaluement.com/serviceproviderdnsbl/.
+Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-envelopefromdomain-dnsbl.txt.
+
 =back
 
 =cut
@@ -81,6 +87,12 @@ sub set_config {
 
   push(@cmds, {
     setting => 'sendgrid_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'sendgrid_domains_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -97,6 +109,7 @@ sub _read_configfile {
   my ($self) = @_;
   my $conf = $self->{main}->{registryboundaries}->{conf};
   my $sendgrid_id;
+  my $sendgrid_domain;
 
   local *F;
   if ( defined($conf->{sendgrid_feed}) && ( -f $conf->{sendgrid_feed} ) ) {
@@ -117,11 +130,30 @@ sub _read_configfile {
     close(F) or die "error closing config file: $!";
   }
 
+  if ( defined($conf->{sendgrid_domains_feed}) && ( -f $conf->{sendgrid_domains_feed} ) ) {
+    open(F, '<', $conf->{sendgrid_domains_feed});
+    for ($!=0; <F>; $!=0) {
+      chomp;
+      #lines that start with pound are comments
+      next if(/^\s*\#/);
+      $sendgrid_domain = $_;
+      if ( defined $sendgrid_domain ) {
+        push @{$self->{ESP}->{SENDGRID_DOMAIN}->{$sendgrid_domain}}, $sendgrid_domain;
+      }
+    }
+
+    defined $_ || $!==0  or
+      $!==EBADF ? dbg("ESP: error reading config file: $!")
+                : die "error reading config file: $!";
+    close(F) or die "error closing config file: $!";
+  }
+
 }
 
 sub sendgrid_check {
   my ($self, $pms) = @_;
   my $sendgrid_id;
+  my $sendgrid_domain;
 
   # All Sendgrid emails have the X-SG-EID header
   my $sg_eid = $pms->get("X-SG-EID", undef);
@@ -138,6 +170,20 @@ sub sendgrid_check {
       if ( exists $self->{ESP}->{SENDGRID}->{$sendgrid_id} ) {
         dbg("HIT! $sendgrid_id customer id found in Sendgrid Invaluement feed");
         $pms->test_log("Sendgrid id: $sendgrid_id");
+        $pms->got_hit($rulename, "", ruletype => 'eval');
+        return 1;
+      }
+    }
+  }
+
+  # Find the domain from the Return-Path
+  if($envfrom =~ /\@(\w+\.)?(\w+)\.(\w+)\>?$/) {
+    $sendgrid_domain = $2 . "." . $3;
+    # dbg("ENVFROM: $envfrom domain: $sendgrid_domain");
+    if(defined $sendgrid_domain) {
+      if ( exists $self->{ESP}->{SENDGRID_DOMAIN}->{$sendgrid_domain} ) {
+        dbg("HIT! $sendgrid_domain domain found in Sendgrid Invaluement feed");
+        $pms->test_log("Sendgrid domain: $sendgrid_domain");
         $pms->got_hit($rulename, "", ruletype => 'eval');
         return 1;
       }
