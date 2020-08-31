@@ -21,35 +21,52 @@
 
 do_help=0
 do_reload=0
-while getopts "ho:r" opt; do
+while getopts "f:ho:r" opt; do
     case $opt in
+	f) outputenvfrom=${OPTARG} ;;
         h) do_help=1 ;;
-        o) output=$OPTARG ;;
+        o) output=${OPTARG} ;;
 	r) do_reload=1 ;;
         *) do_help=1
            exit 1
     esac
 done
 
-if [ "$output" = "" ]; then
+if [ "$output" = "" ] && [ "$outputenvfrom" = "" ]; then
   do_help=1
 fi
 
 if [ "$do_help" -eq 1 ]; then
-    echo "usage: $0 -o outputfile"
+    echo "usage: $0 [ -f outputfile ] [ -o outputfile ]"
     exit
 fi
 
-MD5OLD=$(md5sum $output 2>&1)
 if [ ! -f $output ]; then
+  MD5OLD=0
   curl -s -S https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt -o $output
+  MD5NEW=1
 else
-  curl -s -S -z $output https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt -o $output
+  if [ "$output" != "" ]; then
+    MD5OLD=$(md5sum $output 2>&1)
+    curl -s -S -z $output https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt -o $output
+    MD5NEW=$(md5sum $output 2>&1)
+  fi
 fi
-MD5NEW=$(md5sum $output 2>&1)
+
+if [ ! -f $outputenvfrom ]; then
+  MD5OLD=0
+  curl -s -S https://www.invaluement.com/spdata/sendgrid-envelopefromdomain-dnsbl.txt -o $outputenvfrom
+  MD5NEW=1
+else
+  if [ "$outputenvfrom" != "" ]; then
+    MD5OLDE=$(md5sum $outputenvfrom 2>&1)
+    curl -s -S -z $outputenvfrom https://www.invaluement.com/spdata/sendgrid-envelopefromdomain-dnsbl.txt -o $outputenvfrom
+    MD5NEWE=$(md5sum $outputenvfrom 2>&1)
+  fi
+fi
 
 if [ "$do_reload" -eq 1 ]; then
-  if [ "$MD5OLD" != "$MD5NEW" ]; then
+  if [ "$MD5OLD" != "$MD5NEW" ] || [ "$MD5OLDE" != "$MD5NEWE" ]; then
     pkill -HUP spamd
   fi
 fi
