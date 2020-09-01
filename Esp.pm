@@ -177,8 +177,8 @@ sub sendgrid_check {
   }
 
   # Find the domain from the Return-Path
-  if($envfrom =~ /\@(\w+\.)?(\w+)\.(\w+)\>?$/) {
-    $sendgrid_domain = $2 . "." . $3;
+  if($envfrom =~ /\@(\w+\.)?([\w\.]+)\>?$/) {
+    $sendgrid_domain = $2;
     # dbg("ENVFROM: $envfrom domain: $sendgrid_domain");
     if(defined $sendgrid_domain) {
       if ( exists $self->{ESP}->{SENDGRID_DOMAIN}->{$sendgrid_domain} ) {
