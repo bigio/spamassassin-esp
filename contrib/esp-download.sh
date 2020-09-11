@@ -67,6 +67,11 @@ fi
 
 if [ "$do_reload" -eq 1 ]; then
   if [ "$MD5OLD" != "$MD5NEW" ] || [ "$MD5OLDE" != "$MD5NEWE" ]; then
-    pkill -HUP spamd
+    if [ "$OSTYPE" == "linux-gnu" ]; then
+      service spamassassin restart
+    else
+      # spamd should be started with "-r" option in order to restart properly on SIGHUP
+      pkill -HUP spamd
+    fi
   fi
 fi
