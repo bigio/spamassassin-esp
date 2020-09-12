@@ -133,13 +133,13 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2020-08-31" "perl v5.30.3" "User Contributed Perl Documentation"
+.TH Esp 3 "2020-09-12" "perl v5.30.3" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
 .nh
 .SH "NAME"
-Esp \- checks ESP hacked accounts
+Esp \- checks ESP abused accounts
 .SH "SYNOPSIS"
 .IX Header "SYNOPSIS"
 .Vb 1
@@ -147,16 +147,19 @@ Esp \- checks ESP hacked accounts
 .Ve
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
-This plugin checks emails coming from \s-1ESP\s0 hacked accounts.
+This plugin checks emails coming from \s-1ESP\s0 abused accounts.
 .SH "ADMINISTRATOR SETTINGS"
 .IX Header "ADMINISTRATOR SETTINGS"
 .IP "sendgrid_feed [...]" 4
 .IX Item "sendgrid_feed [...]"
-A file with all hacked Sendgrid accounts.
+A file with all abused Sendgrid accounts.
 More info at https://www.invaluement.com/serviceproviderdnsbl/.
 Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid\-id\-dnsbl.txt.
 .IP "sendgrid_domains_feed [...]" 4
 .IX Item "sendgrid_domains_feed [...]"
-A file with hacked domains managed by Sendgrid.
+A file with abused domains managed by Sendgrid.
 More info at https://www.invaluement.com/serviceproviderdnsbl/.
 Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid\-envelopefromdomain\-dnsbl.txt.
+.IP "sendinblue_feed [...]" 4
+.IX Item "sendinblue_feed [...]"
+A file with abused Sendinblue accounts.

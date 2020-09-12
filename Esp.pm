@@ -19,7 +19,7 @@
 
 =head1 NAME
 
-Esp - checks ESP hacked accounts
+Esp - checks ESP abused accounts
 
 =head1 SYNOPSIS
 
@@ -27,7 +27,7 @@ Esp - checks ESP hacked accounts
 
 =head1 DESCRIPTION
 
-This plugin checks emails coming from ESP hacked accounts.
+This plugin checks emails coming from ESP abused accounts.
 
 =cut
 
@@ -57,6 +57,7 @@ sub new {
 
   $self->set_config($mailsaobject->{conf});
   $self->register_eval_rule('sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
 }
@@ -67,15 +68,19 @@ sub new {
 
 =item sendgrid_feed [...]
 
-A file with all hacked Sendgrid accounts.
+A file with all abused Sendgrid accounts.
 More info at https://www.invaluement.com/serviceproviderdnsbl/.
 Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt.
 
 =item sendgrid_domains_feed [...]
 
-A file with hacked domains managed by Sendgrid.
+A file with abused domains managed by Sendgrid.
 More info at https://www.invaluement.com/serviceproviderdnsbl/.
 Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-envelopefromdomain-dnsbl.txt.
+
+=item sendinblue_feed [...]
+
+A file with abused Sendinblue accounts.
 
 =back
 
@@ -97,6 +102,12 @@ sub set_config {
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
+  push(@cmds, {
+    setting => 'sendinblue_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   $conf->{parser}->register_commands(\@cmds);
 }
 
@@ -110,6 +121,7 @@ sub _read_configfile {
   my $conf = $self->{main}->{registryboundaries}->{conf};
   my $sendgrid_id;
   my $sendgrid_domain;
+  my $sendinblue_id;
 
   local *F;
   if ( defined($conf->{sendgrid_feed}) && ( -f $conf->{sendgrid_feed} ) ) {
@@ -147,6 +159,25 @@ sub _read_configfile {
                 : die "error reading config file: $!";
     close(F) or die "error closing config file: $!";
   }
+
+  if ( defined($conf->{sendinblue_feed}) && ( -f $conf->{sendinblue_feed} ) ) {
+    open(F, '<', $conf->{sendinblue_feed});
+    for ($!=0; <F>; $!=0) {
+      chomp;
+      #lines that start with pound are comments
+      next if(/^\s*\#/);
+      $sendinblue_id = $_;
+      if ( ( defined $sendinblue_id ) and ($sendinblue_id =~ /[0-9]+/) ) {
+        push @{$self->{ESP}->{SENDINBLUE}->{$sendinblue_id}}, $sendinblue_id;
+      }
+    }
+
+    defined $_ || $!==0  or
+      $!==EBADF ? dbg("ESP: error reading config file: $!")
+                : die "error reading config file: $!";
+    close(F) or die "error closing config file: $!";
+  }
+
 
 }
 
@@ -189,6 +220,31 @@ sub sendgrid_check {
       }
     }
   }
+}
+
+sub sendinblue_check {
+  my ($self, $pms) = @_;
+  my $sendinblue_id;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  # All Sendinblue emails have the X-Mailer header set to Sendinblue
+  my $xmailer = $pms->get("X-Mailer", undef);
+  if((not defined $xmailer) or ($xmailer !~ /Sendinblue/)) {
+    return;
+  }
+
+  $sendinblue_id = $pms->get("X-Mailin-Client", undef);
+  chomp($sendinblue_id);
+  if(defined $sendinblue_id) {
+    if ( exists $self->{ESP}->{SENDINBLUE}->{$sendinblue_id} ) {
+      dbg("HIT! $sendinblue_id ID found in Sendinblue feed");
+      $pms->test_log("Sendinblue id: $sendinblue_id");
+      $pms->got_hit($rulename, "", ruletype => 'eval');
+      return 1;
+    }
+  }
+
 }
 
 1;
