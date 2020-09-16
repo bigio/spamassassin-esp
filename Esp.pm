@@ -284,6 +284,7 @@ sub voxmail_check {
 
   # All Voxmail emails have the List-Id header that must match
   $voxmail_domain = $pms->get("List-Id", undef);
+  return if not defined $voxmail_domain;
   $voxmail_domain =~ s/(^\<|\>$)//g;
   chomp($voxmail_domain);
   if(defined $voxmail_domain) {
