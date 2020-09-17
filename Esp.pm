@@ -344,6 +344,8 @@ sub mailup_check {
   return if not defined $mailup_id;
   $mailup_id =~ /Please report abuse here: http\:\/\/.*\.musvc([0-9]+)\.net\/p\?c=([0-9]+)/;
   $mailup_id = $2;
+  # if regexp doesn't match it's not Mailup
+  return if not defined $mailup_id;
   chomp($mailup_id);
   if(defined $mailup_id) {
     if ( exists $self->{ESP}->{MAILUP}->{$mailup_id} ) {
