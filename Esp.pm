@@ -59,6 +59,7 @@ sub new {
   $self->register_eval_rule('sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('voxmail_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
 }
@@ -86,6 +87,10 @@ A file with abused Sendinblue accounts.
 =item voxmail_domains_feed [...]
 
 A file with abused Voxmail domains, domains are usually accountname.voxmail.it
+
+=item mailup_feed [...]
+
+A file with abused Mailup accounts.
 
 =back
 
@@ -119,6 +124,12 @@ sub set_config {
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
+  push(@cmds, {
+    setting => 'mailup_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   $conf->{parser}->register_commands(\@cmds);
 }
 
@@ -134,6 +145,7 @@ sub _read_configfile {
   my $sendgrid_domain;
   my $sendinblue_id;
   my $voxmail_domain;
+  my $mailup_id;
 
   local *F;
   if ( defined($conf->{sendgrid_feed}) && ( -f $conf->{sendgrid_feed} ) ) {
@@ -199,6 +211,24 @@ sub _read_configfile {
       $voxmail_domain = $_;
       if ( defined $voxmail_domain ) {
         push @{$self->{ESP}->{VOXMAIL_DOMAIN}->{$voxmail_domain}}, $voxmail_domain;
+      }
+    }
+
+    defined $_ || $!==0  or
+      $!==EBADF ? dbg("ESP: error reading config file: $!")
+                : die "error reading config file: $!";
+    close(F) or die "error closing config file: $!";
+  }
+
+  if ( defined($conf->{mailup_feed}) && ( -f $conf->{mailup_feed} ) ) {
+    open(F, '<', $conf->{mailup_feed});
+    for ($!=0; <F>; $!=0) {
+      chomp;
+      #lines that start with pound are comments
+      next if(/^\s*\#/);
+      $mailup_id = $_;
+      if ( defined $mailup_id ) {
+        push @{$self->{ESP}->{MAILUP}->{$mailup_id}}, $mailup_id;
       }
     }
 
@@ -298,4 +328,31 @@ sub voxmail_check {
 
 }
 
+sub mailup_check {
+  my ($self, $pms) = @_;
+  my $mailup_id;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  # All Mailup emails have the X-CSA-Complaints header set to whitelist-complaints@eco.de
+  my $xcsa = $pms->get("X-CSA-Complaints", undef);
+  if((not defined $xcsa) or ($xcsa !~ /whitelist-complaints\@eco\.de/)) {
+    return;
+  }
+  # All Mailup emails have the X-Abuse header that must match
+  $mailup_id = $pms->get("X-Abuse", undef);
+  return if not defined $mailup_id;
+  $mailup_id =~ /Please report abuse here: http\:\/\/.*\.musvc([0-9]+)\.net\/p\?c=([0-9]+)/;
+  $mailup_id = $2;
+  chomp($mailup_id);
+  if(defined $mailup_id) {
+    if ( exists $self->{ESP}->{MAILUP}->{$mailup_id} ) {
+      dbg("HIT! $mailup_id customer found in Mailup feed");
+      $pms->test_log("Mailup id: $mailup_id");
+      $pms->got_hit($rulename, "", ruletype => 'eval');
+      return 1;
+    }
+  }
+
+}
 1;
