@@ -9,16 +9,22 @@ voxmail_domains_feed /etc/mail/spamassassin/voxmail-domains.txt
 
 mailup_feed /etc/mail/spamassassin/mailup_id.txt
 
-header		SPBL_SENDGRID	eval:sendgrid_check()
-describe 	SPBL_SENDGRID	Message from Sendgrid abused account
+# header	SPBL_SENDGRID_ID	eval:sendgrid_check_id()
+# describe 	SPBL_SENDGRID_ID	Message from Sendgrid abused account
 
-header		SENDINBLUE	eval:sendinblue_check()
-describe 	SENDINBLUE	Message from Sendinblue abused account
+# header	SPBL_SENDGRID_DOM	eval:sendgrid_check_domain()
+# describe 	SPBL_SENDGRID_DOM	Message from Sendgrid abused domain
 
-header		VOXMAIL		eval:voxmail_check()
-describe 	VOXMAIL		Message from Voxmail abused account
+header		SPBL_SENDGRID		eval:sendgrid_check()
+describe 	SPBL_SENDGRID		Message from Sendgrid abused account
 
-header		MAILUP		eval:mailup_check()
-describe 	MAILUP		Message from Mailup abused account
+header		SENDINBLUE		eval:sendinblue_check()
+describe 	SENDINBLUE		Message from Sendinblue abused account
+
+header		VOXMAIL			eval:voxmail_check()
+describe 	VOXMAIL			Message from Voxmail abused account
+
+header		MAILUP			eval:mailup_check()
+describe 	MAILUP			Message from Mailup abused account
 
 endif

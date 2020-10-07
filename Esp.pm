@@ -56,6 +56,8 @@ sub new {
   bless ($self, $class);
 
   $self->set_config($mailsaobject->{conf});
+  $self->register_eval_rule('sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('voxmail_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -240,7 +242,34 @@ sub _read_configfile {
 
 }
 
-sub sendgrid_check {
+sub sendgrid_check_domain {
+  my ($self, $pms) = @_;
+  my $sendgrid_id;
+  my $sendgrid_domain;
+
+  # All Sendgrid emails have the X-SG-EID header
+  my $sg_eid = $pms->get("X-SG-EID", undef);
+  return if not defined $sg_eid;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
+
+  # Find the domain from the Return-Path
+  if($envfrom =~ /\@(\w+\.)?([\w\.]+)\>?$/) {
+    $sendgrid_domain = $2;
+    # dbg("ENVFROM: $envfrom domain: $sendgrid_domain");
+    if(defined $sendgrid_domain) {
+      if ( exists $self->{ESP}->{SENDGRID_DOMAIN}->{$sendgrid_domain} ) {
+        dbg("HIT! $sendgrid_domain domain found in Sendgrid Invaluement feed");
+        $pms->test_log("Sendgrid domain: $sendgrid_domain");
+        $pms->got_hit($rulename, "", ruletype => 'eval');
+        return 1;
+      }
+    }
+  }
+}
+
+sub sendgrid_check_id {
   my ($self, $pms) = @_;
   my $sendgrid_id;
   my $sendgrid_domain;
@@ -265,28 +294,30 @@ sub sendgrid_check {
       }
     }
   }
+}
 
-  # Find the domain from the Return-Path
-  if($envfrom =~ /\@(\w+\.)?([\w\.]+)\>?$/) {
-    $sendgrid_domain = $2;
-    # dbg("ENVFROM: $envfrom domain: $sendgrid_domain");
-    if(defined $sendgrid_domain) {
-      if ( exists $self->{ESP}->{SENDGRID_DOMAIN}->{$sendgrid_domain} ) {
-        dbg("HIT! $sendgrid_domain domain found in Sendgrid Invaluement feed");
-        $pms->test_log("Sendgrid domain: $sendgrid_domain");
-        $pms->got_hit($rulename, "", ruletype => 'eval');
-        return 1;
-      }
-    }
+sub sendgrid_check {
+  my ($self, $pms) = @_;
+
+  my $ret;
+
+  $ret = $self->sendgrid_check_id($pms);
+  if (!$ret) {
+    $ret = $self->sendgrid_check_domain($pms);
   }
+  return $ret;
 }
 
 sub sendinblue_check {
   my ($self, $pms) = @_;
   my $sendinblue_id;
 
-  my $rulename = $pms->get_current_eval_rule_name();
+  # All Sendgrid emails have the X-SG-EID header
+  my $sg_eid = $pms->get("X-SG-EID", undef);
+  return if not defined $sg_eid;
 
+  my $rulename = $pms->get_current_eval_rule_name();
+  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
   # All Sendinblue emails have the X-Mailer header set to Sendinblue
   my $xmailer = $pms->get("X-Mailer", undef);
   if((not defined $xmailer) or ($xmailer !~ /Sendinblue/)) {
