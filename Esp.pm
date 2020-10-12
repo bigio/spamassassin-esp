@@ -312,10 +312,6 @@ sub sendinblue_check {
   my ($self, $pms) = @_;
   my $sendinblue_id;
 
-  # All Sendgrid emails have the X-SG-EID header
-  my $sg_eid = $pms->get("X-SG-EID", undef);
-  return if not defined $sg_eid;
-
   my $rulename = $pms->get_current_eval_rule_name();
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
   # All Sendinblue emails have the X-Mailer header set to Sendinblue
