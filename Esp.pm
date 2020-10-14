@@ -253,6 +253,7 @@ sub sendgrid_check_domain {
 
   my $rulename = $pms->get_current_eval_rule_name();
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
+  return if not defined $envfrom;
 
   # Find the domain from the Return-Path
   if($envfrom =~ /\@(\w+\.)?([\w\.]+)\>?$/) {
@@ -280,6 +281,7 @@ sub sendgrid_check_id {
 
   my $rulename = $pms->get_current_eval_rule_name();
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
+  return if not defined $envfrom;
 
   # Find the customer id from the Return-Path
   if($envfrom =~ /bounces\+(\d+)\-/) {
@@ -321,6 +323,7 @@ sub sendinblue_check {
   }
 
   $sendinblue_id = $pms->get("X-Mailin-Client", undef);
+  return if not defined $sendinblue_id;
   chomp($sendinblue_id);
   if(defined $sendinblue_id) {
     if ( exists $self->{ESP}->{SENDINBLUE}->{$sendinblue_id} ) {
