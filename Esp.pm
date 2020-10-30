@@ -60,7 +60,6 @@ sub new {
   $self->register_eval_rule('sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('voxmail_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
@@ -85,10 +84,6 @@ Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-env
 =item sendinblue_feed [...]
 
 A file with abused Sendinblue accounts.
-
-=item voxmail_domains_feed [...]
-
-A file with abused Voxmail domains, domains are usually accountname.voxmail.it
 
 =item mailup_feed [...]
 
@@ -118,9 +113,6 @@ SENDINBLUEID
 
 =item *
 MAILUPID
-
-=item *
-VOXMAILDOM
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
     askdns   SENDGRID_ID _SENDGRIDID_.rbl.domain.tld A 127.0.0.2
@@ -154,12 +146,6 @@ sub set_config {
     }
   );
   push(@cmds, {
-    setting => 'voxmail_domains_feed',
-    is_admin => 1,
-    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
-    }
-  );
-  push(@cmds, {
     setting => 'mailup_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -179,7 +165,6 @@ sub _read_configfile {
   my $sendgrid_id;
   my $sendgrid_domain;
   my $sendinblue_id;
-  my $voxmail_domain;
   my $mailup_id;
 
   local *F;
@@ -228,24 +213,6 @@ sub _read_configfile {
       $sendinblue_id = $_;
       if ( ( defined $sendinblue_id ) and ($sendinblue_id =~ /[0-9]+/) ) {
         push @{$self->{ESP}->{SENDINBLUE}->{$sendinblue_id}}, $sendinblue_id;
-      }
-    }
-
-    defined $_ || $!==0  or
-      $!==EBADF ? dbg("ESP: error reading config file: $!")
-                : die "error reading config file: $!";
-    close(F) or die "error closing config file: $!";
-  }
-
-  if ( defined($conf->{voxmail_domains_feed}) && ( -f $conf->{voxmail_domains_feed} ) ) {
-    open(F, '<', $conf->{voxmail_domains_feed});
-    for ($!=0; <F>; $!=0) {
-      chomp;
-      #lines that start with pound are comments
-      next if(/^\s*\#/);
-      $voxmail_domain = $_;
-      if ( defined $voxmail_domain ) {
-        push @{$self->{ESP}->{VOXMAIL_DOMAIN}->{$voxmail_domain}}, $voxmail_domain;
       }
     }
 
@@ -365,29 +332,6 @@ sub sendinblue_check {
       $pms->set_tag('SENDINBLUEID', $sendinblue_id);
       dbg("HIT! $sendinblue_id ID found in Sendinblue feed");
       $pms->test_log("Sendinblue id: $sendinblue_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
-
-}
-
-sub voxmail_check {
-  my ($self, $pms) = @_;
-  my $voxmail_domain;
-
-  my $rulename = $pms->get_current_eval_rule_name();
-
-  # All Voxmail emails have the List-Id header that must match
-  $voxmail_domain = $pms->get("List-Id", undef);
-  return if not defined $voxmail_domain;
-  $voxmail_domain =~ s/(^\<|\>$)//g;
-  chomp($voxmail_domain);
-  if(defined $voxmail_domain) {
-    if ( exists $self->{ESP}->{VOXMAIL_DOMAIN}->{$voxmail_domain} ) {
-      $pms->set_tag('VOXMAILDOM', $voxmail_domain);
-      dbg("HIT! $voxmail_domain domain found in Voxmail feed");
-      $pms->test_log("Voxmail domain: $voxmail_domain");
       $pms->got_hit($rulename, "", ruletype => 'eval');
       return 1;
     }

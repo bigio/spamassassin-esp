@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2020-10-15" "perl v5.30.3" "User Contributed Perl Documentation"
+.TH Esp 3 "2020-10-30" "perl v5.32.0" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -163,9 +163,6 @@ Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid\-en
 .IP "sendinblue_feed [...]" 4
 .IX Item "sendinblue_feed [...]"
 A file with abused Sendinblue accounts.
-.IP "voxmail_domains_feed [...]" 4
-.IX Item "voxmail_domains_feed [...]"
-A file with abused Voxmail domains, domains are usually accountname.voxmail.it
 .IP "mailup_feed [...]" 4
 .IX Item "mailup_feed [...]"
 A file with abused Mailup accounts.
@@ -173,9 +170,20 @@ A file with abused Mailup accounts.
 .IX Header "TEMPLATE TAGS"
 .RS 4
 The plugin sets some tags when a rule match, those tags can be used to use direct queries against rbl.
-.Sp
-ifplugin Mail::SpamAssassin::Plugin::AskDNS
-  askdns   \s-1SENDGRID_ID _SENDGRIDID_\s0.rbl.domain.tld A 127.0.0.2
-  describe \s-1SENDGRID_ID\s0 Sendgrid account matches rbl
-endif
+Tags that the plugin could set are:
 .RE
+.IP "\(bu" 4
+\&\s-1SENDGRIDID\s0
+.IP "\(bu" 4
+\&\s-1SENDGRIDDOM\s0
+.IP "\(bu" 4
+\&\s-1SENDINBLUEID\s0
+.IP "\(bu" 4
+\&\s-1MAILUPID\s0
+.Sp
+.Vb 4
+\&  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+\&    askdns   SENDGRID_ID _SENDGRIDID_.rbl.domain.tld A 127.0.0.2
+\&    describe SENDGRID_ID Sendgrid account matches rbl
+\&  endif
+.Ve
