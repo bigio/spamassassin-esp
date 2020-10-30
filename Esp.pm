@@ -96,6 +96,39 @@ A file with abused Mailup accounts.
 
 =back
 
+=head1 TEMPLATE TAGS
+
+=over
+
+The plugin sets some tags when a rule match, those tags can be used to use direct queries against rbl.
+Tags that the plugin could set are:
+
+=back
+
+=over
+
+=item *
+SENDGRIDID
+
+=item *
+SENDGRIDDOM
+
+=item *
+SENDINBLUEID
+
+=item *
+MAILUPID
+
+=item *
+VOXMAILDOM
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns   SENDGRID_ID _SENDGRIDID_.rbl.domain.tld A 127.0.0.2
+    describe SENDGRID_ID Sendgrid account matches rbl
+  endif
+
+=back
+
 =cut
 
 sub set_config {
@@ -260,6 +293,7 @@ sub sendgrid_check_domain {
     $sendgrid_domain = $2;
     # dbg("ENVFROM: $envfrom domain: $sendgrid_domain");
     if(defined $sendgrid_domain) {
+      $pms->set_tag('SENDGRIDDOM', $sendgrid_domain);
       if ( exists $self->{ESP}->{SENDGRID_DOMAIN}->{$sendgrid_domain} ) {
         dbg("HIT! $sendgrid_domain domain found in Sendgrid Invaluement feed");
         $pms->test_log("Sendgrid domain: $sendgrid_domain");
@@ -288,6 +322,7 @@ sub sendgrid_check_id {
     $sendgrid_id = $1;
     # dbg("ENVFROM: $envfrom ID: $sendgrid_id");
     if(defined $sendgrid_id) {
+      $pms->set_tag('SENDGRIDID', $sendgrid_id);
       if ( exists $self->{ESP}->{SENDGRID}->{$sendgrid_id} ) {
         dbg("HIT! $sendgrid_id customer id found in Sendgrid Invaluement feed");
         $pms->test_log("Sendgrid id: $sendgrid_id");
@@ -327,6 +362,7 @@ sub sendinblue_check {
   chomp($sendinblue_id);
   if(defined $sendinblue_id) {
     if ( exists $self->{ESP}->{SENDINBLUE}->{$sendinblue_id} ) {
+      $pms->set_tag('SENDINBLUEID', $sendinblue_id);
       dbg("HIT! $sendinblue_id ID found in Sendinblue feed");
       $pms->test_log("Sendinblue id: $sendinblue_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');
@@ -349,6 +385,7 @@ sub voxmail_check {
   chomp($voxmail_domain);
   if(defined $voxmail_domain) {
     if ( exists $self->{ESP}->{VOXMAIL_DOMAIN}->{$voxmail_domain} ) {
+      $pms->set_tag('VOXMAILDOM', $voxmail_domain);
       dbg("HIT! $voxmail_domain domain found in Voxmail feed");
       $pms->test_log("Voxmail domain: $voxmail_domain");
       $pms->got_hit($rulename, "", ruletype => 'eval');
@@ -379,6 +416,7 @@ sub mailup_check {
   chomp($mailup_id);
   if(defined $mailup_id) {
     if ( exists $self->{ESP}->{MAILUP}->{$mailup_id} ) {
+      $pms->set_tag('MAILUPID', $mailup_id);
       dbg("HIT! $mailup_id customer found in Mailup feed");
       $pms->test_log("Mailup id: $mailup_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');

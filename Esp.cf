@@ -27,4 +27,14 @@ describe 	VOXMAIL			Message from Voxmail abused account
 header		MAILUP			eval:mailup_check()
 describe 	MAILUP			Message from Mailup abused account
 
+ifplugin Mail::SpamAssassin::Plugin::AskDNS
+  askdns   RBL_SENDGRID_ID _SENDGRIDID_.rblid.domain.tld A 127.0.0.2
+  describe RBL_SENDGRID_ID Invaluement Sendgrid Id blacklist
+  tflags   RBL_SENDGRID_ID net
+
+  askdns   RBL_SENDGRID_DOM _SENDGRIDDOM_.rbldom.domain.tld A 127.0.0.2
+  describe RBL_SENDGRID_DOM Invaluement Sendgrid domain blacklist
+  tflags   RBL_SENDGRID_DOM net
+endif
+
 endif

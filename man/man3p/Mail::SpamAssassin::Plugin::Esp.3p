@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2020-10-07" "perl v5.30.3" "User Contributed Perl Documentation"
+.TH Esp 3 "2020-10-15" "perl v5.30.3" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -169,3 +169,13 @@ A file with abused Voxmail domains, domains are usually accountname.voxmail.it
 .IP "mailup_feed [...]" 4
 .IX Item "mailup_feed [...]"
 A file with abused Mailup accounts.
+.SH "TEMPLATE TAGS"
+.IX Header "TEMPLATE TAGS"
+.RS 4
+The plugin sets some tags when a rule match, those tags can be used to use direct queries against rbl.
+.Sp
+ifplugin Mail::SpamAssassin::Plugin::AskDNS
+  askdns   \s-1SENDGRID_ID _SENDGRIDID_\s0.rbl.domain.tld A 127.0.0.2
+  describe \s-1SENDGRID_ID\s0 Sendgrid account matches rbl
+endif
+.RE
