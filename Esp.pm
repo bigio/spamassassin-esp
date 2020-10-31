@@ -73,7 +73,7 @@ sub new {
 
 =head1 SYNOPSIS
 
-ifplugin Mail::SpamAssassin::Plugin::Esp Esp.pm
+ifplugin Mail::SpamAssassin::Plugin::Esp
 
   sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
   sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
