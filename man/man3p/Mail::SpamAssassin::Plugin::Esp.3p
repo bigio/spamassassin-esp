@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2020-10-30" "perl v5.32.0" "User Contributed Perl Documentation"
+.TH Esp 3 "2020-10-31" "perl v5.32.0" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -148,6 +148,19 @@ Esp \- checks ESP abused accounts
 .SH "DESCRIPTION"
 .IX Header "DESCRIPTION"
 This plugin checks emails coming from \s-1ESP\s0 abused accounts.
+.SH "SYNOPSIS"
+.IX Header "SYNOPSIS"
+ifplugin Mail::SpamAssassin::Plugin::Esp Esp.pm
+.PP
+.Vb 2
+\&  sendgrid_feed /etc/mail/spamassassin/sendgrid\-id\-dnsbl.txt
+\&  sendgrid_domains_feed /etc/mail/spamassassin/sendgrid\-envelopefromdomain\-dnsbl.txt
+\&
+\&  header          SPBL_SENDGRID           eval:sendgrid_check()
+\&  describe        SPBL_SENDGRID           Message from Sendgrid abused account
+.Ve
+.PP
+endif
 .SH "ADMINISTRATOR SETTINGS"
 .IX Header "ADMINISTRATOR SETTINGS"
 .IP "sendgrid_feed [...]" 4

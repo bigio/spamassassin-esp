@@ -65,6 +65,18 @@ sub new {
   return $self;
 }
 
+=head1 SYNOPSIS
+
+ifplugin Mail::SpamAssassin::Plugin::Esp Esp.pm
+
+  sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
+  sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
+
+  header          SPBL_SENDGRID           eval:sendgrid_check()
+  describe        SPBL_SENDGRID           Message from Sendgrid abused account
+
+endif
+
 =head1 ADMINISTRATOR SETTINGS
 
 =over 4
