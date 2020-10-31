@@ -8,14 +8,14 @@ The plugin doesn't download the data feed, the txt file should be downloaded usi
 
 Sample rule to enable the plugin:  
 
-loadplugin Mail::SpamAssassin::Plugin::Esp Esp.pm  
+	loadplugin Mail::SpamAssassin::Plugin::Esp Esp.pm  
 
-ifplugin Mail::SpamAssassin::Plugin::Esp  
+	ifplugin Mail::SpamAssassin::Plugin::Esp  
 
-	sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt  
-	sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt  
+		sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt  
+		sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt  
 
-	header          SPBL_SENDGRID           eval:esp_sendgrid_check()  
-	describe        SPBL_SENDGRID           Message from Sendgrid abused account  
+		header          SPBL_SENDGRID           eval:esp_sendgrid_check()  
+		describe        SPBL_SENDGRID           Message from Sendgrid abused account 		 
 
-endif
+	endif
