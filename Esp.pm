@@ -56,6 +56,12 @@ sub new {
   bless ($self, $class);
 
   $self->set_config($mailsaobject->{conf});
+  $self->register_eval_rule('esp_sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  # XXX Deprecated subs
   $self->register_eval_rule('sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -72,7 +78,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp Esp.pm
   sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
   sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
 
-  header          SPBL_SENDGRID           eval:sendgrid_check()
+  header          SPBL_SENDGRID           eval:esp_sendgrid_check()
   describe        SPBL_SENDGRID           Message from Sendgrid abused account
 
 endif
@@ -254,7 +260,33 @@ sub _read_configfile {
 
 }
 
+# Compatibility subs
 sub sendgrid_check_domain {
+  warn "sendgrid_check_domain is deprecated, use esp_sendgrid_check_domain instead";
+  return esp_sendgrid_check_domain(@_);
+}
+
+sub sendgrid_check_id {
+  warn "sendgrid_check_id is deprecated, use esp_sendgrid_check_id instead";
+  return esp_sendgrid_check_id(@_);
+}
+
+sub sendgrid_check {
+  warn "sendgrid_check is deprecated, use esp_sendgrid_check instead";
+  return esp_sendgrid_check(@_);
+}
+
+sub sendinblue_check {
+  warn "sendinblue_check is deprecated, use esp_sendinblue_check instead";
+  return esp_sendinblue_check(@_);
+}
+
+sub mailup_check {
+  warn "mailup_check is deprecated, use esp_mailup_check instead";
+  return esp_mailup_check(@_);
+}
+
+sub esp_sendgrid_check_domain {
   my ($self, $pms) = @_;
   my $sendgrid_id;
   my $sendgrid_domain;
@@ -283,7 +315,7 @@ sub sendgrid_check_domain {
   }
 }
 
-sub sendgrid_check_id {
+sub esp_sendgrid_check_id {
   my ($self, $pms) = @_;
   my $sendgrid_id;
   my $sendgrid_domain;
@@ -312,19 +344,19 @@ sub sendgrid_check_id {
   }
 }
 
-sub sendgrid_check {
+sub esp_sendgrid_check {
   my ($self, $pms) = @_;
 
   my $ret;
 
-  $ret = $self->sendgrid_check_id($pms);
+  $ret = $self->esp_sendgrid_check_id($pms);
   if (!$ret) {
-    $ret = $self->sendgrid_check_domain($pms);
+    $ret = $self->esp_sendgrid_check_domain($pms);
   }
   return $ret;
 }
 
-sub sendinblue_check {
+sub esp_sendinblue_check {
   my ($self, $pms) = @_;
   my $sendinblue_id;
 
@@ -351,7 +383,7 @@ sub sendinblue_check {
 
 }
 
-sub mailup_check {
+sub esp_mailup_check {
   my ($self, $pms) = @_;
   my $mailup_id;
 
