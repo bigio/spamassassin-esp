@@ -114,6 +114,15 @@ A file with abused Mailup accounts.
 =over
 
 The plugin sets some tags when a rule match, those tags can be used to use direct queries against rbl.
+
+If direct queries are used the main rule will be used only to set the tag and the score should be
+added to the askdns rule.
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns   SENDGRID_ID _SENDGRIDID_.rbl.domain.tld A 127.0.0.2
+    describe SENDGRID_ID Sendgrid account matches rbl
+  endif
+
 Tags that the plugin could set are:
 
 =back
@@ -131,11 +140,6 @@ SENDINBLUEID
 
 =item *
 MAILUPID
-
-  ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns   SENDGRID_ID _SENDGRIDID_.rbl.domain.tld A 127.0.0.2
-    describe SENDGRID_ID Sendgrid account matches rbl
-  endif
 
 =back
 
