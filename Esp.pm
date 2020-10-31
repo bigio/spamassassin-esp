@@ -43,7 +43,7 @@ use Mail::SpamAssassin::PerMsgStatus;
 use vars qw(@ISA);
 our @ISA = qw(Mail::SpamAssassin::Plugin);
 
-my $VERSION = 0.5;
+my $VERSION = 1.0;
 
 sub dbg { Mail::SpamAssassin::Plugin::dbg ("Esp: @_"); }
 
