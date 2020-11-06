@@ -7,6 +7,8 @@ sendinblue_feed /etc/mail/spamassassin/sendinblue_id.txt
 
 mailup_feed /etc/mail/spamassassin/mailup_id.txt
 
+maildome_feed /etc/mail/spamassassin/maildome_id.txt
+
 # header	SPBL_SENDGRID_ID	eval:esp_sendgrid_check_id()
 # describe 	SPBL_SENDGRID_ID	Message from Sendgrid abused account
 
@@ -21,6 +23,9 @@ describe 	SENDINBLUE		Message from Sendinblue abused account
 
 header		MAILUP			eval:esp_mailup_check()
 describe 	MAILUP			Message from Mailup abused account
+
+header		MAILDOME		eval:esp_maildome_check()
+describe 	MAILDOME		Message from Maildome abused account
 
 ifplugin Mail::SpamAssassin::Plugin::AskDNS
   askdns   RBL_SENDGRID_ID _SENDGRIDID_.rblid.domain.tld A 127.0.0.2
