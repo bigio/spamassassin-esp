@@ -214,100 +214,29 @@ sub set_config {
 
 sub finish_parsing_end {
   my ($self, $opts) = @_;
-  $self->_read_configfile($self);
+  $self->_read_configfile('sendgrid_feed', 'SENDGRID');
+  $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
+  $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
+  $self->_read_configfile('mailup_feed', 'MAILUP');
+  $self->_read_configfile('maildome_feed', 'MAILDOME');
 }
 
 sub _read_configfile {
-  my ($self) = @_;
+  my ($self, $feed, $esp) = @_;
   my $conf = $self->{main}->{registryboundaries}->{conf};
-  my $sendgrid_id;
-  my $sendgrid_domain;
-  my $sendinblue_id;
-  my $mailup_id;
-  my $maildome_id;
+  my $id;
 
   local *F;
-  if ( defined($conf->{sendgrid_feed}) && ( -f $conf->{sendgrid_feed} ) ) {
-    open(F, '<', $conf->{sendgrid_feed});
+
+  if ( defined($conf->{$feed}) && ( -f $conf->{$feed} ) ) {
+    open(F, '<', $conf->{$feed});
     for ($!=0; <F>; $!=0) {
       chomp;
       #lines that start with pound are comments
       next if(/^\s*\#/);
-      $sendgrid_id = $_;
-      if ( defined $sendgrid_id ) {
-        push @{$self->{ESP}->{SENDGRID}->{$sendgrid_id}}, $sendgrid_id;
-      }
-    }
-
-    defined $_ || $!==0  or
-      $!==EBADF ? dbg("ESP: error reading config file: $!")
-                : die "error reading config file: $!";
-    close(F) or die "error closing config file: $!";
-  }
-
-  if ( defined($conf->{sendgrid_domains_feed}) && ( -f $conf->{sendgrid_domains_feed} ) ) {
-    open(F, '<', $conf->{sendgrid_domains_feed});
-    for ($!=0; <F>; $!=0) {
-      chomp;
-      #lines that start with pound are comments
-      next if(/^\s*\#/);
-      $sendgrid_domain = $_;
-      if ( defined $sendgrid_domain ) {
-        push @{$self->{ESP}->{SENDGRID_DOMAIN}->{$sendgrid_domain}}, $sendgrid_domain;
-      }
-    }
-
-    defined $_ || $!==0  or
-      $!==EBADF ? dbg("ESP: error reading config file: $!")
-                : die "error reading config file: $!";
-    close(F) or die "error closing config file: $!";
-  }
-
-  if ( defined($conf->{sendinblue_feed}) && ( -f $conf->{sendinblue_feed} ) ) {
-    open(F, '<', $conf->{sendinblue_feed});
-    for ($!=0; <F>; $!=0) {
-      chomp;
-      #lines that start with pound are comments
-      next if(/^\s*\#/);
-      $sendinblue_id = $_;
-      if ( ( defined $sendinblue_id ) and ($sendinblue_id =~ /[0-9]+/) ) {
-        push @{$self->{ESP}->{SENDINBLUE}->{$sendinblue_id}}, $sendinblue_id;
-      }
-    }
-
-    defined $_ || $!==0  or
-      $!==EBADF ? dbg("ESP: error reading config file: $!")
-                : die "error reading config file: $!";
-    close(F) or die "error closing config file: $!";
-  }
-
-  if ( defined($conf->{mailup_feed}) && ( -f $conf->{mailup_feed} ) ) {
-    open(F, '<', $conf->{mailup_feed});
-    for ($!=0; <F>; $!=0) {
-      chomp;
-      #lines that start with pound are comments
-      next if(/^\s*\#/);
-      $mailup_id = $_;
-      if ( defined $mailup_id ) {
-        push @{$self->{ESP}->{MAILUP}->{$mailup_id}}, $mailup_id;
-      }
-    }
-
-    defined $_ || $!==0  or
-      $!==EBADF ? dbg("ESP: error reading config file: $!")
-                : die "error reading config file: $!";
-    close(F) or die "error closing config file: $!";
-  }
-
-  if ( defined($conf->{maildome_feed}) && ( -f $conf->{maildome_feed} ) ) {
-    open(F, '<', $conf->{maildome_feed});
-    for ($!=0; <F>; $!=0) {
-      chomp;
-      #lines that start with pound are comments
-      next if(/^\s*\#/);
-      $maildome_id = $_;
-      if ( defined $maildome_id ) {
-        push @{$self->{ESP}->{MAILDOME}->{$maildome_id}}, $maildome_id;
+      $id = $_;
+      if ( defined $id ) {
+        push @{$self->{ESP}->{$esp}->{$id}}, $id;
       }
     }
 
