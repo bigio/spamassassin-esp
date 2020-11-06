@@ -85,6 +85,23 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 
 endif
 
+Usage:
+
+  esp_mailup_check()
+    Checks for Mailup abused accounts
+
+  esp_sendindblue_check()
+    Checks for Sendinblue abused accounts
+
+  esp_sendgrid_check()
+    Checks for Sendgrid abused accounts
+
+  esp_sendgrid_check_id()
+    Checks for Sendgrid id abused accounts
+
+  esp_sendgrid_check_domain()
+    Checks for Sendgrid domains abused accounts
+
 =head1 ADMINISTRATOR SETTINGS
 
 =over 4
