@@ -62,6 +62,7 @@ sub new {
   $self->register_eval_rule('esp_sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   # XXX Deprecated subs
   $self->register_eval_rule('sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -87,6 +88,9 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 endif
 
 Usage:
+
+  esp_mailchimp_check()
+    Checks for Mailchimp abused accounts
 
   esp_maildome_check()
     Checks for Maildome abused accounts
@@ -134,6 +138,10 @@ A file with abused Mailup accounts.
 
 A file with abused Maildome accounts.
 
+=item mailchimp_feed [...]
+
+A file with abused Mailchimp accounts.
+
 =back
 
 =head1 TEMPLATE TAGS
@@ -170,6 +178,9 @@ MAILUPID
 
 =item *
 MAILDOMEID
+
+=item *
+MAILCHIMPID
 
 =back
 
@@ -209,6 +220,12 @@ sub set_config {
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
+  push(@cmds, {
+    setting => 'mailchimp_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   $conf->{parser}->register_commands(\@cmds);
 }
 
@@ -219,6 +236,7 @@ sub finish_parsing_end {
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
   $self->_read_configfile('mailup_feed', 'MAILUP');
   $self->_read_configfile('maildome_feed', 'MAILDOME');
+  $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
 }
 
 sub _read_configfile {
@@ -413,9 +431,8 @@ sub esp_maildome_check {
   if((not defined $xmailer) or ($xmailer !~ /MaildomeMTA/)) {
     return;
   }
-  # All Mailup emails have the X-Abuse header that must match
-  $maildome_id = $pms->get("List-Unsubscribe", undef);
 
+  $maildome_id = $pms->get("List-Unsubscribe", undef);
   return if not defined $maildome_id;
   $maildome_id =~ /subject=https:\/\/.*\/unsubscribe\/([0-9]+)\/([0-9]+)\/.*\/([0-9])\/([0-9]+)\>/;
   $maildome_id = $2;
@@ -428,6 +445,35 @@ sub esp_maildome_check {
       $pms->set_tag('MAILDOMEID', $maildome_id);
       dbg("HIT! $maildome_id customer found in Maildome feed");
       $pms->test_log("Maildome id: $maildome_id");
+      $pms->got_hit($rulename, "", ruletype => 'eval');
+      return 1;
+    }
+  }
+
+}
+
+sub esp_mailchimp_check {
+  my ($self, $pms) = @_;
+  my $mailchimp_id;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  # return if X-Mailer is not what we want
+  my $xmailer = $pms->get("X-Mailer", undef);
+
+  if((not defined $xmailer) or ($xmailer !~ /MailChimp Mailer/)) {
+    return;
+  }
+
+  $mailchimp_id = $pms->get("X-MC-User", undef);
+  return if not defined $mailchimp_id;
+
+  chomp($mailchimp_id);
+  if(defined $mailchimp_id) {
+    if ( exists $self->{ESP}->{MAILCHIMP}->{$mailchimp_id} ) {
+      $pms->set_tag('MAILCHIMPID', $mailchimp_id);
+      dbg("HIT! $mailchimp_id customer found in Mailchimp feed");
+      $pms->test_log("Mailchimp id: $mailchimp_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');
       return 1;
     }
