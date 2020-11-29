@@ -27,12 +27,6 @@ maildome_feed /etc/mail/spamassassin/maildome_id.txt
 
 mailchimp_feed /etc/mail/spamassassin/mailchimp_id.txt
 
-# header	SPBL_SENDGRID_ID	eval:esp_sendgrid_check_id()
-# describe 	SPBL_SENDGRID_ID	Message from Sendgrid abused account
-
-# header	SPBL_SENDGRID_DOM	eval:esp_sendgrid_check_domain()
-# describe 	SPBL_SENDGRID_DOM	Message from Sendgrid abused domain
-
 header		SPBL_SENDGRID		eval:esp_sendgrid_check()
 describe 	SPBL_SENDGRID		Message from Sendgrid abused account
 score		SPBL_SENDGRID 7.5

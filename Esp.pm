@@ -102,7 +102,7 @@ Usage:
     Checks for Sendinblue abused accounts
 
   esp_sendgrid_check()
-    Checks for Sendgrid abused accounts
+    Checks for Sendgrid abused accounts (both id and domains)
 
   esp_sendgrid_check_id()
     Checks for Sendgrid id abused accounts
