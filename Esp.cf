@@ -72,6 +72,6 @@ endif
 meta RBL_SENDGRID (RBL_SENDGRID_ID || RBL_SENDGRID_DOM)
 score RBL_SENDGRID 7.5
 
-endif Mail::SpamAssassin::Plugin::AskDNS
+endif # Mail::SpamAssassin::Plugin::AskDNS
 
-endif Mail::SpamAssassin::Plugin::Esp
+endif # Mail::SpamAssassin::Plugin::Esp
