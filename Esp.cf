@@ -1,7 +1,15 @@
 ifplugin Mail::SpamAssassin::Plugin::Esp
 
-# For sendgrid, 2 ways exists to query this database: local text files
-# or by rbl.
+# Score some well known Email Service Providers:
+#   Sendgrid, Sendinblue, Mailup, Maildome, Mailchimp
+#
+# To use this plugin, you need to provide a one or more lists of IDs
+# or in the case of sendgrid you can also specify sendgrid domains.
+# When a message is passed to the plugin, it will return whether the
+# message is from one of the IDs (or domains) in one of the respective
+# lists.
+#
+# For sendgrid:
 #
 # EITHER you can download the files by adding a cronjob
 # like this:
@@ -9,7 +17,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 #
 # OR you can set one or both of the variables sendgrid_id_rbl and
 # sendgrid_dom_rbl to valid rbl domains to query this database via
-# DNS.  Score SPBL_SENDGRID or RBL_SENDGRID.  No need to do both.
+# DNS.
+#
+# Use either SPBL_SENDGRID or RBL_SENDGRID.  No need to do both!  If
+# scoring via an RBL, you don't need this plugin, only the AsdkDNS
+# plugin and those config lines below in the OR THIS section.
+#
+# For the other ESPs, you will need to create those txt files on your
+# own or find a source for this information, this plugin does not
+# currently provide advice on where to get that data.  If you know of
+# any, let us know.
 
 # -------- SENDGRID - EITHER THIS --------
 sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
