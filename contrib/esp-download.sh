@@ -37,7 +37,7 @@ if [ "$output" = "" ] && [ "$outputenvfrom" = "" ]; then
 fi
 
 if [ "$do_help" -eq 1 ]; then
-    echo "usage: $0 [ -f outputfile ] [ -o outputfile ]"
+    echo "usage: $0 [ -f outputfile ] [ -o outputfile ] [ -r ]"
     exit
 fi
 
