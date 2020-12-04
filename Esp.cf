@@ -1,45 +1,91 @@
 ifplugin Mail::SpamAssassin::Plugin::Esp
 
+# Score some well known Email Service Providers:
+#   Sendgrid, Sendinblue, Mailup, Maildome, Mailchimp
+#
+# To use this plugin, you need to provide a one or more lists of IDs
+# or in the case of sendgrid you can also specify sendgrid domains.
+# When a message is passed to the plugin, it will return whether the
+# message is from one of the IDs (or domains) in one of the respective
+# lists.
+#
+# For sendgrid:
+#
+# EITHER you can download the files by adding a cronjob
+# like this:
+# 17 * * * * (cd /etc/mail/spamassassin; wget -q -N http://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt  http://www.invaluement.com/spdata/sendgrid-envelopefromdomain-dnsbl.txt)
+#
+# OR you can set one or both of the variables sendgrid_id_rbl and
+# sendgrid_dom_rbl to valid rbl domains to query this database via
+# DNS.
+#
+# Use either SPBL_SENDGRID or RBL_SENDGRID.  No need to do both!  If
+# scoring via an RBL, you don't need this plugin, only the AsdkDNS
+# plugin and those config lines below in the OR THIS section.
+#
+# For the other ESPs, you will need to create those txt files on your
+# own or find a source for this information, this plugin does not
+# currently provide advice on where to get that data.  If you know of
+# any, let us know.
+
+# -------- SENDGRID - EITHER THIS --------
 sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
 sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
 
-sendinblue_feed /etc/mail/spamassassin/sendinblue_id.txt
-
-mailup_feed /etc/mail/spamassassin/mailup_id.txt
-
-maildome_feed /etc/mail/spamassassin/maildome_id.txt
-
-mailchimp_feed /etc/mail/spamassassin/mailchimp_id.txt
-
-# header	SPBL_SENDGRID_ID	eval:esp_sendgrid_check_id()
-# describe 	SPBL_SENDGRID_ID	Message from Sendgrid abused account
-
-# header	SPBL_SENDGRID_DOM	eval:esp_sendgrid_check_domain()
-# describe 	SPBL_SENDGRID_DOM	Message from Sendgrid abused domain
-
 header		SPBL_SENDGRID		eval:esp_sendgrid_check()
 describe 	SPBL_SENDGRID		Message from Sendgrid abused account
+score		SPBL_SENDGRID 7.5
 
-header		SENDINBLUE		eval:esp_sendinblue_check()
-describe 	SENDINBLUE		Message from Sendinblue abused account
+# -------- SENDGRID - OR THIS --------
 
-header		MAILUP			eval:esp_mailup_check()
-describe 	MAILUP			Message from Mailup abused account
-
-header		MAILDOME		eval:esp_maildome_check()
-describe 	MAILDOME		Message from Maildome abused account
-
-header		MAILCHIMP		eval:esp_mailchimp_check()
-describe 	MAILCHIMP		Message from Mailchimp abused account
+# sendgrid_id_rbl = _SENDGRIDID_.rblid.domain.tld
+# sendgrid_dom_rbl = _SENDGRIDDOM_.rbldom.domain.tld
 
 ifplugin Mail::SpamAssassin::Plugin::AskDNS
-  askdns   RBL_SENDGRID_ID _SENDGRIDID_.rblid.domain.tld A 127.0.0.2
-  describe RBL_SENDGRID_ID Invaluement Sendgrid Id blacklist
-  tflags   RBL_SENDGRID_ID net
 
-  askdns   RBL_SENDGRID_DOM _SENDGRIDDOM_.rbldom.domain.tld A 127.0.0.2
-  describe RBL_SENDGRID_DOM Invaluement Sendgrid domain blacklist
+if (sendgrid_id_rbl)
+  askdns   RBL_SENDGRID_ID sendgrid_id_rbl A 127.0.0.2
+  describe RBL_SENDGRID_ID Sendgrid Id blacklist
+  tflags   RBL_SENDGRID_ID net
+endif
+
+if (sendgrid_dom_rbl)
+  askdns   RBL_SENDGRID_DOM sendgrid_dom_rbl A 127.0.0.2
+  describe RBL_SENDGRID_DOM Sendgrid domain blacklist
   tflags   RBL_SENDGRID_DOM net
 endif
 
-endif
+meta RBL_SENDGRID (RBL_SENDGRID_ID || RBL_SENDGRID_DOM)
+score RBL_SENDGRID 7.5
+
+endif # Mail::SpamAssassin::Plugin::AskDNS
+
+# -------- SENDINBLUE --------
+sendinblue_feed /etc/mail/spamassassin/sendinblue_id.txt
+
+header		SENDINBLUE		eval:esp_sendinblue_check()
+describe 	SENDINBLUE		Message from Sendinblue abused account
+score		SENDINBLUE 7.5
+
+# -------- MAILUP --------
+mailup_feed /etc/mail/spamassassin/mailup_id.txt
+
+header		MAILUP			eval:esp_mailup_check()
+describe 	MAILUP			Message from Mailup abused account
+score		MAILUP 7.5
+
+# -------- MAILDOME --------
+maildome_feed /etc/mail/spamassassin/maildome_id.txt
+
+header		MAILDOME		eval:esp_maildome_check()
+describe 	MAILDOME		Message from Maildome abused account
+score		MAILDOME 7.5
+
+# -------- MAILCHIMP --------
+mailchimp_feed /etc/mail/spamassassin/mailchimp_id.txt
+
+header		MAILCHIMP		eval:esp_mailchimp_check()
+describe 	MAILCHIMP		Message from Mailchimp abused account
+score		MAILCHIMP 7.5
+
+endif # Mail::SpamAssassin::Plugin::Esp
