@@ -14,8 +14,9 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 # EITHER you can download the files by adding a cronjob
 # like this:
 # 17 * * * * (cd /etc/mail/spamassassin; wget -q -N http://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt  http://www.invaluement.com/spdata/sendgrid-envelopefromdomain-dnsbl.txt)
+# or use the script located on contrib directory.
 #
-# OR you can set one or both of the variables sendgrid_id_rbl and
+# If you want to use an rbl instead, you can set one or both of the variables sendgrid_id_rbl and
 # sendgrid_dom_rbl to valid rbl domains to query this database via
 # DNS.
 #
