@@ -34,7 +34,7 @@ sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.t
 
 header		SPBL_SENDGRID		eval:esp_sendgrid_check()
 describe 	SPBL_SENDGRID		Message from Sendgrid abused account
-score		SPBL_SENDGRID 7.5
+# score		SPBL_SENDGRID 7.5
 
 # -------- SENDGRID - OR THIS --------
 
@@ -56,7 +56,7 @@ if (sendgrid_dom_rbl)
 endif
 
 meta RBL_SENDGRID (RBL_SENDGRID_ID || RBL_SENDGRID_DOM)
-score RBL_SENDGRID 7.5
+# score RBL_SENDGRID 7.5
 
 endif # Mail::SpamAssassin::Plugin::AskDNS
 
@@ -65,27 +65,27 @@ sendinblue_feed /etc/mail/spamassassin/sendinblue_id.txt
 
 header		SENDINBLUE		eval:esp_sendinblue_check()
 describe 	SENDINBLUE		Message from Sendinblue abused account
-score		SENDINBLUE 7.5
+# score		SENDINBLUE 7.5
 
 # -------- MAILUP --------
 mailup_feed /etc/mail/spamassassin/mailup_id.txt
 
 header		MAILUP			eval:esp_mailup_check()
 describe 	MAILUP			Message from Mailup abused account
-score		MAILUP 7.5
+# score		MAILUP 7.5
 
 # -------- MAILDOME --------
 maildome_feed /etc/mail/spamassassin/maildome_id.txt
 
 header		MAILDOME		eval:esp_maildome_check()
 describe 	MAILDOME		Message from Maildome abused account
-score		MAILDOME 7.5
+# score		MAILDOME 7.5
 
 # -------- MAILCHIMP --------
 mailchimp_feed /etc/mail/spamassassin/mailchimp_id.txt
 
 header		MAILCHIMP		eval:esp_mailchimp_check()
 describe 	MAILCHIMP		Message from Mailchimp abused account
-score		MAILCHIMP 7.5
+# score		MAILCHIMP 7.5
 
 endif # Mail::SpamAssassin::Plugin::Esp
