@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2020-11-07" "perl v5.32.0" "User Contributed Perl Documentation"
+.TH Esp 3 "2021-02-11" "perl v5.32.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -155,7 +155,7 @@ loadplugin Mail::SpamAssassin::Plugin::Esp Esp.pm
 ifplugin Mail::SpamAssassin::Plugin::Esp
 .PP
 .Vb 2
-\&  sendgrid_feed /etc/mail/spamassassin/sendgrid\-id\-dnsbl.txt
+\&  sendgrid_feed /etc/mail/spamassassin/sendgrid\-id\-dnsbl.txt,/etc/mail/spamassassin/sendgrid\-id\-local.txt
 \&  sendgrid_domains_feed /etc/mail/spamassassin/sendgrid\-envelopefromdomain\-dnsbl.txt
 \&
 \&  header          SPBL_SENDGRID           eval:esp_sendgrid_check()
@@ -180,7 +180,7 @@ Usage:
 \&    Checks for Sendinblue abused accounts
 \&
 \&  esp_sendgrid_check()
-\&    Checks for Sendgrid abused accounts
+\&    Checks for Sendgrid abused accounts (both id and domains)
 \&
 \&  esp_sendgrid_check_id()
 \&    Checks for Sendgrid id abused accounts
@@ -192,26 +192,32 @@ Usage:
 .IX Header "ADMINISTRATOR SETTINGS"
 .IP "sendgrid_feed [...]" 4
 .IX Item "sendgrid_feed [...]"
-A file with all abused Sendgrid accounts.
+A list of files with all abused Sendgrid accounts.
+Files can be separated by a comma.
 More info at https://www.invaluement.com/serviceproviderdnsbl/.
 Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid\-id\-dnsbl.txt.
 .IP "sendgrid_domains_feed [...]" 4
 .IX Item "sendgrid_domains_feed [...]"
-A file with abused domains managed by Sendgrid.
+A list of files with abused domains managed by Sendgrid.
+Files can be separated by a comma.
 More info at https://www.invaluement.com/serviceproviderdnsbl/.
 Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid\-envelopefromdomain\-dnsbl.txt.
 .IP "sendinblue_feed [...]" 4
 .IX Item "sendinblue_feed [...]"
-A file with abused Sendinblue accounts.
+A list of files with abused Sendinblue accounts.
+Files can be separated by a comma.
 .IP "mailup_feed [...]" 4
 .IX Item "mailup_feed [...]"
-A file with abused Mailup accounts.
+A list of files with abused Mailup accounts.
+Files can be separated by a comma.
 .IP "maildome_feed [...]" 4
 .IX Item "maildome_feed [...]"
-A file with abused Maildome accounts.
+A list of files with abused Maildome accounts.
+Files can be separated by a comma.
 .IP "mailchimp_feed [...]" 4
 .IX Item "mailchimp_feed [...]"
-A file with abused Mailchimp accounts.
+A list of files with abused Mailchimp accounts.
+Files can be separated by a comma.
 .SH "TEMPLATE TAGS"
 .IX Header "TEMPLATE TAGS"
 .RS 4
