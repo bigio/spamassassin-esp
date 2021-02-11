@@ -63,12 +63,6 @@ sub new {
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  # XXX Deprecated subs
-  $self->register_eval_rule('sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
 }
@@ -272,32 +266,6 @@ sub _read_configfile {
       close(F) or die "error closing config file: $!";
     }
   }
-}
-
-# Compatibility subs
-sub sendgrid_check_domain {
-  warn "sendgrid_check_domain is deprecated, use esp_sendgrid_check_domain instead";
-  return esp_sendgrid_check_domain(@_);
-}
-
-sub sendgrid_check_id {
-  warn "sendgrid_check_id is deprecated, use esp_sendgrid_check_id instead";
-  return esp_sendgrid_check_id(@_);
-}
-
-sub sendgrid_check {
-  warn "sendgrid_check is deprecated, use esp_sendgrid_check instead";
-  return esp_sendgrid_check(@_);
-}
-
-sub sendinblue_check {
-  warn "sendinblue_check is deprecated, use esp_sendinblue_check instead";
-  return esp_sendinblue_check(@_);
-}
-
-sub mailup_check {
-  warn "mailup_check is deprecated, use esp_mailup_check instead";
-  return esp_mailup_check(@_);
 }
 
 sub esp_sendgrid_check_domain {
