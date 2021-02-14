@@ -30,16 +30,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 # any, let us know.
 
 # -------- SENDGRID - EITHER THIS --------
-# sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
-# sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
+sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
+sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
 
 header		SPBL_SENDGRID		eval:esp_sendgrid_check()
 describe 	SPBL_SENDGRID		Message from Sendgrid abused account
-# score		SPBL_SENDGRID 7.5
+score		SPBL_SENDGRID 7.5
 
 # -------- SENDGRID - OR THIS --------
 # If using invalument.com's RBL, you will need a license key, replace LICENSEKEY with they key they provided
-
+# Uncomment these 2 lines and comment the sendgrid_feed and sendgrid_domains_feed lines above:
 # sendgrid_id_rbl     _SENDGRIDID_.sendgrid-id.LICENSEKEY.invaluement.com
 # sendgrid_dom_rbl    _SENDGRIDDOM_.sendgrid-efd.LICENCEKEY.invaluement.com
 
