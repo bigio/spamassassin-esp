@@ -30,7 +30,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 # any, let us know.
 
 # -------- SENDGRID - EITHER THIS --------
-sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
+# sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
 sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
 
 header		SPBL_SENDGRID		eval:esp_sendgrid_check()
@@ -39,8 +39,8 @@ describe 	SPBL_SENDGRID		Message from Sendgrid abused account
 
 # -------- SENDGRID - OR THIS --------
 
-# sendgrid_id_rbl = _SENDGRIDID_.rblid.domain.tld
-# sendgrid_dom_rbl = _SENDGRIDDOM_.rbldom.domain.tld
+sendgrid_id_rbl     _SENDGRIDID_.sendgrid-id.0123456789ab.invaluement.com
+sendgrid_dom_rbl    _SENDGRIDDOM_.sendgrid-efd.0123456789ab.invaluement.com
 
 ifplugin Mail::SpamAssassin::Plugin::AskDNS
 
@@ -57,7 +57,12 @@ if (sendgrid_dom_rbl)
 endif
 
 meta RBL_SENDGRID (RBL_SENDGRID_ID || RBL_SENDGRID_DOM)
-# score RBL_SENDGRID 7.5
+score RBL_SENDGRID 7.5
+if can(Mail::SpamAssassin::Conf::has_tflags_nolog)
+	tflags RBL_SENDGRID net nolog
+else
+	tflags RBL_SENDGRID net
+endif
 
 endif # Mail::SpamAssassin::Plugin::AskDNS
 

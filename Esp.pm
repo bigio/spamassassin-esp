@@ -191,6 +191,18 @@ sub set_config {
   my @cmds = ();
 
   push(@cmds, {
+    setting => 'sendgrid_id_rbl',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'sendgrid_dom_rbl',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'sendgrid_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -231,7 +243,17 @@ sub set_config {
 
 sub finish_parsing_end {
   my ($self, $opts) = @_;
+  my $conf = $self->{main}->{registryboundaries}->{conf};
+
+  if ( defined $conf->{sendgrid_feed} &&
+       defined $conf->{sendgrid_id_rbl} ) {
+      die "ESP: error either sendgrid_feed OR sendgrid_id_rbl may be defined"
+  }
   $self->_read_configfile('sendgrid_feed', 'SENDGRID');
+  if ( defined $conf->{sendgrid_domains_feed} &&
+       defined $conf->{sendgrid_dom_rbl} ) {
+      die "ESP: error either sendgrid_domains_feed OR sendgrid_dom_rbl may be defined"
+  }
   $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
   $self->_read_configfile('mailup_feed', 'MAILUP');
