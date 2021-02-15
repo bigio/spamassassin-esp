@@ -40,24 +40,17 @@ describe 	SPBL_SENDGRID		Message from Sendgrid abused account
 # score		SPBL_SENDGRID 7.5
 
 # -------- SENDGRID - OR THIS --------
-# If using invalument.com's RBL, you will need a license key, replace LICENSEKEY with they key they provided
-# Uncomment these 2 lines and comment the sendgrid_feed and sendgrid_domains_feed lines above:
-# sendgrid_id_rbl     _SENDGRIDID_.sendgrid-id.LICENSEKEY.invaluement.com
-# sendgrid_dom_rbl    _SENDGRIDDOM_.sendgrid-efd.LICENCEKEY.invaluement.com
 
+# If using invalument.com's RBL, you will need a license key, replace <LICENSEKEY> with they key they provided
 ifplugin Mail::SpamAssassin::Plugin::AskDNS
 
-if (sendgrid_id_rbl)
-  askdns   RBL_SENDGRID_ID sendgrid_id_rbl A 127.0.0.2
+  askdns   RBL_SENDGRID_ID _SENDGRIDID_.sendgrid-id.<LICENSEKEY>.invaluement.com A 127.0.0.2
   describe RBL_SENDGRID_ID Sendgrid Id blacklist
   tflags   RBL_SENDGRID_ID net
-endif
 
-if (sendgrid_dom_rbl)
-  askdns   RBL_SENDGRID_DOM sendgrid_dom_rbl A 127.0.0.2
+  askdns   RBL_SENDGRID_DOM _SENDGRIDDOM_.sendgrid-efd.<LICENSEKEY>.invaluement.com A 127.0.0.2
   describe RBL_SENDGRID_DOM Sendgrid domain blacklist
   tflags   RBL_SENDGRID_DOM net
-endif
 
 meta RBL_SENDGRID (RBL_SENDGRID_ID || RBL_SENDGRID_DOM)
 score RBL_SENDGRID 7.5
