@@ -17,11 +17,12 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 # or use the script located on contrib directory.
 #
 # If you want to use an rbl instead, you can set one or both of the variables sendgrid_id_rbl and
-# sendgrid_dom_rbl to valid rbl domains to query this database via
-# DNS.
+# sendgrid_dom_rbl to valid rbl domains to query this database via DNS.
 #
-# Use either SPBL_SENDGRID or RBL_SENDGRID.  No need to do both!  If
-# scoring via an RBL, you don't need this plugin, only the AsdkDNS
+# Use either SPBL_SENDGRID or RBL_SENDGRID.
+# Typically either the files or the rbl method is used but you may use both.
+# In that case though, the scores become additive so you may need to adjust them accordingly.
+# If scoring via an RBL, you don't need this plugin, only the AsdkDNS
 # plugin and those config lines below in the OR THIS section.
 #
 # For the other ESPs, you will need to create those txt files on your
@@ -50,7 +51,7 @@ ifplugin Mail::SpamAssassin::Plugin::AskDNS
   describe RBL_SENDGRID_DOM Sendgrid domain blacklist
   tflags   RBL_SENDGRID_DOM net
 
-meta RBL_SENDGRID (RBL_SENDGRID_ID || RBL_SENDGRID_DOM)
+meta RBL_SENDGRID (RBL_SENDGRID_ID || RBL_SENDGRID_DOM || SPBL_SENDGRID)
 # score RBL_SENDGRID 7.5
 
 endif # Mail::SpamAssassin::Plugin::AskDNS
