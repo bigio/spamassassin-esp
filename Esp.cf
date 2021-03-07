@@ -19,7 +19,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 # If you want to use an rbl instead, you can set one or both of the variables sendgrid_id_rbl and
 # sendgrid_dom_rbl to valid rbl domains to query this database via DNS.
 #
-# Use either SPBL_SENDGRID or RBL_SENDGRID.
+# Use either __SPBL_SENDGRID or __RBL_SENDGRID.
 # Typically either the files or the rbl method is used but you may use both.
 # In that case though, the scores become additive so you may need to adjust them accordingly.
 # If scoring via an RBL, you don't need this plugin, only the AsdkDNS
@@ -34,25 +34,26 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
 sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
 
-header		SPBL_SENDGRID		eval:esp_sendgrid_check()
-describe 	SPBL_SENDGRID		Message from Sendgrid abused account
-# score		SPBL_SENDGRID 7.5
+header		__SPBL_SENDGRID		eval:esp_sendgrid_check()
+describe 	__SPBL_SENDGRID		Message from Sendgrid abused account
+# score		__SPBL_SENDGRID 7.5
 
 # -------- SENDGRID - OR THIS --------
 
 # Substitute <LICENSEKEY> with your Invaluement SPBL license key
 ifplugin Mail::SpamAssassin::Plugin::AskDNS
 
-  askdns   RBL_SENDGRID_ID _SENDGRIDID_.sendgrid-id.<LICENSEKEY>.invaluement.com A 127.0.0.2
-  describe RBL_SENDGRID_ID Sendgrid Id blacklist
-  tflags   RBL_SENDGRID_ID net
+  askdns   __RBL_SENDGRID_ID _SENDGRIDID_.sendgrid-id.<LICENSEKEY>.invaluement.com A 127.0.0.2
+  describe __RBL_SENDGRID_ID Sendgrid Id blacklist
+  tflags   __RBL_SENDGRID_ID net
 
-  askdns   RBL_SENDGRID_DOM _SENDGRIDDOM_.sendgrid-efd.<LICENSEKEY>.invaluement.com A 127.0.0.2
-  describe RBL_SENDGRID_DOM Sendgrid domain blacklist
-  tflags   RBL_SENDGRID_DOM net
+  askdns   __RBL_SENDGRID_DOM _SENDGRIDDOM_.sendgrid-efd.<LICENSEKEY>.invaluement.com A 127.0.0.2
+  describe __RBL_SENDGRID_DOM Sendgrid domain blacklist
+  tflags   __RBL_SENDGRID_DOM net
 
-meta RBL_SENDGRID (RBL_SENDGRID_ID || RBL_SENDGRID_DOM || SPBL_SENDGRID)
-# score RBL_SENDGRID 7.5
+meta       RBL_SENDGRID (__RBL_SENDGRID_ID || __RBL_SENDGRID_DOM || __SPBL_SENDGRID)
+describe   RBL_SENDGRID Invaluement Sendgrid blacklist
+# score      RBL_SENDGRID 7.5
 
 endif # Mail::SpamAssassin::Plugin::AskDNS
 
