@@ -45,11 +45,19 @@ ifplugin Mail::SpamAssassin::Plugin::AskDNS
 
   askdns   __RBL_SENDGRID_ID _SENDGRIDID_.sendgrid-id.<LICENSEKEY>.invaluement.com A 127.0.0.2
   describe __RBL_SENDGRID_ID Sendgrid Id blacklist
-  tflags   __RBL_SENDGRID_ID net nolog
+  if can(Mail::SpamAssassin::Conf::has_tflags_nolog)
+    tflags   __RBL_SENDGRID_ID net nolog
+  else
+    tflags   __RBL_SENDGRID_ID net
+  endif
 
   askdns   __RBL_SENDGRID_DOM _SENDGRIDDOM_.sendgrid-efd.<LICENSEKEY>.invaluement.com A 127.0.0.2
   describe __RBL_SENDGRID_DOM Sendgrid domain blacklist
-  tflags   __RBL_SENDGRID_DOM net nolog
+  if can(Mail::SpamAssassin::Conf::has_tflags_nolog)
+    tflags   __RBL_SENDGRID_DOM net nolog
+  else
+    tflags   __RBL_SENDGRID_DOM net
+  endif
 
 meta       RBL_SENDGRID (__RBL_SENDGRID_ID || __RBL_SENDGRID_DOM || __SPBL_SENDGRID)
 describe   RBL_SENDGRID Invaluement Sendgrid blacklist
