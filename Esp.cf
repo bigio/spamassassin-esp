@@ -93,4 +93,11 @@ header		MAILCHIMP		eval:esp_mailchimp_check()
 describe 	MAILCHIMP		Message from Mailchimp abused account
 score  		MAILCHIMP   5.0
 
+# -------- CONSTANTCONTACT --------
+constantcontact_feed /etc/mail/spamassassin/constantcontact_id.txt
+
+header		CONSTANTCONTACT		eval:esp_constantcontact_check()
+describe	CONSTANTCONTACT		Message from Constant Contact abused account
+score			CONSTANTCONTACT   5.0
+
 endif # Mail::SpamAssassin::Plugin::Esp
