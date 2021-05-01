@@ -167,6 +167,9 @@ endif
 Usage:
 .PP
 .Vb 2
+\&  esp_constantcontact_check()
+\&    Checks for Constant Contact id abused accounts
+\&
 \&  esp_mailchimp_check()
 \&    Checks for Mailchimp abused accounts
 \&
@@ -179,9 +182,6 @@ Usage:
 \&  esp_mailup_check()
 \&    Checks for Mailup abused accounts
 \&
-\&  esp_sendindblue_check()
-\&    Checks for Sendinblue abused accounts
-\&
 \&  esp_sendgrid_check()
 \&    Checks for Sendgrid abused accounts (both id and domains)
 \&
@@ -191,30 +191,18 @@ Usage:
 \&  esp_sendgrid_check_domain()
 \&    Checks for Sendgrid domains abused accounts
 \&
-\&  esp_constantcontact_check()
-\&    Checks for Constant Contact id abused accounts
+\&  esp_sendindblue_check()
+\&    Checks for Sendinblue abused accounts
 .Ve
 .SH "ADMINISTRATOR SETTINGS"
 .IX Header "ADMINISTRATOR SETTINGS"
-.IP "sendgrid_feed [...]" 4
-.IX Item "sendgrid_feed [...]"
-A list of files with all abused Sendgrid accounts.
+.IP "constantcontact_feed [...]" 4
+.IX Item "constantcontact_feed [...]"
+A list of files with abused Constant Contact accounts.
 Files can be separated by a comma.
-More info at https://www.invaluement.com/serviceproviderdnsbl/.
-Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid\-id\-dnsbl.txt.
-.IP "sendgrid_domains_feed [...]" 4
-.IX Item "sendgrid_domains_feed [...]"
-A list of files with abused domains managed by Sendgrid.
-Files can be separated by a comma.
-More info at https://www.invaluement.com/serviceproviderdnsbl/.
-Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid\-envelopefromdomain\-dnsbl.txt.
-.IP "sendinblue_feed [...]" 4
-.IX Item "sendinblue_feed [...]"
-A list of files with abused Sendinblue accounts.
-Files can be separated by a comma.
-.IP "mailup_feed [...]" 4
-.IX Item "mailup_feed [...]"
-A list of files with abused Mailup accounts.
+.IP "mailchimp_feed [...]" 4
+.IX Item "mailchimp_feed [...]"
+A list of files with abused Mailchimp accounts.
 Files can be separated by a comma.
 .IP "maildome_feed [...]" 4
 .IX Item "maildome_feed [...]"
@@ -224,13 +212,25 @@ Files can be separated by a comma.
 .IX Item "mailgun_feed [...]"
 A list of files with abused Mailgun accounts.
 Files can be separated by a comma.
-.IP "mailchimp_feed [...]" 4
-.IX Item "mailchimp_feed [...]"
-A list of files with abused Mailchimp accounts.
+.IP "mailup_feed [...]" 4
+.IX Item "mailup_feed [...]"
+A list of files with abused Mailup accounts.
 Files can be separated by a comma.
-.IP "constantcontact_feed [...]" 4
-.IX Item "constantcontact_feed [...]"
-A list of files with abused Constant Contact accounts.
+.IP "sendgrid_domains_feed [...]" 4
+.IX Item "sendgrid_domains_feed [...]"
+A list of files with abused domains managed by Sendgrid.
+Files can be separated by a comma.
+More info at https://www.invaluement.com/serviceproviderdnsbl/.
+Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid\-envelopefromdomain\-dnsbl.txt.
+.IP "sendgrid_feed [...]" 4
+.IX Item "sendgrid_feed [...]"
+A list of files with all abused Sendgrid accounts.
+Files can be separated by a comma.
+More info at https://www.invaluement.com/serviceproviderdnsbl/.
+Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid\-id\-dnsbl.txt.
+.IP "sendinblue_feed [...]" 4
+.IX Item "sendinblue_feed [...]"
+A list of files with abused Sendinblue accounts.
 Files can be separated by a comma.
 .SH "TEMPLATE TAGS"
 .IX Header "TEMPLATE TAGS"
@@ -250,18 +250,18 @@ added to the askdns rule.
 Tags that the plugin could set are:
 .RE
 .IP "\(bu" 4
-\&\s-1SENDGRIDID\s0
+\&\s-1CONSTANTCONTACTID\s0
 .IP "\(bu" 4
-\&\s-1SENDGRIDDOM\s0
-.IP "\(bu" 4
-\&\s-1SENDINBLUEID\s0
-.IP "\(bu" 4
-\&\s-1MAILUPID\s0
+\&\s-1MAILCHIMPID\s0
 .IP "\(bu" 4
 \&\s-1MAILDOMEID\s0
 .IP "\(bu" 4
 \&\s-1MAILGUNID\s0
 .IP "\(bu" 4
-\&\s-1MAILCHIMPID\s0
+\&\s-1MAILUPID\s0
 .IP "\(bu" 4
-\&\s-1CONSTANTCONTACTID\s0
+\&\s-1SENDGRIDDOM\s0
+.IP "\(bu" 4
+\&\s-1SENDGRIDID\s0
+.IP "\(bu" 4
+\&\s-1SENDINBLUEID\s0

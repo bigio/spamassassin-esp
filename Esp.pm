@@ -56,15 +56,15 @@ sub new {
   bless ($self, $class);
 
   $self->set_config($mailsaobject->{conf});
+  $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
 }
@@ -85,6 +85,9 @@ endif
 
 Usage:
 
+  esp_constantcontact_check()
+    Checks for Constant Contact id abused accounts
+
   esp_mailchimp_check()
     Checks for Mailchimp abused accounts
 
@@ -97,9 +100,6 @@ Usage:
   esp_mailup_check()
     Checks for Mailup abused accounts
 
-  esp_sendindblue_check()
-    Checks for Sendinblue abused accounts
-
   esp_sendgrid_check()
     Checks for Sendgrid abused accounts (both id and domains)
 
@@ -109,35 +109,21 @@ Usage:
   esp_sendgrid_check_domain()
     Checks for Sendgrid domains abused accounts
 
-  esp_constantcontact_check()
-    Checks for Constant Contact id abused accounts
+  esp_sendindblue_check()
+    Checks for Sendinblue abused accounts
 
 =head1 ADMINISTRATOR SETTINGS
 
 =over 4
 
-=item sendgrid_feed [...]
+=item constantcontact_feed [...]
 
-A list of files with all abused Sendgrid accounts.
-Files can be separated by a comma.
-More info at https://www.invaluement.com/serviceproviderdnsbl/.
-Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt.
-
-=item sendgrid_domains_feed [...]
-
-A list of files with abused domains managed by Sendgrid.
-Files can be separated by a comma.
-More info at https://www.invaluement.com/serviceproviderdnsbl/.
-Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-envelopefromdomain-dnsbl.txt.
-
-=item sendinblue_feed [...]
-
-A list of files with abused Sendinblue accounts.
+A list of files with abused Constant Contact accounts.
 Files can be separated by a comma.
 
-=item mailup_feed [...]
+=item mailchimp_feed [...]
 
-A list of files with abused Mailup accounts.
+A list of files with abused Mailchimp accounts.
 Files can be separated by a comma.
 
 =item maildome_feed [...]
@@ -150,14 +136,28 @@ Files can be separated by a comma.
 A list of files with abused Mailgun accounts.
 Files can be separated by a comma.
 
-=item mailchimp_feed [...]
+=item mailup_feed [...]
 
-A list of files with abused Mailchimp accounts.
+A list of files with abused Mailup accounts.
 Files can be separated by a comma.
 
-=item constantcontact_feed [...]
+=item sendgrid_domains_feed [...]
 
-A list of files with abused Constant Contact accounts.
+A list of files with abused domains managed by Sendgrid.
+Files can be separated by a comma.
+More info at https://www.invaluement.com/serviceproviderdnsbl/.
+Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-envelopefromdomain-dnsbl.txt.
+
+=item sendgrid_feed [...]
+
+A list of files with all abused Sendgrid accounts.
+Files can be separated by a comma.
+More info at https://www.invaluement.com/serviceproviderdnsbl/.
+Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt.
+
+=item sendinblue_feed [...]
+
+A list of files with abused Sendinblue accounts.
 Files can be separated by a comma.
 
 =back
@@ -183,16 +183,10 @@ Tags that the plugin could set are:
 =over
 
 =item *
-SENDGRIDID
+CONSTANTCONTACTID
 
 =item *
-SENDGRIDDOM
-
-=item *
-SENDINBLUEID
-
-=item *
-MAILUPID
+MAILCHIMPID
 
 =item *
 MAILDOMEID
@@ -201,10 +195,16 @@ MAILDOMEID
 MAILGUNID
 
 =item *
-MAILCHIMPID
+MAILUPID
 
 =item *
-CONSTANTCONTACTID
+SENDGRIDDOM
+
+=item *
+SENDGRIDID
+
+=item *
+SENDINBLUEID
 
 =back
 
@@ -215,25 +215,13 @@ sub set_config {
   my @cmds = ();
 
   push(@cmds, {
-    setting => 'sendgrid_feed',
+    setting => 'constantcontact_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
   push(@cmds, {
-    setting => 'sendgrid_domains_feed',
-    is_admin => 1,
-    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
-    }
-  );
-  push(@cmds, {
-    setting => 'sendinblue_feed',
-    is_admin => 1,
-    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
-    }
-  );
-  push(@cmds, {
-    setting => 'mailup_feed',
+    setting => 'mailchimp_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -251,13 +239,25 @@ sub set_config {
     }
   );
   push(@cmds, {
-    setting => 'mailchimp_feed',
+    setting => 'mailup_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
   push(@cmds, {
-    setting => 'constantcontact_feed',
+    setting => 'sendgrid_domains_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'sendgrid_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'sendinblue_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -267,14 +267,14 @@ sub set_config {
 
 sub finish_parsing_end {
   my ($self, $opts) = @_;
-  $self->_read_configfile('sendgrid_feed', 'SENDGRID');
-  $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
-  $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
-  $self->_read_configfile('mailup_feed', 'MAILUP');
+  $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
+  $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
-  $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
-  $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
+  $self->_read_configfile('mailup_feed', 'MAILUP');
+  $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
+  $self->_read_configfile('sendgrid_feed', 'SENDGRID');
+  $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
 }
 
 sub _read_configfile {
@@ -306,6 +306,175 @@ sub _read_configfile {
       close(F) or die "error closing config file: $!";
     }
   }
+}
+
+sub esp_constantcontact_check {
+  my ($self, $pms) = @_;
+  my $contact_id;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  # return if X-Mailer is not what we want
+  my $xmailer = $pms->get("X-Mailer", undef);
+
+  if((not defined $xmailer) or ($xmailer !~ /Roving\sConstant\sContact/)) {
+    return;
+  }
+
+  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
+  return if not defined $envfrom;
+  return if $envfrom !~ /\@in\.constantcontact\.com/;
+
+  $contact_id = $pms->get("X-Roving-Id", undef);
+  return if not defined $contact_id;
+
+  chomp($contact_id);
+  if(defined $contact_id) {
+    if ( exists $self->{ESP}->{CONSTANTCONTACT}->{$contact_id} ) {
+      $pms->set_tag('CONSTANTCONTACTID', $contact_id);
+      dbg("HIT! $contact_id customer found in Constant Contact feed");
+      $pms->test_log("Constant Contact id: $contact_id");
+      $pms->got_hit($rulename, "", ruletype => 'eval');
+      return 1;
+    }
+  }
+}
+
+sub esp_mailchimp_check {
+  my ($self, $pms) = @_;
+  my $mailchimp_id;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  # return if X-Mailer is not what we want
+  my $xmailer = $pms->get("X-Mailer", undef);
+
+  if((not defined $xmailer) or ($xmailer !~ /MailChimp Mailer/)) {
+    return;
+  }
+
+  $mailchimp_id = $pms->get("X-MC-User", undef);
+  return if not defined $mailchimp_id;
+
+  chomp($mailchimp_id);
+  if(defined $mailchimp_id) {
+    if ( exists $self->{ESP}->{MAILCHIMP}->{$mailchimp_id} ) {
+      $pms->set_tag('MAILCHIMPID', $mailchimp_id);
+      dbg("HIT! $mailchimp_id customer found in Mailchimp feed");
+      $pms->test_log("Mailchimp id: $mailchimp_id");
+      $pms->got_hit($rulename, "", ruletype => 'eval');
+      return 1;
+    }
+  }
+}
+
+sub esp_maildome_check {
+  my ($self, $pms) = @_;
+  my $maildome_id;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  # return if X-Mailer is not what we want
+  my $xmailer = $pms->get("X-Mailer", undef);
+
+  if((not defined $xmailer) or ($xmailer !~ /MaildomeMTA/)) {
+    return;
+  }
+
+  $maildome_id = $pms->get("List-Unsubscribe", undef);
+  return if not defined $maildome_id;
+  $maildome_id =~ /subject=https:\/\/.*\/unsubscribe\/([0-9]+)\/([0-9]+)\/.*\/([0-9]+)\/([0-9]+)\>/;
+  $maildome_id = $2;
+
+  # if regexp doesn't match it's not Maildome
+  return if not defined $maildome_id;
+  chomp($maildome_id);
+  if(defined $maildome_id) {
+    if ( exists $self->{ESP}->{MAILDOME}->{$maildome_id} ) {
+      $pms->set_tag('MAILDOMEID', $maildome_id);
+      dbg("HIT! $maildome_id customer found in Maildome feed");
+      $pms->test_log("Maildome id: $maildome_id");
+      $pms->got_hit($rulename, "", ruletype => 'eval');
+      return 1;
+    }
+  }
+}
+
+sub esp_mailgun_check {
+  my ($self, $pms) = @_;
+  my $mailgun_id;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  # Mailgun doesn't define an X-Mailer header
+  my $xmailer = $pms->get("X-Mailer", undef);
+  if(defined $xmailer) {
+    return;
+  }
+
+  my $xsendip = $pms->get("X-Mailgun-Sending-Ip", undef);
+  if(not defined $xsendip) {
+    return;
+  }
+
+  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
+  return if not defined $envfrom;
+  # Find the customer id from the Return-Path
+  $envfrom =~ /bounce\+(\w+)\.(\w+)\-/;
+  $mailgun_id = $2;
+
+  chomp($mailgun_id);
+  if(defined $mailgun_id) {
+    if ( exists $self->{ESP}->{MAILGUN}->{$mailgun_id} ) {
+      $pms->set_tag('MAILGUN', $mailgun_id);
+      dbg("HIT! $mailgun_id customer found in Mailgun feed");
+      $pms->test_log("Mailgun id: $mailgun_id");
+      $pms->got_hit($rulename, "", ruletype => 'eval');
+      return 1;
+    }
+  }
+}
+
+sub esp_mailup_check {
+  my ($self, $pms) = @_;
+  my $mailup_id;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+
+  # All Mailup emails have the X-CSA-Complaints header set to whitelist-complaints@eco.de
+  my $xcsa = $pms->get("X-CSA-Complaints", undef);
+  if((not defined $xcsa) or ($xcsa !~ /whitelist-complaints\@eco\.de/)) {
+    return;
+  }
+  # All Mailup emails have the X-Abuse header that must match
+  $mailup_id = $pms->get("X-Abuse", undef);
+  return if not defined $mailup_id;
+  $mailup_id =~ /Please report abuse here: http\:\/\/.*\.musvc([0-9]+)\.net\/p\?c=([0-9]+)/;
+  $mailup_id = $2;
+  # if regexp doesn't match it's not Mailup
+  return if not defined $mailup_id;
+  chomp($mailup_id);
+  if(defined $mailup_id) {
+    if ( exists $self->{ESP}->{MAILUP}->{$mailup_id} ) {
+      $pms->set_tag('MAILUPID', $mailup_id);
+      dbg("HIT! $mailup_id customer found in Mailup feed");
+      $pms->test_log("Mailup id: $mailup_id");
+      $pms->got_hit($rulename, "", ruletype => 'eval');
+      return 1;
+    }
+  }
+}
+
+sub esp_sendgrid_check {
+  my ($self, $pms) = @_;
+
+  my $ret;
+
+  $ret = $self->esp_sendgrid_check_id($pms);
+  if (!$ret) {
+    $ret = $self->esp_sendgrid_check_domain($pms);
+  }
+  return $ret;
 }
 
 sub esp_sendgrid_check_domain {
@@ -366,18 +535,6 @@ sub esp_sendgrid_check_id {
   }
 }
 
-sub esp_sendgrid_check {
-  my ($self, $pms) = @_;
-
-  my $ret;
-
-  $ret = $self->esp_sendgrid_check_id($pms);
-  if (!$ret) {
-    $ret = $self->esp_sendgrid_check_domain($pms);
-  }
-  return $ret;
-}
-
 sub esp_sendinblue_check {
   my ($self, $pms) = @_;
   my $sendinblue_id;
@@ -402,168 +559,5 @@ sub esp_sendinblue_check {
       return 1;
     }
   }
-
-}
-
-sub esp_mailup_check {
-  my ($self, $pms) = @_;
-  my $mailup_id;
-
-  my $rulename = $pms->get_current_eval_rule_name();
-
-  # All Mailup emails have the X-CSA-Complaints header set to whitelist-complaints@eco.de
-  my $xcsa = $pms->get("X-CSA-Complaints", undef);
-  if((not defined $xcsa) or ($xcsa !~ /whitelist-complaints\@eco\.de/)) {
-    return;
-  }
-  # All Mailup emails have the X-Abuse header that must match
-  $mailup_id = $pms->get("X-Abuse", undef);
-  return if not defined $mailup_id;
-  $mailup_id =~ /Please report abuse here: http\:\/\/.*\.musvc([0-9]+)\.net\/p\?c=([0-9]+)/;
-  $mailup_id = $2;
-  # if regexp doesn't match it's not Mailup
-  return if not defined $mailup_id;
-  chomp($mailup_id);
-  if(defined $mailup_id) {
-    if ( exists $self->{ESP}->{MAILUP}->{$mailup_id} ) {
-      $pms->set_tag('MAILUPID', $mailup_id);
-      dbg("HIT! $mailup_id customer found in Mailup feed");
-      $pms->test_log("Mailup id: $mailup_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
-
-}
-
-sub esp_maildome_check {
-  my ($self, $pms) = @_;
-  my $maildome_id;
-
-  my $rulename = $pms->get_current_eval_rule_name();
-
-  # return if X-Mailer is not what we want
-  my $xmailer = $pms->get("X-Mailer", undef);
-
-  if((not defined $xmailer) or ($xmailer !~ /MaildomeMTA/)) {
-    return;
-  }
-
-  $maildome_id = $pms->get("List-Unsubscribe", undef);
-  return if not defined $maildome_id;
-  $maildome_id =~ /subject=https:\/\/.*\/unsubscribe\/([0-9]+)\/([0-9]+)\/.*\/([0-9]+)\/([0-9]+)\>/;
-  $maildome_id = $2;
-
-  # if regexp doesn't match it's not Maildome
-  return if not defined $maildome_id;
-  chomp($maildome_id);
-  if(defined $maildome_id) {
-    if ( exists $self->{ESP}->{MAILDOME}->{$maildome_id} ) {
-      $pms->set_tag('MAILDOMEID', $maildome_id);
-      dbg("HIT! $maildome_id customer found in Maildome feed");
-      $pms->test_log("Maildome id: $maildome_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
-
-}
-
-sub esp_mailchimp_check {
-  my ($self, $pms) = @_;
-  my $mailchimp_id;
-
-  my $rulename = $pms->get_current_eval_rule_name();
-
-  # return if X-Mailer is not what we want
-  my $xmailer = $pms->get("X-Mailer", undef);
-
-  if((not defined $xmailer) or ($xmailer !~ /MailChimp Mailer/)) {
-    return;
-  }
-
-  $mailchimp_id = $pms->get("X-MC-User", undef);
-  return if not defined $mailchimp_id;
-
-  chomp($mailchimp_id);
-  if(defined $mailchimp_id) {
-    if ( exists $self->{ESP}->{MAILCHIMP}->{$mailchimp_id} ) {
-      $pms->set_tag('MAILCHIMPID', $mailchimp_id);
-      dbg("HIT! $mailchimp_id customer found in Mailchimp feed");
-      $pms->test_log("Mailchimp id: $mailchimp_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
-
-}
-
-sub esp_constantcontact_check {
-  my ($self, $pms) = @_;
-  my $contact_id;
-
-  my $rulename = $pms->get_current_eval_rule_name();
-
-  # return if X-Mailer is not what we want
-  my $xmailer = $pms->get("X-Mailer", undef);
-
-  if((not defined $xmailer) or ($xmailer !~ /Roving\sConstant\sContact/)) {
-    return;
-  }
-
-  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
-  return if not defined $envfrom;
-  return if $envfrom !~ /\@in\.constantcontact\.com/;
-
-  $contact_id = $pms->get("X-Roving-Id", undef);
-  return if not defined $contact_id;
-
-  chomp($contact_id);
-  if(defined $contact_id) {
-    if ( exists $self->{ESP}->{CONSTANTCONTACT}->{$contact_id} ) {
-      $pms->set_tag('CONSTANTCONTACTID', $contact_id);
-      dbg("HIT! $contact_id customer found in Constant Contact feed");
-      $pms->test_log("Constant Contact id: $contact_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
-
-}
-
-sub esp_mailgun_check {
-  my ($self, $pms) = @_;
-  my $mailgun_id;
-
-  my $rulename = $pms->get_current_eval_rule_name();
-
-  # Mailgun doesn't define an X-Mailer header
-  my $xmailer = $pms->get("X-Mailer", undef);
-  if(defined $xmailer) {
-    return;
-  }
-
-  my $xsendip = $pms->get("X-Mailgun-Sending-Ip", undef);
-  if(not defined $xsendip) {
-    return;
-  }
-
-  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
-  return if not defined $envfrom;
-  # Find the customer id from the Return-Path
-  $envfrom =~ /bounce\+(\w+)\.(\w+)\-/;
-  $mailgun_id = $2;
-
-  chomp($mailgun_id);
-  if(defined $mailgun_id) {
-    if ( exists $self->{ESP}->{MAILGUN}->{$mailgun_id} ) {
-      $pms->set_tag('MAILGUN', $mailgun_id);
-      dbg("HIT! $mailgun_id customer found in Mailgun feed");
-      $pms->test_log("Mailgun id: $mailgun_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
-
 }
 1;

@@ -30,13 +30,48 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 # currently provide advice on where to get that data.  If you know of
 # any, let us know.
 
+# -------- CONSTANTCONTACT --------
+constantcontact_feed /etc/mail/spamassassin/constantcontact_id.txt
+
+header		CONSTANTCONTACT		eval:esp_constantcontact_check()
+describe	CONSTANTCONTACT		Message from Constant Contact abused account
+score			CONSTANTCONTACT		5.0
+
+# -------- MAILCHIMP --------
+mailchimp_feed /etc/mail/spamassassin/mailchimp_id.txt
+
+header		MAILCHIMP		eval:esp_mailchimp_check()
+describe 	MAILCHIMP		Message from Mailchimp abused account
+score  		MAILCHIMP		5.0
+
+# -------- MAILDOME --------
+maildome_feed /etc/mail/spamassassin/maildome_id.txt
+
+header		MAILDOME		eval:esp_maildome_check()
+describe 	MAILDOME		Message from Maildome abused account
+score			MAILDOME		5.0
+
+# -------- MAILGUN --------
+mailgun_feed /etc/mail/spamassassin/mailgun_id.txt
+
+header		MAILGUN  		eval:esp_mailgun_check()
+describe 	MAILGUN 		Message from Mailgun abused account
+score  		MAILGUN			5.0
+
+# -------- MAILUP --------
+mailup_feed /etc/mail/spamassassin/mailup_id.txt
+
+header		MAILUP			eval:esp_mailup_check()
+describe 	MAILUP			Message from Mailup abused account
+score  		MAILUP			5.0
+
 # -------- SENDGRID - EITHER THIS --------
 sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
 sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
 
 header		__SPBL_SENDGRID		eval:esp_sendgrid_check()
 describe 	__SPBL_SENDGRID		Message from Sendgrid abused account
-score	  	__SPBL_SENDGRID   5.0
+score	  	__SPBL_SENDGRID		5.0
 
 # -------- SENDGRID - OR THIS --------
 
@@ -70,41 +105,6 @@ sendinblue_feed /etc/mail/spamassassin/sendinblue_id.txt
 
 header		SENDINBLUE		eval:esp_sendinblue_check()
 describe 	SENDINBLUE		Message from Sendinblue abused account
-score	  	SENDINBLUE    5.0
-
-# -------- MAILUP --------
-mailup_feed /etc/mail/spamassassin/mailup_id.txt
-
-header		MAILUP			eval:esp_mailup_check()
-describe 	MAILUP			Message from Mailup abused account
-score  		MAILUP      5.0
-
-# -------- MAILDOME --------
-maildome_feed /etc/mail/spamassassin/maildome_id.txt
-
-header		MAILDOME		eval:esp_maildome_check()
-describe 	MAILDOME		Message from Maildome abused account
-score	    MAILDOME    5.0
-
-# -------- MAILCHIMP --------
-mailchimp_feed /etc/mail/spamassassin/mailchimp_id.txt
-
-header		MAILCHIMP		eval:esp_mailchimp_check()
-describe 	MAILCHIMP		Message from Mailchimp abused account
-score  		MAILCHIMP   5.0
-
-# -------- MAILGUN --------
-mailgun_feed /etc/mail/spamassassin/mailgun_id.txt
-
-header		MAILGUN  		eval:esp_mailgun_check()
-describe 	MAILGUN 		Message from Mailgun abused account
-score  		MAILGUN     5.0
-
-# -------- CONSTANTCONTACT --------
-constantcontact_feed /etc/mail/spamassassin/constantcontact_id.txt
-
-header		CONSTANTCONTACT		eval:esp_constantcontact_check()
-describe	CONSTANTCONTACT		Message from Constant Contact abused account
-score			CONSTANTCONTACT   5.0
+score	  	SENDINBLUE		5.0
 
 endif # Mail::SpamAssassin::Plugin::Esp
