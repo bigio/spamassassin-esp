@@ -93,6 +93,13 @@ header		MAILCHIMP		eval:esp_mailchimp_check()
 describe 	MAILCHIMP		Message from Mailchimp abused account
 score  		MAILCHIMP   5.0
 
+# -------- MAILGUN --------
+mailgun_feed /etc/mail/spamassassin/mailgun_id.txt
+
+header		MAILGUN  		eval:esp_mailgun_check()
+describe 	MAILGUN 		Message from Mailgun abused account
+score  		MAILGUN     5.0
+
 # -------- CONSTANTCONTACT --------
 constantcontact_feed /etc/mail/spamassassin/constantcontact_id.txt
 
