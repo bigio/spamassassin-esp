@@ -93,11 +93,11 @@ ifplugin Mail::SpamAssassin::Plugin::AskDNS
     tflags   __RBL_SENDGRID_DOM net
   endif
 
+endif # Mail::SpamAssassin::Plugin::AskDNS
+
 meta       RBL_SENDGRID (__RBL_SENDGRID_ID || __RBL_SENDGRID_DOM || __SPBL_SENDGRID)
 describe   RBL_SENDGRID Invaluement Sendgrid blacklist
 score      RBL_SENDGRID 5.0
-
-endif # Mail::SpamAssassin::Plugin::AskDNS
 
 # -------- SENDINBLUE --------
 sendinblue_feed /etc/mail/spamassassin/sendinblue_id.txt
