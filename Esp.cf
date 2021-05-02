@@ -71,7 +71,6 @@ sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.t
 
 header		__SPBL_SENDGRID		eval:esp_sendgrid_check()
 describe 	__SPBL_SENDGRID		Message from Sendgrid abused account
-score	  	__SPBL_SENDGRID		5.0
 
 # -------- SENDGRID - OR THIS --------
 
