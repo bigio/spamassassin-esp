@@ -423,8 +423,8 @@ sub esp_mailgun_check {
   $envfrom =~ /bounce\+(\w+)\.(\w+)\-/;
   $mailgun_id = $2;
 
-  chomp($mailgun_id);
   if(defined $mailgun_id) {
+    chomp($mailgun_id);
     if ( exists $self->{ESP}->{MAILGUN}->{$mailgun_id} ) {
       $pms->set_tag('MAILGUN', $mailgun_id);
       dbg("HIT! $mailgun_id customer found in Mailgun feed");
