@@ -65,6 +65,13 @@ header		MAILUP			eval:esp_mailup_check()
 describe 	MAILUP			Message from Mailup abused account
 score  		MAILUP			5.0
 
+# -------- MDRCTR --------
+mdrctr_feed /etc/mail/spamassassin/mdrctr_id.txt
+
+header          MDRCTR                  eval:esp_mdrctr_check()
+describe        MDRCTR                  Message from Mdrctr abused account
+score           MDRCTR                  5.0
+
 # -------- SENDGRID - EITHER THIS --------
 sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
 sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt

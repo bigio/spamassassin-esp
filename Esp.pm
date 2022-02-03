@@ -43,7 +43,7 @@ use Mail::SpamAssassin::PerMsgStatus;
 use vars qw(@ISA);
 our @ISA = qw(Mail::SpamAssassin::Plugin);
 
-my $VERSION = 1.4.0;
+my $VERSION = 1.5.0;
 
 sub dbg { Mail::SpamAssassin::Plugin::dbg ("Esp: @_"); }
 
@@ -61,6 +61,7 @@ sub new {
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mdrctr_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -99,6 +100,9 @@ Usage:
 
   esp_mailup_check()
     Checks for Mailup abused accounts
+
+  esp_mdrctr_check()
+    Checks for Mdrctr id abused accounts
 
   esp_sendgrid_check()
     Checks for Sendgrid abused accounts (both id and domains)
@@ -139,6 +143,11 @@ Files can be separated by a comma.
 =item mailup_feed [...]
 
 A list of files with abused Mailup accounts.
+Files can be separated by a comma.
+
+=item mdrctr_feed [...]
+
+A list of files with abused Mdrctr accounts.
 Files can be separated by a comma.
 
 =item sendgrid_domains_feed [...]
@@ -198,6 +207,9 @@ MAILGUNID
 MAILUPID
 
 =item *
+MDRCTRID
+
+=item *
 SENDGRIDDOM
 
 =item *
@@ -245,6 +257,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'mdrctr_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'sendgrid_domains_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -272,6 +290,7 @@ sub finish_parsing_end {
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
   $self->_read_configfile('mailup_feed', 'MAILUP');
+  $self->_read_configfile('mdrctr_feed', 'MDRCTR');
   $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
   $self->_read_configfile('sendgrid_feed', 'SENDGRID');
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
@@ -567,4 +586,35 @@ sub esp_sendinblue_check {
     }
   }
 }
+
+sub esp_mdrctr_check {
+  my ($self, $pms) = @_;
+  my $mdrctr_id;
+
+  # All Sendgrid emails have the X-ElasticEmail-Postback header
+  my $sg_eid = $pms->get("X-ElasticEmail-Postback", undef);
+  return if not defined $sg_eid;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+  my $fid = $pms->get("Feedback-ID", undef);
+  return if not defined $fid;
+
+  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
+  return if ($envfrom !~ /bounces\.mdrctr\.com/);
+
+  # Find the customer id from the Return-Path
+  if($fid =~ /(\d+)\:(\d+)\:([a-z]+)/i) {
+    $mdrctr_id = $1;
+    if(defined $mdrctr_id) {
+      $pms->set_tag('MDRCTRID', $mdrctr_id);
+      if ( exists $self->{ESP}->{MDRCTR}->{$mdrctr_id} ) {
+        dbg("HIT! $mdrctr_id customer id found in Mdrctr feed");
+        $pms->test_log("Mdrctr id: $mdrctr_id", $rulename);
+        $pms->got_hit($rulename, "", ruletype => 'eval');
+        return 1;
+      }
+    }
+  }
+}
+
 1;
