@@ -102,7 +102,7 @@ Usage:
     Checks for Mailup abused accounts
 
   esp_mdrctr_check()
-    Checks for Mdrctr id abused accounts
+    Checks for Mdirector id abused accounts
 
   esp_sendgrid_check()
     Checks for Sendgrid abused accounts (both id and domains)
@@ -147,7 +147,7 @@ Files can be separated by a comma.
 
 =item mdrctr_feed [...]
 
-A list of files with abused Mdrctr accounts.
+A list of files with abused Mdirector accounts.
 Files can be separated by a comma.
 
 =item sendgrid_domains_feed [...]
@@ -608,8 +608,8 @@ sub esp_mdrctr_check {
     if(defined $mdrctr_id) {
       $pms->set_tag('MDRCTRID', $mdrctr_id);
       if ( exists $self->{ESP}->{MDRCTR}->{$mdrctr_id} ) {
-        dbg("HIT! $mdrctr_id customer id found in Mdrctr feed");
-        $pms->test_log("Mdrctr id: $mdrctr_id", $rulename);
+        dbg("HIT! $mdrctr_id customer id found in Mdirector feed");
+        $pms->test_log("Mdirector id: $mdrctr_id", $rulename);
         $pms->got_hit($rulename, "", ruletype => 'eval');
         return 1;
       }
