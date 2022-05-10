@@ -342,6 +342,7 @@ sub esp_constantcontact_check {
 
   $contact_id = $pms->get("X-Roving-Id", undef);
   return if not defined $contact_id;
+  return if ($contact_id != /^(\d+)\.\d+$/);
 
   chomp($contact_id);
   if(defined $contact_id) {
@@ -370,6 +371,7 @@ sub esp_mailchimp_check {
 
   $mailchimp_id = $pms->get("X-MC-User", undef);
   return if not defined $mailchimp_id;
+  return if ($mailchimp_id !~ /^([0-9a-z]{25})$/);
 
   chomp($mailchimp_id);
   if(defined $mailchimp_id) {
