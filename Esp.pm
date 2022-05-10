@@ -564,19 +564,17 @@ sub esp_sendinblue_check {
   my $sendinblue_id;
 
   my $rulename = $pms->get_current_eval_rule_name();
-  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
-  # All Sendinblue emails have the X-Mailer header set to Sendinblue
-  my $xmailer = $pms->get("X-Mailer", undef);
-  if((not defined $xmailer) or ($xmailer !~ /Sendinblue/)) {
-    return;
+
+  my $feedback_id = $pms->get("Feedback-ID", undef);
+  if($feedback_id =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:(\d+)_(?:-1|\d+):(?:\d+):Sendinblue$/) {
+    $sendinblue_id = $1;
   }
 
-  $sendinblue_id = $pms->get("X-Mailin-Client", undef);
   return if not defined $sendinblue_id;
   chomp($sendinblue_id);
   if(defined $sendinblue_id) {
+    $pms->set_tag('SENDINBLUEID', $sendinblue_id);
     if ( exists $self->{ESP}->{SENDINBLUE}->{$sendinblue_id} ) {
-      $pms->set_tag('SENDINBLUEID', $sendinblue_id);
       dbg("HIT! $sendinblue_id ID found in Sendinblue feed");
       $pms->test_log("Sendinblue id: $sendinblue_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');
