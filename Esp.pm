@@ -466,7 +466,7 @@ sub esp_mailup_check {
   # All Mailup emails have the X-Abuse header that must match
   $xabuse = $pms->get("X-Abuse", undef);
   return if not defined $xabuse;
-  if($xabuse =~ /Please report abuse here: http\:\/\/.*\.musvc([0-9]+)\.net\/p\?c=([0-9]+)/) {
+  if($xabuse =~ /Please report abuse here: https?:\/\/.*\.musvc([0-9]+)\.net\/p\?c=([0-9]+)/) {
     $mailup_id = $2;
   }
   if(not defined $mailup_id) {
@@ -598,8 +598,8 @@ sub esp_mdrctr_check {
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
   return if ($envfrom !~ /bounces\.mdrctr\.com/);
 
-  # Find the customer id from the Return-Path
-  if($fid =~ /(\d+)\:(\d+)\:([a-z]+)/i) {
+  # Find the customer id from the Feedback-ID
+  if($fid =~ /(\d+):(\d+):([a-z]+)/i) {
     $mdrctr_id = $1;
     if(defined $mdrctr_id) {
       $pms->set_tag('MDRCTRID', $mdrctr_id);
