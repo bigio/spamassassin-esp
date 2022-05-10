@@ -323,11 +323,25 @@ sub _read_configfile {
   }
 }
 
+sub _hit_and_tag {
+  my ($self, $pms, $id, $list, $list_desc, $tag) = @_;
+
+  my $rulename = $pms->get_current_eval_rule_name();
+  chomp($id);
+  if(defined $id) {
+    $pms->set_tag($tag, $id);
+    if ( exists $self->{ESP}->{$list}->{$id} ) {
+      dbg("HIT! $id customer found in $list_desc feed");
+      $pms->test_log("$list_desc id: $id");
+      $pms->got_hit($rulename, "", ruletype => 'eval');
+      return 1;
+    }
+  }
+}
+
 sub esp_constantcontact_check {
   my ($self, $pms) = @_;
   my $contact_id;
-
-  my $rulename = $pms->get_current_eval_rule_name();
 
   # return if X-Mailer is not what we want
   my $xmailer = $pms->get("X-Mailer", undef);
@@ -342,25 +356,14 @@ sub esp_constantcontact_check {
 
   $contact_id = $pms->get("X-Roving-Id", undef);
   return if not defined $contact_id;
-  return if ($contact_id != /^(\d+)\.\d+$/);
+  return if ($contact_id !~ /^(\d+)\.\d+$/);
 
-  chomp($contact_id);
-  if(defined $contact_id) {
-    $pms->set_tag('CONSTANTCONTACTID', $contact_id);
-    if ( exists $self->{ESP}->{CONSTANTCONTACT}->{$contact_id} ) {
-      dbg("HIT! $contact_id customer found in Constant Contact feed");
-      $pms->test_log("Constant Contact id: $contact_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
+  return _hit_and_tag($self, $pms, $contact_id, 'CONSTANTCONTACT', 'Constant Contact', 'CONSTANTCONTACTID');
 }
 
 sub esp_mailchimp_check {
   my ($self, $pms) = @_;
   my $mailchimp_id;
-
-  my $rulename = $pms->get_current_eval_rule_name();
 
   # return if X-Mailer is not what we want
   my $xmailer = $pms->get("X-Mailer", undef);
@@ -373,23 +376,12 @@ sub esp_mailchimp_check {
   return if not defined $mailchimp_id;
   return if ($mailchimp_id !~ /^([0-9a-z]{25})$/);
 
-  chomp($mailchimp_id);
-  if(defined $mailchimp_id) {
-    $pms->set_tag('MAILCHIMPID', $mailchimp_id);
-    if ( exists $self->{ESP}->{MAILCHIMP}->{$mailchimp_id} ) {
-      dbg("HIT! $mailchimp_id customer found in Mailchimp feed");
-      $pms->test_log("Mailchimp id: $mailchimp_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
+  return _hit_and_tag($self, $pms, $mailchimp_id, 'MAILCHIMP', 'Mailchimp', 'MAILCHIMPID');
 }
 
 sub esp_maildome_check {
   my ($self, $pms) = @_;
   my $maildome_id;
-
-  my $rulename = $pms->get_current_eval_rule_name();
 
   # return if X-Mailer is not what we want
   my $xmailer = $pms->get("X-Mailer", undef);
@@ -405,23 +397,12 @@ sub esp_maildome_check {
 
   # if regexp doesn't match it's not Maildome
   return if not defined $maildome_id;
-  chomp($maildome_id);
-  if(defined $maildome_id) {
-    $pms->set_tag('MAILDOMEID', $maildome_id);
-    if ( exists $self->{ESP}->{MAILDOME}->{$maildome_id} ) {
-      dbg("HIT! $maildome_id customer found in Maildome feed");
-      $pms->test_log("Maildome id: $maildome_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
+  return _hit_and_tag($self, $pms, $maildome_id, 'MAILDOME', 'Maildome', 'MAILDOMEID');
 }
 
 sub esp_mailgun_check {
   my ($self, $pms) = @_;
   my $mailgun_id;
-
-  my $rulename = $pms->get_current_eval_rule_name();
 
   # Mailgun doesn't define an X-Mailer header
   my $xmailer = $pms->get("X-Mailer", undef);
@@ -440,23 +421,12 @@ sub esp_mailgun_check {
   $envfrom =~ /bounce\+(\w+)\.(\w+)\-/;
   $mailgun_id = $2;
 
-  if(defined $mailgun_id) {
-    chomp($mailgun_id);
-    $pms->set_tag('MAILGUNID', $mailgun_id);
-    if ( exists $self->{ESP}->{MAILGUN}->{$mailgun_id} ) {
-      dbg("HIT! $mailgun_id customer found in Mailgun feed");
-      $pms->test_log("Mailgun id: $mailgun_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
+  return _hit_and_tag($self, $pms, $mailgun_id, 'MAILGUN', 'Mailgun', 'MAILGUNID');
 }
 
 sub esp_mailup_check {
   my ($self, $pms) = @_;
   my ($mailup_id, $xabuse, $listid);
-
-  my $rulename = $pms->get_current_eval_rule_name();
 
   # All Mailup emails have the X-CSA-Complaints header set to *-complaints@eco.de
   my $xcsa = $pms->get("X-CSA-Complaints", undef);
@@ -477,16 +447,8 @@ sub esp_mailup_check {
   }
   # if regexp doesn't match it's not Mailup
   return if not defined $mailup_id;
-  chomp($mailup_id);
-  if(defined $mailup_id) {
-    $pms->set_tag('MAILUPID', $mailup_id);
-    if ( exists $self->{ESP}->{MAILUP}->{$mailup_id} ) {
-      dbg("HIT! $mailup_id customer found in Mailup feed");
-      $pms->test_log("Mailup id: $mailup_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
+
+  return _hit_and_tag($self, $pms, $mailup_id, 'MAILUP', 'Mailup', 'MAILUPID');
 }
 
 sub esp_sendgrid_check {
@@ -518,15 +480,7 @@ sub esp_sendgrid_check_domain {
   if($envfrom =~ /\@(\w+\.)?([\w\.]+)\>?$/) {
     $sendgrid_domain = $2;
     # dbg("ENVFROM: $envfrom domain: $sendgrid_domain");
-    if(defined $sendgrid_domain) {
-      $pms->set_tag('SENDGRIDDOM', $sendgrid_domain);
-      if ( exists $self->{ESP}->{SENDGRID_DOMAIN}->{$sendgrid_domain} ) {
-        dbg("HIT! $sendgrid_domain domain found in Sendgrid Invaluement feed");
-        $pms->test_log("Sendgrid domain: $sendgrid_domain");
-        $pms->got_hit($rulename, "", ruletype => 'eval');
-        return 1;
-      }
-    }
+    return _hit_and_tag($self, $pms, $sendgrid_domain, 'SENDGRID_DOMAIN', 'Sendgrid', 'SENDGRIDDOM');
   }
 }
 
@@ -539,7 +493,6 @@ sub esp_sendgrid_check_id {
   my $sg_eid = $pms->get("X-SG-EID", undef);
   return if not defined $sg_eid;
 
-  my $rulename = $pms->get_current_eval_rule_name();
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
   return if not defined $envfrom;
 
@@ -547,15 +500,7 @@ sub esp_sendgrid_check_id {
   if($envfrom =~ /bounces\+(\d+)\-/) {
     $sendgrid_id = $1;
     # dbg("ENVFROM: $envfrom ID: $sendgrid_id");
-    if(defined $sendgrid_id) {
-      $pms->set_tag('SENDGRIDID', $sendgrid_id);
-      if ( exists $self->{ESP}->{SENDGRID}->{$sendgrid_id} ) {
-        dbg("HIT! $sendgrid_id customer id found in Sendgrid Invaluement feed");
-        $pms->test_log("Sendgrid id: $sendgrid_id");
-        $pms->got_hit($rulename, "", ruletype => 'eval');
-        return 1;
-      }
-    }
+    return _hit_and_tag($self, $pms, $sendgrid_id, 'SENDGRID', 'Sendgrid', 'SENDGRIDID');
   }
 }
 
@@ -563,24 +508,16 @@ sub esp_sendinblue_check {
   my ($self, $pms) = @_;
   my $sendinblue_id;
 
-  my $rulename = $pms->get_current_eval_rule_name();
-
   my $feedback_id = $pms->get("Feedback-ID", undef);
+  return if not defined $feedback_id;
+
   if($feedback_id =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:(\d+)_(?:-1|\d+):(?:\d+):Sendinblue$/) {
     $sendinblue_id = $1;
   }
 
   return if not defined $sendinblue_id;
-  chomp($sendinblue_id);
-  if(defined $sendinblue_id) {
-    $pms->set_tag('SENDINBLUEID', $sendinblue_id);
-    if ( exists $self->{ESP}->{SENDINBLUE}->{$sendinblue_id} ) {
-      dbg("HIT! $sendinblue_id ID found in Sendinblue feed");
-      $pms->test_log("Sendinblue id: $sendinblue_id");
-      $pms->got_hit($rulename, "", ruletype => 'eval');
-      return 1;
-    }
-  }
+
+  return _hit_and_tag($self, $pms, $sendinblue_id, 'SENDINBLUE', 'Sendinblue', 'SENDINBLUEID');
 }
 
 sub esp_mdrctr_check {
@@ -591,7 +528,6 @@ sub esp_mdrctr_check {
   my $sg_eid = $pms->get("X-ElasticEmail-Postback", undef);
   return if not defined $sg_eid;
 
-  my $rulename = $pms->get_current_eval_rule_name();
   my $fid = $pms->get("Feedback-ID", undef);
   return if not defined $fid;
 
@@ -601,15 +537,7 @@ sub esp_mdrctr_check {
   # Find the customer id from the Feedback-ID
   if($fid =~ /(\d+):(\d+):([a-z]+)/i) {
     $mdrctr_id = $1;
-    if(defined $mdrctr_id) {
-      $pms->set_tag('MDRCTRID', $mdrctr_id);
-      if ( exists $self->{ESP}->{MDRCTR}->{$mdrctr_id} ) {
-        dbg("HIT! $mdrctr_id customer id found in Mdirector feed");
-        $pms->test_log("Mdirector id: $mdrctr_id", $rulename);
-        $pms->got_hit($rulename, "", ruletype => 'eval');
-        return 1;
-      }
-    }
+    return _hit_and_tag($self, $pms, $mdrctr_id, 'MDRCTR', 'Mdrctr', 'MDRCTRID');
   }
 }
 
