@@ -441,7 +441,7 @@ sub esp_mailgun_check {
   if(defined $mailgun_id) {
     chomp($mailgun_id);
     if ( exists $self->{ESP}->{MAILGUN}->{$mailgun_id} ) {
-      $pms->set_tag('MAILGUN', $mailgun_id);
+      $pms->set_tag('MAILGUNID', $mailgun_id);
       dbg("HIT! $mailgun_id customer found in Mailgun feed");
       $pms->test_log("Mailgun id: $mailgun_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');
