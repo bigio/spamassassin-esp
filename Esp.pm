@@ -525,8 +525,8 @@ sub esp_mdrctr_check {
   my $mdrctr_id;
 
   # All Mdrctr emails have the X-ElasticEmail-Postback header
-  my $sg_eid = $pms->get("X-ElasticEmail-Postback", undef);
-  return if not defined $sg_eid;
+  my $el_post = $pms->get("X-ElasticEmail-Postback", undef);
+  return if not defined $el_post;
 
   my $fid = $pms->get("Feedback-ID", undef);
   return if not defined $fid;
