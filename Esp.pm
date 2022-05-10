@@ -589,7 +589,7 @@ sub esp_mdrctr_check {
   my ($self, $pms) = @_;
   my $mdrctr_id;
 
-  # All Sendgrid emails have the X-ElasticEmail-Postback header
+  # All Mdrctr emails have the X-ElasticEmail-Postback header
   my $sg_eid = $pms->get("X-ElasticEmail-Postback", undef);
   return if not defined $sg_eid;
 
