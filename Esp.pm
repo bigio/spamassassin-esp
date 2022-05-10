@@ -154,15 +154,11 @@ Files can be separated by a comma.
 
 A list of files with abused domains managed by Sendgrid.
 Files can be separated by a comma.
-More info at https://www.invaluement.com/serviceproviderdnsbl/.
-Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-envelopefromdomain-dnsbl.txt.
 
 =item sendgrid_feed [...]
 
 A list of files with all abused Sendgrid accounts.
 Files can be separated by a comma.
-More info at https://www.invaluement.com/serviceproviderdnsbl/.
-Data file can be downloaded from https://www.invaluement.com/spdata/sendgrid-id-dnsbl.txt.
 
 =item sendinblue_feed [...]
 
