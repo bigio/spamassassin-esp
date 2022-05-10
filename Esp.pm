@@ -346,8 +346,8 @@ sub esp_constantcontact_check {
 
   chomp($contact_id);
   if(defined $contact_id) {
+    $pms->set_tag('CONSTANTCONTACTID', $contact_id);
     if ( exists $self->{ESP}->{CONSTANTCONTACT}->{$contact_id} ) {
-      $pms->set_tag('CONSTANTCONTACTID', $contact_id);
       dbg("HIT! $contact_id customer found in Constant Contact feed");
       $pms->test_log("Constant Contact id: $contact_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');
@@ -375,8 +375,8 @@ sub esp_mailchimp_check {
 
   chomp($mailchimp_id);
   if(defined $mailchimp_id) {
+    $pms->set_tag('MAILCHIMPID', $mailchimp_id);
     if ( exists $self->{ESP}->{MAILCHIMP}->{$mailchimp_id} ) {
-      $pms->set_tag('MAILCHIMPID', $mailchimp_id);
       dbg("HIT! $mailchimp_id customer found in Mailchimp feed");
       $pms->test_log("Mailchimp id: $mailchimp_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');
@@ -407,8 +407,8 @@ sub esp_maildome_check {
   return if not defined $maildome_id;
   chomp($maildome_id);
   if(defined $maildome_id) {
+    $pms->set_tag('MAILDOMEID', $maildome_id);
     if ( exists $self->{ESP}->{MAILDOME}->{$maildome_id} ) {
-      $pms->set_tag('MAILDOMEID', $maildome_id);
       dbg("HIT! $maildome_id customer found in Maildome feed");
       $pms->test_log("Maildome id: $maildome_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');
@@ -442,8 +442,8 @@ sub esp_mailgun_check {
 
   if(defined $mailgun_id) {
     chomp($mailgun_id);
+    $pms->set_tag('MAILGUNID', $mailgun_id);
     if ( exists $self->{ESP}->{MAILGUN}->{$mailgun_id} ) {
-      $pms->set_tag('MAILGUNID', $mailgun_id);
       dbg("HIT! $mailgun_id customer found in Mailgun feed");
       $pms->test_log("Mailgun id: $mailgun_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');
@@ -479,8 +479,8 @@ sub esp_mailup_check {
   return if not defined $mailup_id;
   chomp($mailup_id);
   if(defined $mailup_id) {
+    $pms->set_tag('MAILUPID', $mailup_id);
     if ( exists $self->{ESP}->{MAILUP}->{$mailup_id} ) {
-      $pms->set_tag('MAILUPID', $mailup_id);
       dbg("HIT! $mailup_id customer found in Mailup feed");
       $pms->test_log("Mailup id: $mailup_id");
       $pms->got_hit($rulename, "", ruletype => 'eval');
