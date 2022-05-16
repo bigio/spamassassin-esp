@@ -31,9 +31,24 @@ jobs:
         uses: shogo82148/actions-setup-perl@v1
         with:
           perl-version: '5.34'
+      - name: install dependecies
+        run: |
+          cpanm Archive::Zip
+          cpanm DB_File
+          cpanm HTML::Parser
+          cpanm Mail::DKIM
+          cpanm Mail::SPF
+          cpanm Net::DNS
+          cpanm NetAddr::IP
       - name: Install SpamAssassin
         run: |
-          apt-get update
-          apt-get -y install spamassassin
+          cd /tmp
+          wget https://dlcdn.apache.org//spamassassin/source/Mail-SpamAssassin-3.4.6.tar.gz
+          tar zxvf Mail-SpamAssassin-3.4.6.tar.gz
+          cd Mail-SpamAssassin-3.4.6
+          perl Makefile.PL CONTACT_ADDRESS="GitHub Actions"
+          make
+          make install
+          sa-update
       - name: Regression tests
         run: prove -lv t
