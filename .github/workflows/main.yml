@@ -33,8 +33,6 @@ jobs:
           perl-version: '5.34'
       - name: install dependecies
         run: |
-          cpanm Archive::Zip
-          cpanm DB_File
           cpanm HTML::Parser
           cpanm Mail::DKIM
           cpanm Mail::SPF
