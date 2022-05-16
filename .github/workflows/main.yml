@@ -35,7 +35,6 @@ jobs:
         run: |
           cpanm HTML::Parser
           cpanm Mail::DKIM
-          cpanm Mail::SPF
           cpanm Net::DNS
           cpanm NetAddr::IP
       - name: Install SpamAssassin
