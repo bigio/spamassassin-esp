@@ -43,7 +43,7 @@ jobs:
           wget https://dlcdn.apache.org//spamassassin/source/Mail-SpamAssassin-3.4.6.tar.gz
           tar zxvf Mail-SpamAssassin-3.4.6.tar.gz
           cd Mail-SpamAssassin-3.4.6
-          perl Makefile.PL CONTACT_ADDRESS="GitHub Actions"
+          perl Makefile.PL CONTACT_ADDRESS="GitHub Actions" SYSCONFDIR=/opt/etc
           make
           make install
           sa-update
