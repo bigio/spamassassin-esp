@@ -1,0 +1,21 @@
+From test@foo.example.com Wed May 18 15:07:21 2022
+Return-Path: <test@foo.example.com>
+Received: by mx.foo.com (Postfix, from userid 570)
+	id CE6811FBF2; Wed, 18 May 2022 15:07:15 +0200 (CEST)
+Received: from example.com (foo.example.com [54.36.31.158])
+	by mx.foo.com (envelope-sender <test@foo.example.com>) (MIMEDefang) with ESMTP id 1EA7C1FBE6
+	for <info@test.com>; Wed, 18 May 2022 15:07:15 +0200
+Received: by example.com (Postfix, from userid 48)
+	id B77BF38AF; Wed, 18 May 2022 15:07:05 +0200 (CEST)
+To: info@test.com
+Subject: Test
+X-OTEABPH: 18034
+X-Feedback-ID: 59685:jb
+X-UWMOT: QtfTtXLeW9PzNxH67c/3bUbDz9EOxyvR
+X-FQNH: 83
+From: Foo <foo@example.com>
+X-SG-EID: 746:jb
+Message-Id: <20220518130705.B77BF38AF@example.com>
+Date: Wed, 18 May 2022 15:07:05 +0200 (CEST)
+
+Test
