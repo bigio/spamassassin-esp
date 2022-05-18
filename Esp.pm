@@ -479,8 +479,7 @@ sub esp_sendgrid_check_domain {
   # Find the domain from the Return-Path
   if($envfrom =~ /\@(\w+\.)?([\w\.]+)\>?$/) {
     $sendgrid_domain = $2;
-    # dbg("ENVFROM: $envfrom domain: $sendgrid_domain");
-    return _hit_and_tag($self, $pms, $sendgrid_domain, 'SENDGRID_DOMAIN', 'Sendgrid', 'SENDGRIDDOM');
+    return _hit_and_tag($self, $pms, $sendgrid_domain, 'SENDGRID_DOMAINS', 'Sendgrid', 'SENDGRIDDOM');
   }
 }
 
@@ -499,7 +498,6 @@ sub esp_sendgrid_check_id {
   # Find the customer id from the Return-Path
   if($envfrom =~ /bounces\+(\d+)\-/) {
     $sendgrid_id = $1;
-    # dbg("ENVFROM: $envfrom ID: $sendgrid_id");
     return _hit_and_tag($self, $pms, $sendgrid_id, 'SENDGRID', 'Sendgrid', 'SENDGRIDID');
   }
 }
