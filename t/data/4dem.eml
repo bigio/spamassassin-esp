@@ -1,0 +1,21 @@
+Received: from mailchef.4dem.it (unknown [10.44.6.126])
+	by mailrelayer.production.4dem.it (Postfix) with ESMTP id A19D62E0003
+	for <info@example.com>; Tue, 17 Nov 2020 07:21:46 +0000 (UTC)
+Date: Tue, 17 Nov 2020 07:00:21 +0100
+To: "info@example.com" <info@example.com>
+From: Foo Bar <foo.bar@test.com>
+Reply-To: Foo Bar <foo.bar@test.com>
+Message-ID: <c3a5d9e6ffe11bec7423af8bca074065@mailchef.4dem.it>
+X-Mailer: mailchef.4dem.it
+X-Complaints-To: abuse@mailchef.4dem.it
+List-Unsubscribe: <https://mailchef.4dem.it/u.php?p=5io2/rs/1555/1e4w/4xc8/rs>, <mailto:fbl@mailchef.4dem.it?subject=unsubscribe:5io2-1555-aW5mb0BmaW9yZGVsbW9uZG9sdWJyaWZpY2FudGkuaXQ%3D-1e4w-9ei-rs-rs-RpsXFDFvAu>
+X-MessageID: 5io2-1555-aW5mb0BmaW9yZGVsbW9uZG9sdWJyaWZpY2FudGkuaXQ%3D-1e4w-9ei-rs-rs-RpsXFDFvAu
+X-Report-Abuse: <https://mailchef.4dem.it/report_abuse.php?mid=5io2-1555-aW5mb0BmaW9yZGVsbW9uZG9sdWJyaWZpY2FudGkuaXQ%3D-1e4w-9ei-rs-rs-RpsXFDFvAu>
+Feedback-ID: 11186:256474:63976:RpsXFDFvAu
+X-CmpID: 256474
+X-UiD: 11186
+X-SMTPAPI: {"unique_args":{"abuse-id":"5io2-1555-aW5mb0BmaW9yZGVsbW9uZG9sdWJyaWZpY2FudGkuaXQ%3D-1e4w-9ei-rs-rs-RpsXFDFvAu"}, "category":"campaign"}
+MIME-Version: 1.0
+Subject: Test
+
+Test

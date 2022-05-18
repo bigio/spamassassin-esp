@@ -30,6 +30,13 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 # currently provide advice on where to get that data.  If you know of
 # any, let us know.
 
+# -------- 4DEM --------
+4dem_feed /etc/mail/spamassassin/4dem_id.txt
+
+header		FORDEM		eval:esp_4dem_check()
+describe	FORDEM		Message from 4Dem abused account
+score		FORDEM		5.0
+
 # -------- CONSTANTCONTACT --------
 constantcontact_feed /etc/mail/spamassassin/constantcontact_id.txt
 
