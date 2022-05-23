@@ -1,0 +1,22 @@
+Date: Mon, 23 May 2022 08:01:08 +0200 (CEST)
+From: <foo@spammer.eu>
+To: bar@example.com
+Feedback-ID: 1303048191:1300611192:spammer.eu:1234
+X-eC-messenger-mid: 1303048191
+List-Id: <1300611192.spammer.eu>
+X-eC-messenger-cid: 1234
+X-eC-messenger-token: ljsuf3I64zq2yb
+X-Route-id: 
+List-Unsubscribe: <http://spammer.eu/oneclickunsubscribe?gid=1300611192&uid=13362562163&mid=1303048191&sig=GCFJCNPMHOFFDLMG>, <mailto:listunsubscribe-1300611192-1303048191-13362562163@spammer.eu>
+List-Unsubscribe-Post: List-Unsubscribe=One-Click
+X-eC-messenger-sender-domain: bounce.spammer.eu
+X-eC-messenger-sendouttypeid: 0
+X-eC-messenger-addresseeroleid: 1
+X-eC-messenger-recipienttypeid: 2
+List-Help: <mailto:abuse@mapp.com>
+X-CSA-Complaints: csa-complaints@eco.de
+X-Mailer: eC-Messenger Build 6.90.5349.3
+X-eC-messenger-email: bar@example.com
+Subject: Test
+
+Test

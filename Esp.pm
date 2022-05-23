@@ -58,6 +58,7 @@ sub new {
   $self->set_config($mailsaobject->{conf});
   $self->register_eval_rule('esp_4dem_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_ecmessenger_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -93,6 +94,9 @@ Usage:
   esp_constantcontact_check()
     Checks for Constant Contact id abused accounts
 
+  esp_ecmessenger_check()
+    Checks for Ec-Messenger abused accounts
+
   esp_mailchimp_check()
     Checks for Mailchimp abused accounts
 
@@ -124,14 +128,19 @@ Usage:
 
 =over 4
 
-=item fordem_feed [...]
-
-A list of files with abused 4dem accounts.
-Files can be separated by a comma.
-
 =item constantcontact_feed [...]
 
 A list of files with abused Constant Contact accounts.
+Files can be separated by a comma.
+
+=item ecmessenger_feed [...]
+
+A list of files with abused EcMessenger accounts.
+Files can be separated by a comma.
+
+=item fordem_feed [...]
+
+A list of files with abused 4dem accounts.
 Files can be separated by a comma.
 
 =item mailchimp_feed [...]
@@ -197,10 +206,13 @@ Tags that the plugin could set are:
 =over
 
 =item *
-FORDEMID
+CONSTANTCONTACTID
 
 =item *
-CONSTANTCONTACTID
+ECMESSENGERID
+
+=item *
+FORDEMID
 
 =item *
 MAILCHIMPID
@@ -235,13 +247,19 @@ sub set_config {
   my @cmds = ();
 
   push(@cmds, {
-    setting => 'fordem_feed',
+    setting => 'constantcontact_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
   push(@cmds, {
-    setting => 'constantcontact_feed',
+    setting => 'ecmessenger_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'fordem_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -299,8 +317,9 @@ sub set_config {
 
 sub finish_parsing_end {
   my ($self, $opts) = @_;
-  $self->_read_configfile('fordem_feed', 'FORDEM');
   $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
+  $self->_read_configfile('ecmessenger_feed', 'ECMESSENGER');
+  $self->_read_configfile('fordem_feed', 'FORDEM');
   $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
@@ -375,6 +394,25 @@ sub esp_4dem_check {
   return if ($uid !~ /^\d+$/);
 
   return _hit_and_tag($self, $pms, $uid, 'FORDEM', '4Dem', 'FORDEMID');
+}
+
+sub esp_ecmessenger_check {
+  my ($self, $pms) = @_;
+  my $cid;
+
+  # return if X-Mailer is not what we want
+  my $xmailer = $pms->get("X-Mailer", undef);
+
+  if((not defined $xmailer) or ($xmailer !~ /eC\-Messenger\sBuild\s\d/)) {
+    return;
+  }
+
+  $cid = $pms->get("X-eC-messenger-cid", undef);
+  return if not defined $cid;
+
+  return if ($cid !~ /^\d+$/);
+
+  return _hit_and_tag($self, $pms, $cid, 'ECMESSENGER', 'EcMessenger', 'ECMESSENGERID');
 }
 
 sub esp_constantcontact_check {
