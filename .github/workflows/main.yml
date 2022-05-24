@@ -27,25 +27,11 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Setup Perl
-        uses: shogo82148/actions-setup-perl@v1
-        with:
-          perl-version: '5.34'
-      - name: install dependecies
+      - name: install Apache SpamAssassin
         run: |
-          cpanm HTML::Parser
-          cpanm Mail::DKIM
-          cpanm Net::DNS
-          cpanm NetAddr::IP
-      - name: Install SpamAssassin
-        run: |
-          cd /tmp
-          wget https://dlcdn.apache.org//spamassassin/source/Mail-SpamAssassin-3.4.6.tar.gz
-          tar zxvf Mail-SpamAssassin-3.4.6.tar.gz
-          cd Mail-SpamAssassin-3.4.6
-          perl Makefile.PL CONTACT_ADDRESS="GitHub Actions" SYSCONFDIR=/opt/etc LOCAL_STATE_DIR=/opt/var PERLLOCALSTATEDIR=/opt/var SITELOCALSTATEDIR=/opt/var VENDORLOCALSTATEDIR=/opt/var
-          make
-          make install
-          sa-update
+          sudo apt-get update
+          sudo apt-get -y install spamassassin
+      - name: update Apache SpamAssassin rules
+        run: sudo sa-update
       - name: Regression tests
         run: prove -lv t
