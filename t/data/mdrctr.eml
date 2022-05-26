@@ -1,0 +1,43 @@
+Return-Path: <MD-NO--12345-29-IT-PR--info=example.com@bounces.mdrctr.com>
+X-Original-To: info@example.com
+Received: from mta141.229.mdrctr.com (mta141.229.mdrctr.com [62.97.141.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mx.example.com (Postfix) with ESMTPS id BC3D91FC17
+	for <info@example.com>; Thu, 26 May 2022 12:26:32 +0200 (CEST)
+From: test= <info@test.mdrctr.com>
+To:  <info@example.com>
+Precedence: bulk
+X-rpcampaign: mdMDNO1234529ITPR
+X-rpcampaignok: mdmdMD-NO--12345-29-IT-PR
+X-reputation: 5
+Date: Thu, 26 May 2022 12:25:12 +0200
+Feedback-ID: 12345:29:gmailmdrctr
+List-Id: 12345-2.mdrctr.com
+List-Unsubscribe: <mailto:unsubscribe-md12345-29-2-349-96c292b3d05bd2d572ec44be14aa2817@bounces.mdrctr.com>, <http://track.mdrctr.com/track/unsubscribe/empId/12345/subId/29/listId/2/conId/349/conEmail/info@example.com/type/8/motivo/list-unsubscribe/signature/96c292b3d05bd2d572ec44be14aa2817>
+X-LU: <mailto:unsubscribe-md12345-29-2-349-96c292b3d05bd2d572ec44be14aa2817@bounces.mdrctr.com>, <http://track.mdrctr.com/track/unsubscribe/empId/12345/subId/29/listId/2/conId/349/conEmail/info@example.com/type/8/motivo/list-unsubscribe/signature/96c292b3d05bd2d572ec44be14aa2817>
+X-ElasticEmail-Postback: <mailto:unsubscribe-md12345-29-2-349-96c292b3d05bd2d572ec44be14aa2817@lists.mdirector.com>, <http://track.mdrctr.com/track/unsubscribe/empId/12345/subId/29/listId/2/conId/349/conEmail/info@example.com/type/8/motivo/list-unsubscribe/signature/96c292b3d05bd2d572ec44be14aa2817>
+MIME-Version: 1.0
+Content-Type: multipart/mixed; boundary="boundaryTagForMixed"
+Message-ID: <0.0.1.25A.1D870EAE2268D34.390F0E@mta141.225.mdrctr.com>
+Subject: test
+
+--boundaryTagForMixed
+Content-Type: multipart/alternative; boundary="boundaryTagForAlternative"
+
+--boundaryTagForAlternative
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+Test
+
+--boundaryTagForAlternative
+Content-Type: text/html; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
+
+test
+
+--boundaryTagForAlternative--
+
+--boundaryTagForMixed--
