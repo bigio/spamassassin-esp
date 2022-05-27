@@ -605,8 +605,8 @@ sub esp_mdrctr_check {
   my $fid = $pms->get("Feedback-ID", undef);
   return if not defined $fid;
 
-  my $envfrom = $pms->get("Return-Path", undef);
-  return if ($envfrom !~ /bounces\.mdrctr\.com/);
+  my $rcvd = $pms->get('Received');
+  return if ($rcvd !~ /\.mdrctr\.com/);
 
   # Find the customer id from the Feedback-ID
   if($fid =~ /(\d+):(\d+):([a-z]+)/i) {
