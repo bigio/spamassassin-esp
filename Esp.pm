@@ -60,6 +60,7 @@ sub new {
   $self->register_eval_rule('esp_be_mail_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_ecmessenger_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_fxyn_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -100,6 +101,9 @@ Usage:
 
   esp_ecmessenger_check()
     Checks for Ec-Messenger abused accounts
+
+  esp_fxyn_check()
+    Checks for Fxyn abused accounts
 
   esp_mailchimp_check()
     Checks for Mailchimp abused accounts
@@ -150,6 +154,11 @@ Files can be separated by a comma.
 =item fordem_feed [...]
 
 A list of files with abused 4dem accounts.
+Files can be separated by a comma.
+
+=item fxyn_feed [...]
+
+A list of files with abused Fxyn accounts.
 Files can be separated by a comma.
 
 =item mailchimp_feed [...]
@@ -227,6 +236,9 @@ ECMESSENGERID
 FORDEMID
 
 =item *
+FXYNID
+
+=item *
 MAILCHIMPID
 
 =item *
@@ -278,6 +290,12 @@ sub set_config {
   );
   push(@cmds, {
     setting => 'fordem_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'fxyn_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -339,6 +357,7 @@ sub finish_parsing_end {
   $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
   $self->_read_configfile('ecmessenger_feed', 'ECMESSENGER');
   $self->_read_configfile('fordem_feed', 'FORDEM');
+  $self->_read_configfile('fxyn_feed', 'FXYN');
   $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
@@ -454,6 +473,23 @@ sub esp_ecmessenger_check {
   return if ($cid !~ /^\d+$/);
 
   return _hit_and_tag($self, $pms, $cid, 'ECMESSENGER', 'EcMessenger', 'ECMESSENGERID');
+}
+
+sub esp_fxyn_check {
+  my ($self, $pms) = @_;
+  my $uid;
+
+  # return if X-Fxyn-Mailer is not what we want
+  my $xmailer = $pms->get("X-Fxyn-Mailer", undef);
+
+  if((not defined $xmailer) or ($xmailer !~ /SwiftMailer/)) {
+    return;
+  }
+
+  $uid = $pms->get("X-Fxyn-Customer-Uid", undef);
+  return if not defined $uid;
+
+  return _hit_and_tag($self, $pms, $uid, 'FXYN', 'Fxyn', 'FXYNID');
 }
 
 sub esp_constantcontact_check {

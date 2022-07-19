@@ -51,6 +51,13 @@ header		CONSTANTCONTACT		eval:esp_constantcontact_check()
 describe	CONSTANTCONTACT		Message from Constant Contact abused account
 score			CONSTANTCONTACT		5.0
 
+# -------- FXYN --------
+fxyn_feed /etc/mail/spamassassin/fxyn_id.txt
+
+header		FXYN		eval:esp_fxyn_check()
+describe	FXYN		Message from Fxyn abused account
+score		FXYN		5.0
+
 # -------- MAILCHIMP --------
 mailchimp_feed /etc/mail/spamassassin/mailchimp_id.txt
 
