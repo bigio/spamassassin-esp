@@ -429,7 +429,7 @@ sub esp_be_mail_check {
   $fid = $pms->get("Feedback-ID", undef);
   return if not defined $fid;
 
-  if($fid =~ /(\d+)\:(?:\d+)\:(?:\d+)\:/) {
+  if($fid =~ /(?:\d+)\:(\d+)\:(?:\d+)\:/) {
     $uid = $1;
   }
   return if not defined $uid;
