@@ -117,7 +117,7 @@ ifplugin Mail::SpamAssassin::Plugin::AskDNS
 endif # Mail::SpamAssassin::Plugin::AskDNS
 
 meta       RBL_SENDGRID (__RBL_SENDGRID_ID || __RBL_SENDGRID_DOM || __SPBL_SENDGRID)
-describe   RBL_SENDGRID Invaluement Sendgrid blacklist
+describe   RBL_SENDGRID Sendgrid blacklist
 score      RBL_SENDGRID 5.0
 
 # -------- SENDINBLUE --------
