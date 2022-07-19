@@ -419,10 +419,10 @@ sub esp_be_mail_check {
   my ($self, $pms) = @_;
   my ($fid, $uid);
 
-  # return if X-Mailer is not what we want
-  my $xmailer = $pms->get("X-Mailer", undef);
+  # return if X-CSA-Complaints is not what we want
+  my $xcsa = $pms->get("X-CSA-Complaints", undef);
 
-  if((not defined $xmailer) or ($xmailer !~ /KetchupMail/)) {
+  if((not defined $xcsa) or ($xcsa !~ /\@eco\.de/)) {
     return;
   }
 
