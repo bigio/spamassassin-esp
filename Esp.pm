@@ -57,6 +57,7 @@ sub new {
 
   $self->set_config($mailsaobject->{conf});
   $self->register_eval_rule('esp_4dem_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_be_mail_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_ecmessenger_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -90,6 +91,9 @@ Usage:
 
   esp_4dem_check()
     Checks for 4dem id abused accounts
+
+  esp_be_mail_check()
+    Checks for Be-Mail id abused accounts
 
   esp_constantcontact_check()
     Checks for Constant Contact id abused accounts
@@ -127,6 +131,11 @@ Usage:
 =head1 ADMINISTRATOR SETTINGS
 
 =over 4
+
+=item bemail_feed [...]
+
+A list of files with abused Be Mail accounts.
+Files can be separated by a comma.
 
 =item constantcontact_feed [...]
 
@@ -206,6 +215,9 @@ Tags that the plugin could set are:
 =over
 
 =item *
+BEMAILID
+
+=item *
 CONSTANTCONTACTID
 
 =item *
@@ -246,6 +258,12 @@ sub set_config {
   my($self, $conf) = @_;
   my @cmds = ();
 
+  push(@cmds, {
+    setting => 'bemail_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   push(@cmds, {
     setting => 'constantcontact_feed',
     is_admin => 1,
@@ -317,6 +335,7 @@ sub set_config {
 
 sub finish_parsing_end {
   my ($self, $opts) = @_;
+  $self->_read_configfile('bemail_feed', 'BEMAIL');
   $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
   $self->_read_configfile('ecmessenger_feed', 'ECMESSENGER');
   $self->_read_configfile('fordem_feed', 'FORDEM');
@@ -394,6 +413,28 @@ sub esp_4dem_check {
   return if ($uid !~ /^\d+$/);
 
   return _hit_and_tag($self, $pms, $uid, 'FORDEM', '4Dem', 'FORDEMID');
+}
+
+sub esp_be_mail_check {
+  my ($self, $pms) = @_;
+  my ($fid, $uid);
+
+  # return if X-Mailer is not what we want
+  my $xmailer = $pms->get("X-Mailer", undef);
+
+  if((not defined $xmailer) or ($xmailer !~ /KetchupMail/)) {
+    return;
+  }
+
+  $fid = $pms->get("Feedback-ID", undef);
+  return if not defined $fid;
+
+  if($fid =~ /(\d+)\:(?:\d+)\:(?:\d+)\:/) {
+    $uid = $1;
+  }
+  return if not defined $uid;
+
+  return _hit_and_tag($self, $pms, $uid, 'BEMAIL', 'BeMail', 'BEMAILID');
 }
 
 sub esp_ecmessenger_check {

@@ -37,6 +37,13 @@ header		FORDEM		eval:esp_4dem_check()
 describe	FORDEM		Message from 4Dem abused account
 score		FORDEM		5.0
 
+# -------- BEMAIL --------
+4dem_feed /etc/mail/spamassassin/be-mail_id.txt
+
+header		BEMAIL		eval:esp_be_mail_check()
+describe	BEMAIL		Message from Be-Mail abused account
+score		BEMAIL		5.0
+
 # -------- CONSTANTCONTACT --------
 constantcontact_feed /etc/mail/spamassassin/constantcontact_id.txt
 
