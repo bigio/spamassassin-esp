@@ -66,6 +66,7 @@ sub new {
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdrctr_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_msnd_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -119,6 +120,9 @@ Usage:
 
   esp_mdrctr_check()
     Checks for Mdirector id abused accounts
+
+  esp_msnd_check()
+    Checks for Msnd id abused accounts
 
   esp_sendgrid_check()
     Checks for Sendgrid abused accounts (both id and domains)
@@ -184,6 +188,11 @@ Files can be separated by a comma.
 =item mdrctr_feed [...]
 
 A list of files with abused Mdirector accounts.
+Files can be separated by a comma.
+
+=item msnd_feed [...]
+
+A list of files with abused Msnd accounts.
 Files can be separated by a comma.
 
 =item sendgrid_domains_feed [...]
@@ -252,6 +261,9 @@ MAILUPID
 
 =item *
 MDRCTRID
+
+=item *
+MSNDID
 
 =item *
 SENDGRIDDOM
@@ -331,6 +343,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'msnd_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'sendgrid_domains_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -363,6 +381,7 @@ sub finish_parsing_end {
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
   $self->_read_configfile('mailup_feed', 'MAILUP');
   $self->_read_configfile('mdrctr_feed', 'MDRCTR');
+  $self->_read_configfile('msnd_feed', 'MSND');
   $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
   $self->_read_configfile('sendgrid_feed', 'SENDGRID');
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
@@ -602,6 +621,26 @@ sub esp_mailup_check {
   return if not defined $mailup_id;
 
   return _hit_and_tag($self, $pms, $mailup_id, 'MAILUP', 'Mailup', 'MAILUPID');
+}
+
+sub esp_msnd_check {
+  my ($self, $pms) = @_;
+  my $uid;
+
+  # return if X-Mailer is not what we want
+  my $xmailer = $pms->get("X-Mailer", undef);
+
+  if((not defined $xmailer) or ($xmailer !~ /Msnd Mailer/)) {
+    return;
+  }
+
+  $uid = $pms->get("X-MID", undef);
+  return if not defined $uid;
+
+  # Change "-" into "_", uid must be limited to chars permitted in dns records
+  $uid =~ s/\-/_/g;
+
+  return _hit_and_tag($self, $pms, $uid, 'MSND', 'Msnd', 'MSNDID');
 }
 
 sub esp_sendgrid_check {
