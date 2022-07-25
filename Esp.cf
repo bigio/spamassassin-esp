@@ -141,4 +141,11 @@ header		SENDINBLUE		eval:esp_sendinblue_check()
 describe 	SENDINBLUE		Message from Sendinblue abused account
 score	  	SENDINBLUE		5.0
 
+# -------- SPARKPOST --------
+sendinblue_feed /etc/mail/spamassassin/sparkpost_id.txt
+
+header		SPARKPOST		eval:esp_sparkpost_check()
+describe 	SPARKPOST		Message from Sparkpost abused account
+score	  	SPARKPOST		5.0
+
 endif # Mail::SpamAssassin::Plugin::Esp

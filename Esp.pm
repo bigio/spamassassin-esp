@@ -71,6 +71,7 @@ sub new {
   $self->register_eval_rule('esp_sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_sparkpost_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
 }
@@ -135,6 +136,9 @@ Usage:
 
   esp_sendindblue_check()
     Checks for Sendinblue abused accounts
+
+  esp_sparkpost_check()
+    Checks for Sparkpost abused accounts
 
 =head1 ADMINISTRATOR SETTINGS
 
@@ -210,6 +214,11 @@ Files can be separated by a comma.
 A list of files with abused Sendinblue accounts.
 Files can be separated by a comma.
 
+=item sparkpost_feed [...]
+
+A list of files with abused Sparkpost accounts.
+Files can be separated by a comma.
+
 =back
 
 =head1 TEMPLATE TAGS
@@ -273,6 +282,9 @@ SENDGRIDID
 
 =item *
 SENDINBLUEID
+
+=item *
+SPARKPOSTID
 
 =back
 
@@ -366,6 +378,12 @@ sub set_config {
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
+  push(@cmds, {
+    setting => 'sparkpost_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   $conf->{parser}->register_commands(\@cmds);
 }
 
@@ -385,6 +403,7 @@ sub finish_parsing_end {
   $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
   $self->_read_configfile('sendgrid_feed', 'SENDGRID');
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
+  $self->_read_configfile('sparkpost_feed', 'SPARKPOST');
 }
 
 sub _read_configfile {
@@ -708,6 +727,22 @@ sub esp_sendinblue_check {
   return if not defined $sendinblue_id;
 
   return _hit_and_tag($self, $pms, $sendinblue_id, 'SENDINBLUE', 'Sendinblue', 'SENDINBLUEID');
+}
+
+sub esp_sparkpost_check {
+  my ($self, $pms) = @_;
+  my $sparkpost_id;
+
+  my $list_id = $pms->get("List-Id", undef);
+  return if not defined $list_id;
+
+  if($list_id =~ /^<?[a-z]{5}\.([0-9]+)\.(?:[0-9]+)\.sparkpostmail\.com>?$/) {
+    $sparkpost_id = $1;
+  }
+
+  return if not defined $sparkpost_id;
+
+  return _hit_and_tag($self, $pms, $sparkpost_id, 'SPARKPOST', 'Sparkpost', 'SPARKPOSTID');
 }
 
 sub esp_mdrctr_check {
