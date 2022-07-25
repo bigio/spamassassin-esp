@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2022-07-19" "perl v5.34.1" "User Contributed Perl Documentation"
+.TH Esp 3 "2022-07-25" "perl v5.34.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -197,6 +197,9 @@ Usage:
 \&  esp_mdrctr_check()
 \&    Checks for Mdirector id abused accounts
 \&
+\&  esp_msnd_check()
+\&    Checks for Msnd id abused accounts
+\&
 \&  esp_sendgrid_check()
 \&    Checks for Sendgrid abused accounts (both id and domains)
 \&
@@ -208,6 +211,9 @@ Usage:
 \&
 \&  esp_sendindblue_check()
 \&    Checks for Sendinblue abused accounts
+\&
+\&  esp_sparkpost_check()
+\&    Checks for Sparkpost abused accounts
 .Ve
 .SH "ADMINISTRATOR SETTINGS"
 .IX Header "ADMINISTRATOR SETTINGS"
@@ -251,6 +257,10 @@ Files can be separated by a comma.
 .IX Item "mdrctr_feed [...]"
 A list of files with abused Mdirector accounts.
 Files can be separated by a comma.
+.IP "msnd_feed [...]" 4
+.IX Item "msnd_feed [...]"
+A list of files with abused Msnd accounts.
+Files can be separated by a comma.
 .IP "sendgrid_domains_feed [...]" 4
 .IX Item "sendgrid_domains_feed [...]"
 A list of files with abused domains managed by Sendgrid.
@@ -262,6 +272,10 @@ Files can be separated by a comma.
 .IP "sendinblue_feed [...]" 4
 .IX Item "sendinblue_feed [...]"
 A list of files with abused Sendinblue accounts.
+Files can be separated by a comma.
+.IP "sparkpost_feed [...]" 4
+.IX Item "sparkpost_feed [...]"
+A list of files with abused Sparkpost accounts.
 Files can be separated by a comma.
 .SH "TEMPLATE TAGS"
 .IX Header "TEMPLATE TAGS"
@@ -301,8 +315,12 @@ Tags that the plugin could set are:
 .IP "\(bu" 4
 \&\s-1MDRCTRID\s0
 .IP "\(bu" 4
+\&\s-1MSNDID\s0
+.IP "\(bu" 4
 \&\s-1SENDGRIDDOM\s0
 .IP "\(bu" 4
 \&\s-1SENDGRIDID\s0
 .IP "\(bu" 4
 \&\s-1SENDINBLUEID\s0
+.IP "\(bu" 4
+\&\s-1SPARKPOSTID\s0
