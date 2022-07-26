@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2022-07-25" "perl v5.34.1" "User Contributed Perl Documentation"
+.TH Esp 3 "2022-07-26" "perl v5.34.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -203,11 +203,11 @@ Usage:
 \&  esp_sendgrid_check()
 \&    Checks for Sendgrid abused accounts (both id and domains)
 \&
-\&  esp_sendgrid_check_id()
-\&    Checks for Sendgrid id abused accounts
-\&
 \&  esp_sendgrid_check_domain()
 \&    Checks for Sendgrid domains abused accounts
+\&
+\&  esp_sendgrid_check_id()
+\&    Checks for Sendgrid id abused accounts
 \&
 \&  esp_sendindblue_check()
 \&    Checks for Sendinblue abused accounts
@@ -261,13 +261,13 @@ Files can be separated by a comma.
 .IX Item "msnd_feed [...]"
 A list of files with abused Msnd accounts.
 Files can be separated by a comma.
-.IP "sendgrid_domains_feed [...]" 4
-.IX Item "sendgrid_domains_feed [...]"
-A list of files with abused domains managed by Sendgrid.
-Files can be separated by a comma.
 .IP "sendgrid_feed [...]" 4
 .IX Item "sendgrid_feed [...]"
 A list of files with all abused Sendgrid accounts.
+Files can be separated by a comma.
+.IP "sendgrid_domains_feed [...]" 4
+.IX Item "sendgrid_domains_feed [...]"
+A list of files with abused domains managed by Sendgrid.
 Files can be separated by a comma.
 .IP "sendinblue_feed [...]" 4
 .IX Item "sendinblue_feed [...]"

@@ -61,15 +61,15 @@ sub new {
   $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_ecmessenger_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_fxyn_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdrctr_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_msnd_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sparkpost_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
@@ -128,11 +128,11 @@ Usage:
   esp_sendgrid_check()
     Checks for Sendgrid abused accounts (both id and domains)
 
-  esp_sendgrid_check_id()
-    Checks for Sendgrid id abused accounts
-
   esp_sendgrid_check_domain()
     Checks for Sendgrid domains abused accounts
+
+  esp_sendgrid_check_id()
+    Checks for Sendgrid id abused accounts
 
   esp_sendindblue_check()
     Checks for Sendinblue abused accounts
@@ -199,14 +199,14 @@ Files can be separated by a comma.
 A list of files with abused Msnd accounts.
 Files can be separated by a comma.
 
-=item sendgrid_domains_feed [...]
-
-A list of files with abused domains managed by Sendgrid.
-Files can be separated by a comma.
-
 =item sendgrid_feed [...]
 
 A list of files with all abused Sendgrid accounts.
+Files can be separated by a comma.
+
+=item sendgrid_domains_feed [...]
+
+A list of files with abused domains managed by Sendgrid.
 Files can be separated by a comma.
 
 =item sendinblue_feed [...]
@@ -361,13 +361,13 @@ sub set_config {
     }
   );
   push(@cmds, {
-    setting => 'sendgrid_domains_feed',
+    setting => 'sendgrid_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
   push(@cmds, {
-    setting => 'sendgrid_feed',
+    setting => 'sendgrid_domains_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -400,8 +400,8 @@ sub finish_parsing_end {
   $self->_read_configfile('mailup_feed', 'MAILUP');
   $self->_read_configfile('mdrctr_feed', 'MDRCTR');
   $self->_read_configfile('msnd_feed', 'MSND');
-  $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
   $self->_read_configfile('sendgrid_feed', 'SENDGRID');
+  $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
   $self->_read_configfile('sparkpost_feed', 'SPARKPOST');
 }
@@ -494,6 +494,28 @@ sub esp_be_mail_check {
   return _hit_and_tag($self, $pms, $uid, 'BEMAIL', 'BeMail', 'BEMAILID');
 }
 
+sub esp_constantcontact_check {
+  my ($self, $pms) = @_;
+  my $contact_id;
+
+  # return if X-Mailer is not what we want
+  my $xmailer = $pms->get("X-Mailer", undef);
+
+  if((not defined $xmailer) or ($xmailer !~ /Roving\sConstant\sContact/)) {
+    return;
+  }
+
+  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
+  return if not defined $envfrom;
+  return if $envfrom !~ /\@in\.constantcontact\.com/;
+
+  $contact_id = $pms->get("X-Roving-Id", undef);
+  return if not defined $contact_id;
+  return if ($contact_id !~ /^(\d+)\.\d+$/);
+
+  return _hit_and_tag($self, $pms, $contact_id, 'CONSTANTCONTACT', 'Constant Contact', 'CONSTANTCONTACTID');
+}
+
 sub esp_ecmessenger_check {
   my ($self, $pms) = @_;
   my $cid;
@@ -528,28 +550,6 @@ sub esp_fxyn_check {
   return if not defined $uid;
 
   return _hit_and_tag($self, $pms, $uid, 'FXYN', 'Fxyn', 'FXYNID');
-}
-
-sub esp_constantcontact_check {
-  my ($self, $pms) = @_;
-  my $contact_id;
-
-  # return if X-Mailer is not what we want
-  my $xmailer = $pms->get("X-Mailer", undef);
-
-  if((not defined $xmailer) or ($xmailer !~ /Roving\sConstant\sContact/)) {
-    return;
-  }
-
-  my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
-  return if not defined $envfrom;
-  return if $envfrom !~ /\@in\.constantcontact\.com/;
-
-  $contact_id = $pms->get("X-Roving-Id", undef);
-  return if not defined $contact_id;
-  return if ($contact_id !~ /^(\d+)\.\d+$/);
-
-  return _hit_and_tag($self, $pms, $contact_id, 'CONSTANTCONTACT', 'Constant Contact', 'CONSTANTCONTACTID');
 }
 
 sub esp_mailchimp_check {
@@ -640,6 +640,27 @@ sub esp_mailup_check {
   return if not defined $mailup_id;
 
   return _hit_and_tag($self, $pms, $mailup_id, 'MAILUP', 'Mailup', 'MAILUPID');
+}
+
+sub esp_mdrctr_check {
+  my ($self, $pms) = @_;
+  my $mdrctr_id;
+
+  # All Mdrctr emails have the X-ElasticEmail-Postback header
+  my $el_post = $pms->get("X-ElasticEmail-Postback", undef);
+  return if not defined $el_post;
+
+  my $fid = $pms->get("Feedback-ID", undef);
+  return if not defined $fid;
+
+  my $listid = $pms->get('List-ID');
+  return if ($listid !~ /\.mdrctr\.com/);
+
+  # Find the customer id from the Feedback-ID
+  if($fid =~ /(\d+):(\d+):([a-z]+)/i) {
+    $mdrctr_id = $1;
+    return _hit_and_tag($self, $pms, $mdrctr_id, 'MDRCTR', 'Mdrctr', 'MDRCTRID');
+  }
 }
 
 sub esp_msnd_check {
@@ -743,27 +764,6 @@ sub esp_sparkpost_check {
   return if not defined $sparkpost_id;
 
   return _hit_and_tag($self, $pms, $sparkpost_id, 'SPARKPOST', 'Sparkpost', 'SPARKPOSTID');
-}
-
-sub esp_mdrctr_check {
-  my ($self, $pms) = @_;
-  my $mdrctr_id;
-
-  # All Mdrctr emails have the X-ElasticEmail-Postback header
-  my $el_post = $pms->get("X-ElasticEmail-Postback", undef);
-  return if not defined $el_post;
-
-  my $fid = $pms->get("Feedback-ID", undef);
-  return if not defined $fid;
-
-  my $listid = $pms->get('List-ID');
-  return if ($listid !~ /\.mdrctr\.com/);
-
-  # Find the customer id from the Feedback-ID
-  if($fid =~ /(\d+):(\d+):([a-z]+)/i) {
-    $mdrctr_id = $1;
-    return _hit_and_tag($self, $pms, $mdrctr_id, 'MDRCTR', 'Mdrctr', 'MDRCTRID');
-  }
 }
 
 1;
