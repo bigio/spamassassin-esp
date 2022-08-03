@@ -141,6 +141,10 @@ Usage:
   esp_sparkpost_check()
     Checks for Sparkpost abused accounts
 
+Every sub can be called with an options parameter which can contain the keywords "md5"
+to crypt the Esp id using md5 algorithm and "nodash" which will substitute the "-" char
+with a "_" in order to be possible to use the Esp id in dns records.
+
 =head1 ADMINISTRATOR SETTINGS
 
 =over 4
@@ -439,19 +443,24 @@ sub _read_configfile {
 }
 
 sub _hit_and_tag {
-  my ($self, $pms, $id, $list, $list_desc, $tag, $md5_uid) = @_;
+  my ($self, $pms, $id, $list, $list_desc, $tag, $opts) = @_;
 
-  $md5_uid = 0 if not defined;
+  my $printid = $id;
+
+  $opts = 0 if not defined;
   my $rulename = $pms->get_current_eval_rule_name();
   chomp($id);
   if(defined $id) {
-    if($md5_uid eq 1) {
+    if($opts =~ /nodash/) {
+      $id =~ s/\-/_/g;
+    }
+    if($opts =~ /md5/) {
       $id = md5_hex($id);
     }
     $pms->set_tag($tag, $id);
     if ( exists $self->{ESP}->{$list}->{$id} ) {
       dbg("HIT! $id customer found in $list_desc feed");
-      $pms->test_log("$list_desc id: $id");
+      $pms->test_log("$list_desc id: $printid");
       $pms->got_hit($rulename, "", ruletype => 'eval');
       return 1;
     }
@@ -459,7 +468,7 @@ sub _hit_and_tag {
 }
 
 sub esp_4dem_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $uid;
 
   # return if X-SMTPAPI is not what we want
@@ -474,11 +483,11 @@ sub esp_4dem_check {
 
   return if ($uid !~ /^\d+$/);
 
-  return _hit_and_tag($self, $pms, $uid, 'FORDEM', '4Dem', 'FORDEMID', $md5_uid);
+  return _hit_and_tag($self, $pms, $uid, 'FORDEM', '4Dem', 'FORDEMID', $opts);
 }
 
 sub esp_be_mail_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my ($fid, $uid);
 
   # return if X-CSA-Complaints is not what we want
@@ -496,11 +505,11 @@ sub esp_be_mail_check {
   }
   return if not defined $uid;
 
-  return _hit_and_tag($self, $pms, $uid, 'BEMAIL', 'BeMail', 'BEMAILID', $md5_uid);
+  return _hit_and_tag($self, $pms, $uid, 'BEMAIL', 'BeMail', 'BEMAILID', $opts);
 }
 
 sub esp_constantcontact_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $contact_id;
 
   # return if X-Mailer is not what we want
@@ -518,11 +527,11 @@ sub esp_constantcontact_check {
   return if not defined $contact_id;
   return if ($contact_id !~ /^(\d+)\.\d+$/);
 
-  return _hit_and_tag($self, $pms, $contact_id, 'CONSTANTCONTACT', 'Constant Contact', 'CONSTANTCONTACTID', $md5_uid);
+  return _hit_and_tag($self, $pms, $contact_id, 'CONSTANTCONTACT', 'Constant Contact', 'CONSTANTCONTACTID', $opts);
 }
 
 sub esp_ecmessenger_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $cid;
 
   # return if X-Mailer is not what we want
@@ -537,11 +546,11 @@ sub esp_ecmessenger_check {
 
   return if ($cid !~ /^\d+$/);
 
-  return _hit_and_tag($self, $pms, $cid, 'ECMESSENGER', 'EcMessenger', 'ECMESSENGERID', $md5_uid);
+  return _hit_and_tag($self, $pms, $cid, 'ECMESSENGER', 'EcMessenger', 'ECMESSENGERID', $opts);
 }
 
 sub esp_fxyn_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $uid;
 
   # return if X-Fxyn-Mailer is not what we want
@@ -554,11 +563,11 @@ sub esp_fxyn_check {
   $uid = $pms->get("X-Fxyn-Customer-Uid", undef);
   return if not defined $uid;
 
-  return _hit_and_tag($self, $pms, $uid, 'FXYN', 'Fxyn', 'FXYNID', $md5_uid);
+  return _hit_and_tag($self, $pms, $uid, 'FXYN', 'Fxyn', 'FXYNID', $opts);
 }
 
 sub esp_mailchimp_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $mailchimp_id;
 
   # return if X-Mailer is not what we want
@@ -572,11 +581,11 @@ sub esp_mailchimp_check {
   return if not defined $mailchimp_id;
   return if ($mailchimp_id !~ /^([0-9a-z]{25})$/);
 
-  return _hit_and_tag($self, $pms, $mailchimp_id, 'MAILCHIMP', 'Mailchimp', 'MAILCHIMPID', $md5_uid);
+  return _hit_and_tag($self, $pms, $mailchimp_id, 'MAILCHIMP', 'Mailchimp', 'MAILCHIMPID', $opts);
 }
 
 sub esp_maildome_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $maildome_id;
 
   # return if X-Mailer is not what we want
@@ -593,11 +602,11 @@ sub esp_maildome_check {
 
   # if regexp doesn't match it's not Maildome
   return if not defined $maildome_id;
-  return _hit_and_tag($self, $pms, $maildome_id, 'MAILDOME', 'Maildome', 'MAILDOMEID', $md5_uid);
+  return _hit_and_tag($self, $pms, $maildome_id, 'MAILDOME', 'Maildome', 'MAILDOMEID', $opts);
 }
 
 sub esp_mailgun_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $mailgun_id;
 
   # Mailgun doesn't define an X-Mailer header
@@ -617,11 +626,11 @@ sub esp_mailgun_check {
   $envfrom =~ /bounce\+(\w+)\.(\w+)\-/;
   $mailgun_id = $2;
 
-  return _hit_and_tag($self, $pms, $mailgun_id, 'MAILGUN', 'Mailgun', 'MAILGUNID', $md5_uid);
+  return _hit_and_tag($self, $pms, $mailgun_id, 'MAILGUN', 'Mailgun', 'MAILGUNID', $opts);
 }
 
 sub esp_mailup_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my ($mailup_id, $xabuse, $listid);
 
   # All Mailup emails have the X-CSA-Complaints header set to *-complaints@eco.de
@@ -644,11 +653,11 @@ sub esp_mailup_check {
   # if regexp doesn't match it's not Mailup
   return if not defined $mailup_id;
 
-  return _hit_and_tag($self, $pms, $mailup_id, 'MAILUP', 'Mailup', 'MAILUPID', $md5_uid);
+  return _hit_and_tag($self, $pms, $mailup_id, 'MAILUP', 'Mailup', 'MAILUPID', $opts);
 }
 
 sub esp_mdrctr_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $mdrctr_id;
 
   # All Mdrctr emails have the X-ElasticEmail-Postback header
@@ -664,13 +673,16 @@ sub esp_mdrctr_check {
   # Find the customer id from the Feedback-ID
   if($fid =~ /(\d+):(\d+):([a-z]+)/i) {
     $mdrctr_id = $1;
-    return _hit_and_tag($self, $pms, $mdrctr_id, 'MDRCTR', 'Mdrctr', 'MDRCTRID', $md5_uid);
+    return _hit_and_tag($self, $pms, $mdrctr_id, 'MDRCTR', 'Mdrctr', 'MDRCTRID', $opts);
   }
 }
 
 sub esp_msnd_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $uid;
+
+  # Change "-" into "_", uid must be limited to chars permitted in dns records
+  $opts .= "nodash";
 
   # return if X-Mailer is not what we want
   my $xmailer = $pms->get("X-Mailer", undef);
@@ -682,26 +694,23 @@ sub esp_msnd_check {
   $uid = $pms->get("X-MID", undef);
   return if not defined $uid;
 
-  # Change "-" into "_", uid must be limited to chars permitted in dns records
-  $uid =~ s/\-/_/g;
-
-  return _hit_and_tag($self, $pms, $uid, 'MSND', 'Msnd', 'MSNDID', $md5_uid);
+  return _hit_and_tag($self, $pms, $uid, 'MSND', 'Msnd', 'MSNDID', $opts);
 }
 
 sub esp_sendgrid_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
 
   my $ret;
 
-  $ret = $self->esp_sendgrid_check_id($pms, $md5_uid);
+  $ret = $self->esp_sendgrid_check_id($pms, $opts);
   if (!$ret) {
-    $ret = $self->esp_sendgrid_check_domain($pms, $md5_uid);
+    $ret = $self->esp_sendgrid_check_domain($pms, $opts);
   }
   return $ret;
 }
 
 sub esp_sendgrid_check_domain {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $sendgrid_id;
   my $sendgrid_domain;
 
@@ -716,12 +725,12 @@ sub esp_sendgrid_check_domain {
   # Find the domain from the Return-Path
   if($envfrom =~ /\@(\w+\.)?([\w\.]+)\>?$/) {
     $sendgrid_domain = $2;
-    return _hit_and_tag($self, $pms, $sendgrid_domain, 'SENDGRID_DOMAINS', 'Sendgrid', 'SENDGRIDDOM', $md5_uid);
+    return _hit_and_tag($self, $pms, $sendgrid_domain, 'SENDGRID_DOMAINS', 'Sendgrid', 'SENDGRIDDOM', $opts);
   }
 }
 
 sub esp_sendgrid_check_id {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $sendgrid_id;
   my $sendgrid_domain;
 
@@ -735,12 +744,12 @@ sub esp_sendgrid_check_id {
   # Find the customer id from the Return-Path
   if($envfrom =~ /bounces\+(\d+)\-/) {
     $sendgrid_id = $1;
-    return _hit_and_tag($self, $pms, $sendgrid_id, 'SENDGRID', 'Sendgrid', 'SENDGRIDID', $md5_uid);
+    return _hit_and_tag($self, $pms, $sendgrid_id, 'SENDGRID', 'Sendgrid', 'SENDGRIDID', $opts);
   }
 }
 
 sub esp_sendinblue_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $sendinblue_id;
 
   my $feedback_id = $pms->get("Feedback-ID", undef);
@@ -752,11 +761,11 @@ sub esp_sendinblue_check {
 
   return if not defined $sendinblue_id;
 
-  return _hit_and_tag($self, $pms, $sendinblue_id, 'SENDINBLUE', 'Sendinblue', 'SENDINBLUEID', $md5_uid);
+  return _hit_and_tag($self, $pms, $sendinblue_id, 'SENDINBLUE', 'Sendinblue', 'SENDINBLUEID', $opts);
 }
 
 sub esp_sparkpost_check {
-  my ($self, $pms, $md5_uid) = @_;
+  my ($self, $pms, $opts) = @_;
   my $sparkpost_id;
 
   my $list_id = $pms->get("List-Id", undef);
@@ -768,7 +777,7 @@ sub esp_sparkpost_check {
 
   return if not defined $sparkpost_id;
 
-  return _hit_and_tag($self, $pms, $sparkpost_id, 'SPARKPOST', 'Sparkpost', 'SPARKPOSTID', $md5_uid);
+  return _hit_and_tag($self, $pms, $sparkpost_id, 'SPARKPOST', 'Sparkpost', 'SPARKPOSTID', $opts);
 }
 
 1;
