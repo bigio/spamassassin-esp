@@ -447,7 +447,6 @@ sub _hit_and_tag {
 
   my $printid = $id;
 
-  $opts = 0 if not defined;
   my $rulename = $pms->get_current_eval_rule_name();
   chomp($id);
   if(defined $id) {
