@@ -450,11 +450,13 @@ sub _hit_and_tag {
   my $rulename = $pms->get_current_eval_rule_name();
   chomp($id);
   if(defined $id) {
-    if($opts =~ /nodash/) {
-      $id =~ s/\-/_/g;
-    }
-    if($opts =~ /md5/) {
-      $id = md5_hex($id);
+    if(defined $opts) {
+      if($opts =~ /nodash/) {
+        $id =~ s/\-/_/g;
+      }
+      if($opts =~ /md5/) {
+        $id = md5_hex($id);
+      }
     }
     $pms->set_tag($tag, $id);
     if ( exists $self->{ESP}->{$list}->{$id} ) {
