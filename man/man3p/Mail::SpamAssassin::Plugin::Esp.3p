@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2022-08-03" "perl v5.34.1" "User Contributed Perl Documentation"
+.TH Esp 3 "2022-08-26" "perl v5.34.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -212,6 +212,9 @@ Usage:
 \&  esp_sendindblue_check()
 \&    Checks for Sendinblue abused accounts
 \&
+\&  esp_smtpcom_check()
+\&    Checks for SmtpCom abused accounts
+\&
 \&  esp_sparkpost_check()
 \&    Checks for Sparkpost abused accounts
 .Ve
@@ -277,6 +280,10 @@ Files can be separated by a comma.
 .IX Item "sendinblue_feed [...]"
 A list of files with abused Sendinblue accounts.
 Files can be separated by a comma.
+.IP "smtpcom_feed [...]" 4
+.IX Item "smtpcom_feed [...]"
+A list of files with abused SmtpCom accounts.
+Files can be separated by a comma.
 .IP "sparkpost_feed [...]" 4
 .IX Item "sparkpost_feed [...]"
 A list of files with abused Sparkpost accounts.
@@ -326,5 +333,7 @@ Tags that the plugin could set are:
 \&\s-1SENDGRIDID\s0
 .IP "\(bu" 4
 \&\s-1SENDINBLUEID\s0
+.IP "\(bu" 4
+\&\s-1SMTPCOMID\s0
 .IP "\(bu" 4
 \&\s-1SPARKPOSTID\s0

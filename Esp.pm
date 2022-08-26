@@ -72,6 +72,7 @@ sub new {
   $self->register_eval_rule('esp_sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_smtpcom_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sparkpost_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
@@ -137,6 +138,9 @@ Usage:
 
   esp_sendindblue_check()
     Checks for Sendinblue abused accounts
+
+  esp_smtpcom_check()
+    Checks for SmtpCom abused accounts
 
   esp_sparkpost_check()
     Checks for Sparkpost abused accounts
@@ -219,6 +223,11 @@ Files can be separated by a comma.
 A list of files with abused Sendinblue accounts.
 Files can be separated by a comma.
 
+=item smtpcom_feed [...]
+
+A list of files with abused SmtpCom accounts.
+Files can be separated by a comma.
+
 =item sparkpost_feed [...]
 
 A list of files with abused Sparkpost accounts.
@@ -287,6 +296,9 @@ SENDGRIDID
 
 =item *
 SENDINBLUEID
+
+=item *
+SMTPCOMID
 
 =item *
 SPARKPOSTID
@@ -384,6 +396,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'smtpcom_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'sparkpost_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -408,6 +426,7 @@ sub finish_parsing_end {
   $self->_read_configfile('sendgrid_feed', 'SENDGRID');
   $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
+  $self->_read_configfile('smtpcom_feed', 'SMTPCOM');
   $self->_read_configfile('sparkpost_feed', 'SPARKPOST');
 }
 
@@ -763,6 +782,18 @@ sub esp_sendinblue_check {
   return if not defined $sendinblue_id;
 
   return _hit_and_tag($self, $pms, $sendinblue_id, 'SENDINBLUE', 'Sendinblue', 'SENDINBLUEID', $opts);
+}
+
+sub esp_smtpcom_check {
+  my ($self, $pms, $opts) = @_;
+
+  my $smtpcom_payload = $pms->get("X-SMTPCOM-Payload", undef);
+  return if not defined $smtpcom_payload;
+
+  my $smtpcom_id = $pms->get("X-SMTPCOM-Sender-ID", undef);
+  return if not defined $smtpcom_id;
+
+  return _hit_and_tag($self, $pms, $smtpcom_id, 'SMTPCOM', 'Smtpcom', 'SMTPCOMID', $opts);
 }
 
 sub esp_sparkpost_check {
