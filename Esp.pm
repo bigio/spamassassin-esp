@@ -68,6 +68,7 @@ sub new {
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdrctr_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_msnd_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_salesforce_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -126,6 +127,9 @@ Usage:
 
   esp_msnd_check()
     Checks for Msnd id abused accounts
+
+  esp_salesforce_check()
+    Checks for Salseforce id abused accounts
 
   esp_sendgrid_check()
     Checks for Sendgrid abused accounts (both id and domains)
@@ -208,6 +212,10 @@ Files can be separated by a comma.
 A list of files with abused Msnd accounts.
 Files can be separated by a comma.
 
+=item salesforce_feed [...]
+
+A list of files with abused Salesforce accounts.
+
 =item sendgrid_feed [...]
 
 A list of files with all abused Sendgrid accounts.
@@ -287,6 +295,9 @@ MDRCTRID
 
 =item *
 MSNDID
+
+=item *
+SALESFORCEID
 
 =item *
 SENDGRIDDOM
@@ -378,6 +389,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'salesforce_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'sendgrid_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -423,6 +440,7 @@ sub finish_parsing_end {
   $self->_read_configfile('mailup_feed', 'MAILUP');
   $self->_read_configfile('mdrctr_feed', 'MDRCTR');
   $self->_read_configfile('msnd_feed', 'MSND');
+  $self->_read_configfile('salesforce_feed', 'SALESFORCE');
   $self->_read_configfile('sendgrid_feed', 'SENDGRID');
   $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
@@ -715,6 +733,23 @@ sub esp_msnd_check {
   return if not defined $uid;
 
   return _hit_and_tag($self, $pms, $uid, 'MSND', 'Msnd', 'MSNDID', $opts);
+}
+
+sub esp_salesforce_check {
+  my ($self, $pms, $opts) = @_;
+  my $uid;
+
+  # return if X-Sender is not what we want
+  my $xsender = $pms->get("X-Sender", undef);
+
+  if((not defined $xsender) or ($xsender ne 'postmaster@salesforce.com')) {
+    return;
+  }
+
+  $uid = $pms->get("X-SFDC-User", undef);
+  return if not defined $uid;
+
+  return _hit_and_tag($self, $pms, $uid, 'SALESFORCE', 'Salesforce', 'SALESFORCEID', $opts);
 }
 
 sub esp_sendgrid_check {

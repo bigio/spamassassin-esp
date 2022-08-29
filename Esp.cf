@@ -100,6 +100,13 @@ header          MSND                  eval:esp_msnd_check()
 describe        MSND                  Message from Msnd abused account
 score           MSND                  5.0
 
+# -------- SALESFORCE --------
+salesforce_feed /etc/mail/spamassassin/salesforce_id.txt
+
+header          SALESFORCE            eval:esp_salesforce_check()
+describe        SALESFORCE            Message from Salesforce abused account
+score           SALESFORCE            5.0
+
 # -------- SENDGRID - EITHER THIS --------
 sendgrid_feed /etc/mail/spamassassin/sendgrid-id-dnsbl.txt
 sendgrid_domains_feed /etc/mail/spamassassin/sendgrid-envelopefromdomain-dnsbl.txt
