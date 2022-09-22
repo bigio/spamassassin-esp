@@ -608,16 +608,20 @@ sub esp_mailchimp_check {
   my ($self, $pms, $opts) = @_;
   my $mailchimp_id;
 
-  # return if X-Mailer is not what we want
+  # check some headers
   my $xmailer = $pms->get("X-Mailer", undef);
+  my $xmandrill = $pms->get("X-Mandrill-User", undef);
 
-  if((not defined $xmailer) or ($xmailer !~ /MailChimp Mailer/i)) {
+  if((defined $xmailer) and ($xmailer !~ /MailChimp Mailer/i)) {
+    $mailchimp_id = $pms->get("X-MC-User", undef);
+    return if not defined $mailchimp_id;
+    return if ($mailchimp_id !~ /^([0-9a-z]{25})$/);
+  } elsif(defined $xmandrill) {
+    return if ($xmandrill !~ /^md_([0-9a-z]{8})$/);
+    $mailchimp_id = $xmandrill;
+  } else {
     return;
   }
-
-  $mailchimp_id = $pms->get("X-MC-User", undef);
-  return if not defined $mailchimp_id;
-  return if ($mailchimp_id !~ /^([0-9a-z]{25})$/);
 
   return _hit_and_tag($self, $pms, $mailchimp_id, 'MAILCHIMP', 'Mailchimp', 'MAILCHIMPID', $opts);
 }
