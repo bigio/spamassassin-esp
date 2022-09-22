@@ -612,7 +612,7 @@ sub esp_mailchimp_check {
   my $xmailer = $pms->get("X-Mailer", undef);
   my $xmandrill = $pms->get("X-Mandrill-User", undef);
 
-  if((defined $xmailer) and ($xmailer !~ /MailChimp Mailer/i)) {
+  if((defined $xmailer) and ($xmailer =~ /MailChimp Mailer/i)) {
     $mailchimp_id = $pms->get("X-MC-User", undef);
     return if not defined $mailchimp_id;
     return if ($mailchimp_id !~ /^([0-9a-z]{25})$/);
