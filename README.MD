@@ -1,3 +1,5 @@
+[![CI for Apache SpamAssassin Esp plugin](https://github.com/bigio/spamassassin-esp/actions/workflows/main.yml/badge.svg)](https://github.com/bigio/spamassassin-esp/actions/workflows/main.yml) [![GitHub license](https://img.shields.io/github/license/bigio/spamassassin-esp)](https://github.com/bigio/spamassassin-esp/blob/master/LICENSE) [![GitHub release](https://img.shields.io/github/release/bigio/spamassassin-esp.svg)](https://GitHub.com/bigio/spamassassin-esp/releases/)
+
 Mail::SpamAssassin::Plugin::Esp
 
 SpamAssassin plugin for Sendgrid, Sendinblue, MailUp, Maildome and Mailchimp esp. 
