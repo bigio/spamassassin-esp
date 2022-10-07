@@ -37,6 +37,13 @@ header		FORDEM		eval:esp_4dem_check()
 describe	FORDEM		Message from 4Dem abused account
 score		FORDEM		5.0
 
+# -------- AMAZON SES --------
+4dem_feed /etc/mail/spamassassin/amazonses_id.txt
+
+header		AMAZON		eval:esp_amazonses_check()
+describe	AMAZON		Message from Amazon SES abused account
+score		AMAZON		5.0
+
 # -------- BEMAIL --------
 4dem_feed /etc/mail/spamassassin/be-mail_id.txt
 

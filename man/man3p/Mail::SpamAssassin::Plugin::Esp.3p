@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2022-08-29" "perl v5.34.1" "User Contributed Perl Documentation"
+.TH Esp 3 "2022-09-26" "perl v5.34.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -169,6 +169,9 @@ Usage:
 .Vb 2
 \&  esp_4dem_check()
 \&    Checks for 4dem id abused accounts
+\&
+\&  esp_amazonses_check()
+\&    Checks for Amazon SES id abused accounts
 \&
 \&  esp_be_mail_check()
 \&    Checks for Be\-Mail id abused accounts
@@ -227,6 +230,10 @@ to crypt the Esp id using md5 algorithm and \*(L"nodash\*(R" which will substitu
 with a \*(L"_\*(R" in order to be possible to use the Esp id in dns records.
 .SH "ADMINISTRATOR SETTINGS"
 .IX Header "ADMINISTRATOR SETTINGS"
+.IP "amazonses_feed [...]" 4
+.IX Item "amazonses_feed [...]"
+A list of files with abused Amazon \s-1SES\s0 accounts.
+Files can be separated by a comma.
 .IP "bemail_feed [...]" 4
 .IX Item "bemail_feed [...]"
 A list of files with abused Be Mail accounts.
@@ -311,6 +318,8 @@ added to the askdns rule.
 .Sp
 Tags that the plugin could set are:
 .RE
+.IP "\(bu" 4
+\&\s-1AMAZONSESID\s0
 .IP "\(bu" 4
 \&\s-1BEMAILID\s0
 .IP "\(bu" 4

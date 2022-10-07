@@ -58,6 +58,7 @@ sub new {
 
   $self->set_config($mailsaobject->{conf});
   $self->register_eval_rule('esp_4dem_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_amazonses_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_be_mail_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_ecmessenger_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -97,6 +98,9 @@ Usage:
 
   esp_4dem_check()
     Checks for 4dem id abused accounts
+
+  esp_amazonses_check()
+    Checks for Amazon SES id abused accounts
 
   esp_be_mail_check()
     Checks for Be-Mail id abused accounts
@@ -156,6 +160,11 @@ with a "_" in order to be possible to use the Esp id in dns records.
 =head1 ADMINISTRATOR SETTINGS
 
 =over 4
+
+=item amazonses_feed [...]
+
+A list of files with abused Amazon SES accounts.
+Files can be separated by a comma.
 
 =item bemail_feed [...]
 
@@ -264,6 +273,9 @@ Tags that the plugin could set are:
 =over
 
 =item *
+AMAZONSESID
+
+=item *
 BEMAILID
 
 =item *
@@ -322,6 +334,12 @@ sub set_config {
   my($self, $conf) = @_;
   my @cmds = ();
 
+  push(@cmds, {
+    setting => 'amazonses_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   push(@cmds, {
     setting => 'bemail_feed',
     is_admin => 1,
@@ -429,6 +447,7 @@ sub set_config {
 
 sub finish_parsing_end {
   my ($self, $opts) = @_;
+  $self->_read_configfile('amazonses_feed', 'AMAZONSES');
   $self->_read_configfile('bemail_feed', 'BEMAIL');
   $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
   $self->_read_configfile('ecmessenger_feed', 'ECMESSENGER');
@@ -491,6 +510,9 @@ sub _hit_and_tag {
       if($opts =~ /nodash/) {
         $id =~ s/\-/_/g;
       }
+      if($opts =~ /nobase64/) {
+        $id =~ s/\+|\=|\//_/g;
+      }
       if($opts =~ /md5/) {
         $id = md5_hex($id);
       }
@@ -522,6 +544,32 @@ sub esp_4dem_check {
   return if ($uid !~ /^\d+$/);
 
   return _hit_and_tag($self, $pms, $uid, 'FORDEM', '4Dem', 'FORDEMID', $opts);
+}
+
+sub esp_amazonses_check {
+  my ($self, $pms, $opts) = @_;
+  my $fid;
+
+  # Change base64 chars that are not valid in dns records into "_", uid must be limited to chars permitted in dns records
+  $opts .= "nobase64";
+
+  # return if X-SES-Outgoing is not what we want
+  my $xses = $pms->get("X-SES-Outgoing", undef);
+
+  if((not defined $xses) or ($xses !~ /\d{4}\.\d{2}\.\d{2}\-/)) {
+    return;
+  }
+
+  # Parse the Feedback-ID
+  # Feedback-ID: 1.eu-west-3.lw6TDfPoSha17XiO+mc7ZtIOCZEcjZHgwdWo1vcloYU=:AmazonSES
+  $fid = $pms->get("Feedback-ID", undef);
+  return if not defined $fid;
+
+  if($fid =~ /\d+\.[a-z]+\-[a-z]+\-\d+\.(.*)\:AmazonSES/) {
+    $fid = $1;
+    return _hit_and_tag($self, $pms, $fid, 'AMAZONSES', 'Amazon SES', 'AMAZONSESID', $opts);
+  }
+  return;
 }
 
 sub esp_be_mail_check {
