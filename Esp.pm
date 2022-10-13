@@ -832,6 +832,9 @@ sub esp_sendgrid_check_domain {
   # Find the domain from the Return-Path
   if($envfrom =~ /\@(\w+\.)?([\w\.]+)\>?$/) {
     $sendgrid_domain = $2;
+    if($sendgrid_domain !~ /\./) {
+      $sendgrid_domain = $1 . $2;
+    }
     return _hit_and_tag($self, $pms, $sendgrid_domain, 'SENDGRID_DOMAINS', 'Sendgrid', 'SENDGRIDDOM', $opts);
   }
 }
