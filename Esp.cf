@@ -59,7 +59,7 @@ describe	CONSTANTCONTACT		Message from Constant Contact abused account
 score		CONSTANTCONTACT		5.0
 
 # -------- ECMESSENGER --------
-constantcontact_feed /etc/mail/spamassassin/ecmessenger_id.txt
+ecmessenger_feed /etc/mail/spamassassin/ecmessenger_id.txt
 
 header		ECMESSENGER		eval:esp_ecmessenger_check()
 describe	ECMESSENGER		Message from Ec Messanger abused account
