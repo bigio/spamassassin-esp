@@ -65,6 +65,13 @@ header		ECMESSENGER		eval:esp_ecmessenger_check()
 describe	ECMESSENGER		Message from Ec Messanger abused account
 score		ECMESSENGER		5.0
 
+# -------- EMARSYS --------
+emarsys_feed /etc/mail/spamassassin/emarsys_id.txt
+
+header		EMARSYS			eval:esp_emarsys_check()
+describe	EMARSYS			Message from EMarSys abused account
+score		EMARSYS			5.0
+
 # -------- FXYN --------
 fxyn_feed /etc/mail/spamassassin/fxyn_id.txt
 

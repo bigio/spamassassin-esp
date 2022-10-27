@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2022-09-26" "perl v5.34.1" "User Contributed Perl Documentation"
+.TH Esp 3 "2022-10-27" "perl v5.34.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -181,6 +181,9 @@ Usage:
 \&
 \&  esp_ecmessenger_check()
 \&    Checks for Ec\-Messenger abused accounts
+\&
+\&  esp_emarsys_check()
+\&    Checks for EMarSys abused accounts
 \&
 \&  esp_fxyn_check()
 \&    Checks for Fxyn abused accounts
@@ -245,6 +248,10 @@ Files can be separated by a comma.
 .IP "ecmessenger_feed [...]" 4
 .IX Item "ecmessenger_feed [...]"
 A list of files with abused EcMessenger accounts.
+Files can be separated by a comma.
+.IP "emarsys_feed [...]" 4
+.IX Item "emarsys_feed [...]"
+A list of files with abused EMarSys accounts.
 Files can be separated by a comma.
 .IP "fordem_feed [...]" 4
 .IX Item "fordem_feed [...]"
@@ -326,6 +333,8 @@ Tags that the plugin could set are:
 \&\s-1CONSTANTCONTACTID\s0
 .IP "\(bu" 4
 \&\s-1ECMESSENGERID\s0
+.IP "\(bu" 4
+\&\s-1EMARSYSID\s0
 .IP "\(bu" 4
 \&\s-1FORDEMID\s0
 .IP "\(bu" 4
