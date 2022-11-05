@@ -811,7 +811,7 @@ sub esp_mdengine_check {
   my $mdengine_id;
 
   my $xmailer = $pms->get("X-Mailer", undef);
-  return if $xmailer !~ /MDEngine/;
+  return if (not defined $xmailer or ($xmailer !~ /MDEngine/));
 
   my $fid = $pms->get("Feedback-ID", 0);
   return if not defined $fid;
