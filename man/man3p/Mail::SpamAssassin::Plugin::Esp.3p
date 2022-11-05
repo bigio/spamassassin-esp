@@ -133,7 +133,7 @@
 .\" ========================================================================
 .\"
 .IX Title "Esp 3"
-.TH Esp 3 "2022-10-27" "perl v5.34.1" "User Contributed Perl Documentation"
+.TH Esp 3 "2022-11-05" "perl v5.34.1" "User Contributed Perl Documentation"
 .\" For nroff, turn off justification.  Always turn off hyphenation; it makes
 .\" way too many mistakes in technical documents.
 .if n .ad l
@@ -199,6 +199,9 @@ Usage:
 \&
 \&  esp_mailup_check()
 \&    Checks for Mailup abused accounts
+\&
+\&  esp_mdengine_check()
+\&    Checks for MDEngine id abused accounts
 \&
 \&  esp_mdrctr_check()
 \&    Checks for Mdirector id abused accounts
@@ -277,6 +280,10 @@ Files can be separated by a comma.
 .IX Item "mailup_feed [...]"
 A list of files with abused Mailup accounts.
 Files can be separated by a comma.
+.IP "mdengine_feed [...]" 4
+.IX Item "mdengine_feed [...]"
+A list of files with abused MDEngine accounts.
+Files can be separated by a comma.
 .IP "mdrctr_feed [...]" 4
 .IX Item "mdrctr_feed [...]"
 A list of files with abused Mdirector accounts.
@@ -347,6 +354,8 @@ Tags that the plugin could set are:
 \&\s-1MAILGUNID\s0
 .IP "\(bu" 4
 \&\s-1MAILUPID\s0
+.IP "\(bu" 4
+\&\s-1MDENGINEID\s0
 .IP "\(bu" 4
 \&\s-1MDRCTRID\s0
 .IP "\(bu" 4

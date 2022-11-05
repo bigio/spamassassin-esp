@@ -107,6 +107,13 @@ header		MAILUP			eval:esp_mailup_check()
 describe 	MAILUP			Message from Mailup abused account
 score  		MAILUP			5.0
 
+# -------- MDENGINE --------
+mdengine_feed /etc/mail/spamassassin/mdengine_id.txt
+
+header          MDENGINE                eval:esp_mdengine_check()
+describe        MDENGINE                Message from MDEngine abused account
+score           MDENGINE                5.0
+
 # -------- MDRCTR --------
 mdrctr_feed /etc/mail/spamassassin/mdrctr_id.txt
 
