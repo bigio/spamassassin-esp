@@ -817,7 +817,7 @@ sub esp_mdengine_check {
   return if not defined $fid;
 
   # Find the customer id from the Feedback-ID
-  if($fid =~ /(\d+):([0-9a-z]+):([a-z]+)/i) {
+  if($fid =~ /\@(.*)/i) {
     $mdengine_id = $1;
     return _hit_and_tag($self, $pms, $mdengine_id, 'MDENGINE', 'MDEngine', 'MDENGINEID', $opts);
   }
