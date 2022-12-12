@@ -141,7 +141,7 @@ Usage:
     Checks for Msnd id abused accounts
 
   esp_salesforce_check()
-    Checks for Salseforce id abused accounts
+    Checks for Salesforce id abused accounts
 
   esp_sendgrid_check()
     Checks for Sendgrid abused accounts (both id and domains)
