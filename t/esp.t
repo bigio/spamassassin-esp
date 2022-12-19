@@ -3,7 +3,7 @@
 use lib '.'; use lib 't';
 
 use Test::More;
-plan tests => 7;
+plan tests => 8;
 
 sub tstprefs {
   my $rules = shift;
@@ -59,6 +59,9 @@ like($test, "/ECMESSENGER_ID/");
 
 $test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/mailchimp.eml);
 like($test, "/MAILCHIMP_ID/");
+
+$test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/mdengine.eml);
+unlike($test, "/MAILCHIMP_ID/");
 
 $test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/mdengine.eml);
 like($test, "/MDENGINE_ID/");
