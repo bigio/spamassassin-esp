@@ -749,8 +749,8 @@ sub esp_maildome_check {
 
   $maildome_id = $pms->get("List-Unsubscribe", undef);
   return if not defined $maildome_id;
-  $maildome_id =~ /subject=https?:\/\/.*\/unsubscribe\/([0-9]+)\/([0-9]+)\/.*\/([0-9]+)\/([0-9]+)\>/;
-  $maildome_id = $2;
+  $maildome_id =~ /subject=https?:\/\/.*\/unsubscribe\/(?:[0-9]+)\/([0-9]+)\/.*\/(?:[0-9]+)\/(?:[0-9]+)\>/;
+  $maildome_id = $1;
 
   # if regexp doesn't match it's not Maildome
   return if not defined $maildome_id;
@@ -775,8 +775,8 @@ sub esp_mailgun_check {
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
   return if not defined $envfrom;
   # Find the customer id from the Return-Path
-  $envfrom =~ /bounce\+(\w+)\.(\w+)\-/;
-  $mailgun_id = $2;
+  $envfrom =~ /bounce\+(?:\w+)\.(\w+)\-/;
+  $mailgun_id = $1;
 
   return _hit_and_tag($self, $pms, $mailgun_id, 'MAILGUN', 'Mailgun', 'MAILGUNID', $opts);
 }
@@ -793,8 +793,8 @@ sub esp_mailup_check {
   # All Mailup emails have the X-Abuse header that must match
   $xabuse = $pms->get("X-Abuse", undef);
   return if not defined $xabuse;
-  if($xabuse =~ /Please report abuse here: https?:\/\/.*\.musvc([0-9]+)\.net\/p\?c=([0-9]+)/) {
-    $mailup_id = $2;
+  if($xabuse =~ /Please report abuse here: https?:\/\/.*\.musvc(?:[0-9]+)\.net\/p\?c=([0-9]+)/) {
+    $mailup_id = $1;
   }
   if(not defined $mailup_id) {
     $listid = $pms->get("list-id", undef);
@@ -841,7 +841,7 @@ sub esp_mdrctr_check {
   return if ($listid !~ /\.mdrctr\.com/);
 
   # Find the customer id from the Feedback-ID
-  if($fid =~ /(\d+):(\d+):([a-z]+)/i) {
+  if($fid =~ /(\d+):(?:\d+):(?:[a-z]+)/i) {
     $mdrctr_id = $1;
     return _hit_and_tag($self, $pms, $mdrctr_id, 'MDRCTR', 'Mdrctr', 'MDRCTRID', $opts);
   }
