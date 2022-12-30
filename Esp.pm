@@ -589,7 +589,9 @@ sub esp_amazonses_check {
   my $fid;
 
   # Change base64 chars that are not valid in dns records into "_", uid must be limited to chars permitted in dns records
-  $opts .= "nobase64";
+  if($opts ne "md5") {
+    $opts .= "nobase64";
+  }
 
   # return if X-SES-Outgoing is not what we want
   my $xses = $pms->get("X-SES-Outgoing", undef);
@@ -850,7 +852,9 @@ sub esp_msnd_check {
   my $uid;
 
   # Change "-" into "_", uid must be limited to chars permitted in dns records
-  $opts .= "nodash";
+  if($opts ne "md5") {
+    $opts .= "nodash";
+  }
 
   # return if X-Mailer is not what we want
   my $xmailer = $pms->get("X-Mailer", undef);
