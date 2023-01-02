@@ -19,3 +19,24 @@ Sample rule to enable the plugin (add the score you prefer to the rule):
 		describe        SPBL_SENDGRID           Message from Sendgrid abused account 	
 
 	endif
+
+ESPs currently supported are:  
+- 4Dem
+- Amazon SES
+- BeMail
+- Constant Contact
+- EcMessenger
+- EmarSYS
+- Fxyn
+- Mailchimp
+- Maildome
+- MailGun
+- MailUP
+- MDEngine
+- Mdrctr
+- Msnd
+- SalesForce
+- Sendgrid
+- SendinBlue
+- SmtpCOM
+- SparkPost
