@@ -64,6 +64,7 @@ sub new {
   $self->register_eval_rule('esp_ecmessenger_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_emarsys_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_fxyn_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_hubspot_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -118,6 +119,9 @@ Usage:
 
   esp_fxyn_check()
     Checks for Fxyn abused accounts
+
+  esp_hubspot_check()
+    Checks for Hubspot abused accounts
 
   esp_mailchimp_check()
     Checks for Mailchimp abused accounts
@@ -202,6 +206,11 @@ Files can be separated by a comma.
 =item fxyn_feed [...]
 
 A list of files with abused Fxyn accounts.
+Files can be separated by a comma.
+
+=item hubspot_feed [...]
+
+A list of files with abused Hubspot accounts.
 Files can be separated by a comma.
 
 =item mailchimp_feed [...]
@@ -312,6 +321,9 @@ FORDEMID
 FXYNID
 
 =item *
+HUBSPOTID
+
+=item *
 MAILCHIMPID
 
 =item *
@@ -396,6 +408,12 @@ sub set_config {
   );
   push(@cmds, {
     setting => 'fxyn_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'hubspot_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -490,6 +508,7 @@ sub finish_parsing_end {
   $self->_read_configfile('emarsys_feed', 'EMARSYS');
   $self->_read_configfile('fordem_feed', 'FORDEM');
   $self->_read_configfile('fxyn_feed', 'FXYN');
+  $self->_read_configfile('hubspot_feed', 'HUBSPOT');
   $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
@@ -712,6 +731,23 @@ sub esp_fxyn_check {
   return if not defined $uid;
 
   return _hit_and_tag($self, $pms, $uid, 'FXYN', 'Fxyn', 'FXYNID', $opts);
+}
+
+sub esp_hubspot_check {
+  my ($self, $pms, $opts) = @_;
+  my $cid;
+
+  # return if X-Report-Abuse-To is not what we want
+  my $xreport = $pms->get("X-Report-Abuse-To", undef);
+
+  if((not defined $xreport) or ($xreport !~ /hubspot\.com/)) {
+    return;
+  }
+
+  $cid = $pms->get("X-HS-Cid", undef);
+  return if not defined $cid;
+
+  return _hit_and_tag($self, $pms, $cid, 'HUBSPOT', 'Hubspot', 'HUBSPOTID', $opts);
 }
 
 sub esp_mailchimp_check {
