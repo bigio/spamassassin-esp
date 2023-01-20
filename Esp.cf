@@ -79,13 +79,6 @@ header		FXYN		eval:esp_fxyn_check()
 describe	FXYN		Message from Fxyn abused account
 score		FXYN		5.0
 
-# -------- FXYN --------
-hubspot_feed /etc/mail/spamassassin/hubspot_id.txt
-
-header		HUBSPOT		eval:esp_hubspot_check()
-describe	HUBSPOT		Message from Hubspot abused account
-score		HUBSPOT		5.0
-
 # -------- MAILCHIMP --------
 mailchimp_feed /etc/mail/spamassassin/mailchimp_id.txt
 

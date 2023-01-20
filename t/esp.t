@@ -3,7 +3,7 @@
 use lib '.'; use lib 't';
 
 use Test::More;
-plan tests => 9;
+plan tests => 8;
 
 sub tstprefs {
   my $rules = shift;
@@ -28,10 +28,6 @@ tstprefs("
   ecmessenger_feed t/data/ecmessenger.txt
   header   ECMESSENGER_ID eval:esp_ecmessenger_check()
   describe ECMESSENGER_ID Check Ec-Messenger id
-
-  hubspot_feed t/data/hubspot.txt
-  header   HUBSPOT_ID eval:esp_hubspot_check()
-  describe HUBSPOT_ID Check Hubspot id
 
   mailchimp_feed t/data/mailchimp.txt
   header   MAILCHIMP_ID   eval:esp_mailchimp_check()
@@ -60,9 +56,6 @@ like($test, "/FORDEM_ID/");
 
 my $test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/ecmessenger.eml);
 like($test, "/ECMESSENGER_ID/");
-
-my $test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/hubspot.eml);
-like($test, "/HUBSPOT_ID/");
 
 $test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/mailchimp.eml);
 like($test, "/MAILCHIMP_ID/");
