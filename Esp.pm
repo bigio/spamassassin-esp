@@ -63,6 +63,7 @@ sub new {
   $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_ecmessenger_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_emarsys_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_exacttarget_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_fxyn_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -115,6 +116,9 @@ Usage:
 
   esp_emarsys_check()
     Checks for EMarSys abused accounts
+
+  esp_exacttarget_check()
+    Checks for ExactTarget abused accounts
 
   esp_fxyn_check()
     Checks for Fxyn abused accounts
@@ -192,6 +196,11 @@ Files can be separated by a comma.
 =item emarsys_feed [...]
 
 A list of files with abused EMarSys accounts.
+Files can be separated by a comma.
+
+=item exacttarget_feed [...]
+
+A list of files with abused ExactTarget accounts.
 Files can be separated by a comma.
 
 =item fordem_feed [...]
@@ -389,6 +398,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'exacttarget_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'fordem_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -488,6 +503,7 @@ sub finish_parsing_end {
   $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
   $self->_read_configfile('ecmessenger_feed', 'ECMESSENGER');
   $self->_read_configfile('emarsys_feed', 'EMARSYS');
+  $self->_read_configfile('exacttarget_feed', 'EXACTTARGET');
   $self->_read_configfile('fordem_feed', 'FORDEM');
   $self->_read_configfile('fxyn_feed', 'FXYN');
   $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
@@ -676,6 +692,33 @@ sub esp_emarsys_check {
   return if not defined $uid;
 
   return _hit_and_tag($self, $pms, $uid, 'EMARSYS', 'EMarSys', 'EMARSYSID', $opts);
+}
+
+sub esp_exacttarget_check {
+  my ($self, $pms, $opts) = @_;
+  my ($fid, $uid);
+
+  # return if X-CSA-Complaints is not what we want
+  my $xcsa = $pms->get("X-CSA-Complaints", undef);
+
+  if((not defined $xcsa) or ($xcsa !~ /\@eco\.de/)) {
+    return;
+  }
+  my $xsfmc = $pms->get("X-SFMC-Stack", undef);
+  return if not defined $xsfmc;
+
+  # x-messageKey: 932063-75865447-2253076
+  # x-messageKey: undelivered+984411+551293975@pd25.com
+  $fid = $pms->get("x-messageKey", undef);
+  return if not defined $fid;
+  if($fid =~ /(\d+)\-(?:\d+)\-(?:\d+)/) {
+    $uid = $1;
+  } elsif ($fid =~ /undelivered\+(\d+)\+(?:\d+)\@pd25\.com/) {
+    $uid = $1;
+  }
+  return if not defined $uid;
+
+  return _hit_and_tag($self, $pms, $uid, 'EXACTTARGET', 'ExactTarget', 'EXACTTARGETID', $opts);
 }
 
 sub esp_ecmessenger_check {
@@ -975,7 +1018,7 @@ sub esp_sparkpost_check {
   my $list_id = $pms->get("List-Id", undef);
   return if not defined $list_id;
 
-  if($list_id =~ /^<?[a-z]{5}\.([0-9]+)\.(?:[0-9]+)\.sparkpostmail\.com>?$/) {
+  if($list_id =~ /^<?[a-z]+\.([0-9]+)\.(?:[0-9]+)\.sparkpostmail\.com>?$/) {
     $sparkpost_id = $1;
   }
 
@@ -983,5 +1026,27 @@ sub esp_sparkpost_check {
 
   return _hit_and_tag($self, $pms, $sparkpost_id, 'SPARKPOST', 'Sparkpost', 'SPARKPOSTID', $opts);
 }
+
+# Version features
+sub has_esp_4dem_check { 1 };
+sub has_esp_amazonses_check { 1 };
+sub has_esp_be_mail_check { 1 };
+sub has_esp_constantcontact_check { 1 };
+sub has_esp_ecmessenger_check { 1 };
+sub has_esp_emarsys_check { 1 };
+sub has_esp_exacttarget_check { 1 };
+sub has_esp_fxyn_check { 1 };
+sub has_esp_mailchimp_check { 1 };
+sub has_esp_maildome_check { 1 };
+sub has_esp_mailgun_check { 1 };
+sub has_esp_mailup_check { 1 };
+sub has_esp_mdengine_check { 1 };
+sub has_esp_mdrctr_check { 1 };
+sub has_esp_msnd_check { 1 };
+sub has_esp_salesforce_check { 1 };
+sub has_esp_sendgrid_check { 1 };
+sub has_esp_sendinblue_check { 1 };
+sub has_esp_smtpcom_check { 1 };
+sub has_esp_sparkpost_check { 1 };
 
 1;
