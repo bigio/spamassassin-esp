@@ -71,6 +71,7 @@ sub new {
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdengine_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdrctr_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_msdynamics_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_msnd_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_salesforce_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -136,10 +137,13 @@ Usage:
     Checks for Mailup abused accounts
 
   esp_mdengine_check()
-    Checks for MDEngine id abused accounts
+    Checks for MDEngine abused accounts
 
   esp_mdrctr_check()
-    Checks for Mdirector id abused accounts
+    Checks for Mdirector abused accounts
+
+  esp_msdynamics_check()
+    Checks for Microsoft Dynamics abused accounts
 
   esp_msnd_check()
     Checks for Msnd id abused accounts
@@ -241,6 +245,11 @@ Files can be separated by a comma.
 =item mdrctr_feed [...]
 
 A list of files with abused Mdirector accounts.
+Files can be separated by a comma.
+
+=item msdynamics_feed [...]
+
+A list of files with abused Microsoft Dynamics accounts.
 Files can be separated by a comma.
 
 =item msnd_feed [...]
@@ -452,6 +461,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'msdynamics_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'msnd_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -512,6 +527,7 @@ sub finish_parsing_end {
   $self->_read_configfile('mailup_feed', 'MAILUP');
   $self->_read_configfile('mdengine_feed', 'MDENGINE');
   $self->_read_configfile('mdrctr_feed', 'MDRCTR');
+  $self->_read_configfile('msdynamics_feed', 'MSDYNAMICS');
   $self->_read_configfile('msnd_feed', 'MSND');
   $self->_read_configfile('salesforce_feed', 'SALESFORCE');
   $self->_read_configfile('sendgrid_feed', 'SENDGRID');
@@ -890,6 +906,15 @@ sub esp_mdrctr_check {
   }
 }
 
+sub esp_msdynamics_check {
+  my ($self, $pms, $opts) = @_;
+
+  my $msdyn_id = $pms->get("X-MS-Dynamics-Instance", undef);
+  return if not defined $msdyn_id;
+
+  return _hit_and_tag($self, $pms, $msdyn_id, 'MSDYNAMICS', 'Microsoft Dynamics', 'MSDYNID', $opts);
+}
+
 sub esp_msnd_check {
   my ($self, $pms, $opts) = @_;
   my $uid;
@@ -1042,6 +1067,7 @@ sub has_esp_mailgun_check { 1 };
 sub has_esp_mailup_check { 1 };
 sub has_esp_mdengine_check { 1 };
 sub has_esp_mdrctr_check { 1 };
+sub has_esp_msdynamics_check { 1 };
 sub has_esp_msnd_check { 1 };
 sub has_esp_salesforce_check { 1 };
 sub has_esp_sendgrid_check { 1 };
