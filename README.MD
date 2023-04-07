@@ -2,7 +2,7 @@
 
 Mail::SpamAssassin::Plugin::Esp
 
-SpamAssassin plugin for Sendgrid, Sendinblue, MailUp, Maildome and Mailchimp esp. 
+SpamAssassin plugin for Sendgrid, Sendinblue, MailUp, Maildome, Mailchimp and other ESPs. 
 
 The plugin doesn't download the data feed, the txt file should be created by the user.  
 
@@ -20,6 +20,8 @@ Sample rule to enable the plugin (add the score you prefer to the rule):
 
 	endif
 
+Instead of using your own txt files or your own rbl, you can just use the Esp-rbl.cf file to query an ESP rbl.  
+
 ESPs currently supported are:  
 - 4Dem
 - Amazon SES
@@ -27,6 +29,7 @@ ESPs currently supported are:
 - Constant Contact
 - EcMessenger
 - EmarSYS
+- ExactTarget
 - Fxyn
 - Mailchimp
 - Maildome
@@ -34,6 +37,7 @@ ESPs currently supported are:
 - MailUP
 - MDEngine
 - Mdrctr
+- Microsoft Dynamics
 - Msnd
 - SalesForce
 - Sendgrid
