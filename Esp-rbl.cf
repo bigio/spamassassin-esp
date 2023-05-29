@@ -80,6 +80,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_FXYN     net
   endif
 
+  header        ESP_KEYSENDER    eval:esp_keysender_check()
+  describe      ESP_KEYSENDER    Message from Keysender abused account
+  score         ESP_KEYSENDER    0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_KEYSENDER	_KEYSENDERID_.keysender.espbl.snb.it A 127.0.0.1
+    describe    RBL_ESP_KEYSENDER     	Esp Keysender Id blacklist
+    tflags      RBL_ESP_KEYSENDER	net
+  endif
+
   header        ESP_MAILCHIMP    eval:esp_mailchimp_check()
   describe      ESP_MAILCHIMP    Message from Mailchimp abused account
   score		ESP_MAILCHIMP    0.01
@@ -283,6 +293,13 @@ if (version >= 4.000000)
     meta        RBL_ESP_FXYN          ( __ESP_FXYN_XM && __ESP_FXYN_RBL )
     describe    RBL_ESP_FXYN          Esp Fxyn Id blacklist
     tflags      RBL_ESP_FXYN          net
+
+    header      __ESP_KEYSENDER_EBS   exists:X-EBS
+    header      __ESP_KEYSENDER_UID   Feedback-ID =~ /\w+\:\w+\:\w+\:?<KEYSENDER_UID>.*)/
+    header      __ESP_KEYSENDER_RBL   eval:check_hashbl_tag('keysender.espbl.snb.it/A', 'raw', 'KEYSENDER_UID', '^127\.')
+    meta        RBL_ESP_KEYSENDER     ( __ESP_KEYSENDER_EBS && __ESP_KEYSENDER_RBL )
+    describe    RBL_ESP_KEYSENDER     Esp Keysender Id blacklist
+    tflags      RBL_ESP_KEYSENDER     net
 
     header      __ESP_MAILCHIMP_XM    X-Mailer =~ /MailChimp\s+Mailer/
     header      __ESP_MAILCHIMP_ID    X-MC-User =~ /^(?<MAILCHIMP_ID>[0-9a-z]{25})$/

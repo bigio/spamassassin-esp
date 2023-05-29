@@ -65,6 +65,7 @@ sub new {
   $self->register_eval_rule('esp_emarsys_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_exacttarget_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_fxyn_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_keysender_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -123,6 +124,9 @@ Usage:
 
   esp_fxyn_check()
     Checks for Fxyn abused accounts
+
+  esp_keysender_check()
+    Checks for Keysender abused accounts
 
   esp_mailchimp_check()
     Checks for Mailchimp abused accounts
@@ -215,6 +219,11 @@ Files can be separated by a comma.
 =item fxyn_feed [...]
 
 A list of files with abused Fxyn accounts.
+Files can be separated by a comma.
+
+=item keysender_feed [...]
+
+A list of files with abused Keysender accounts.
 Files can be separated by a comma.
 
 =item mailchimp_feed [...]
@@ -330,6 +339,9 @@ FORDEMID
 FXYNID
 
 =item *
+KEYSENDERID
+
+=item *
 MAILCHIMPID
 
 =item *
@@ -420,6 +432,12 @@ sub set_config {
   );
   push(@cmds, {
     setting => 'fxyn_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'keysender_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -521,6 +539,7 @@ sub finish_parsing_end {
   $self->_read_configfile('exacttarget_feed', 'EXACTTARGET');
   $self->_read_configfile('fordem_feed', 'FORDEM');
   $self->_read_configfile('fxyn_feed', 'FXYN');
+  $self->_read_configfile('keysender_feed', 'KEYSENDER');
   $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
@@ -771,6 +790,26 @@ sub esp_fxyn_check {
   return if not defined $uid;
 
   return _hit_and_tag($self, $pms, $uid, 'FXYN', 'Fxyn', 'FXYNID', $opts);
+}
+
+sub esp_keysender_check {
+  my ($self, $pms, $opts) = @_;
+  my $uid;
+
+  # return if X-EBS is not set
+  my $xebs = $pms->get("X-EBS", undef);
+
+  if(not defined $xebs) {
+    return;
+  }
+
+  $uid = $pms->get("Feedback-ID", undef);
+  if($uid =~ /\w+\:\w+\:\w+\:(\w+)/) {
+    $uid = $1;
+  }
+  return if not defined $uid;
+
+  return _hit_and_tag($self, $pms, $uid, 'KEYSENDER', 'Keysender', 'KEYSENDERID', $opts);
 }
 
 sub esp_mailchimp_check {
@@ -1061,6 +1100,7 @@ sub has_esp_ecmessenger_check { 1 };
 sub has_esp_emarsys_check { 1 };
 sub has_esp_exacttarget_check { 1 };
 sub has_esp_fxyn_check { 1 };
+sub has_esp_keysender_check { 1 };
 sub has_esp_mailchimp_check { 1 };
 sub has_esp_maildome_check { 1 };
 sub has_esp_mailgun_check { 1 };
