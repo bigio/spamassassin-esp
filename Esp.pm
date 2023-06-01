@@ -885,7 +885,7 @@ sub esp_mailup_check {
 
   # All Mailup emails have the X-CSA-Complaints header set to *-complaints@eco.de
   my $xcsa = $pms->get("X-CSA-Complaints", undef);
-  my $xbps = $head->get("X-BPS1", undef);
+  my $xbps = $pms->get("X-BPS1", undef);
   if(((not defined $xcsa) or ($xcsa !~ /\-complaints\@eco\.de/)) and (not defined $xbps)) {
     return;
   }
