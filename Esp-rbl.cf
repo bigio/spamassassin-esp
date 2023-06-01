@@ -328,11 +328,12 @@ if (version >= 4.000000)
     tflags      RBL_ESP_MAILGUN       net
 
     header      __ESP_MAILUP_CSA      X-CSA-Complaints =~ /\@eco\.de/
+    header	__ESP_MAILUP_BPS1     exists:X-BPS1
     header      __ESP_MAILUP_ABID     X-Abuse =~ /Please report abuse here: https?:\/\/.*\.musvc(?:[0-9]+)\.net\/p\?c=(?<MAILUP_ID>[0-9]+)/
     header      __ESP_MAILUP_RBL_AB   eval:check_hashbl_tag('mailup.espbl.snb.it/A', 'raw', 'MAILUP_ABID', '^127\.')
     header      __ESP_MAILUP_ID       list-id =~ /\<(?<MAILUP_ID>\d+)\.\d+\>/
     header      __ESP_MAILUP_RBL      eval:check_hashbl_tag('mailup.espbl.snb.it/A', 'raw', 'MAILUP_ID', '^127\.')
-    meta        RBL_ESP_MAILUP        ( __ESP_MAILUP_CSA && ( __ESP_MAILUP_RBL_AB || __ESP_MAILUP_RBL ) )
+    meta        RBL_ESP_MAILUP        ( ( __ESP_MAILUP_CSA || __ESP_MAILUP_BPS1 ) && ( __ESP_MAILUP_RBL_AB || __ESP_MAILUP_RBL ) )
     describe    RBL_ESP_MAILUP        Esp Mailup Id blacklist
     tflags      RBL_ESP_MAILUP        net
 
