@@ -295,7 +295,7 @@ if (version >= 4.000000)
     tflags      RBL_ESP_FXYN          net
 
     header      __ESP_KEYSENDER_EBS   exists:X-EBS
-    header      __ESP_KEYSENDER_UID   Feedback-ID =~ /\w+\:\w+\:\w+\:?<KEYSENDER_UID>.*)/
+    header      __ESP_KEYSENDER_UID   Feedback-ID =~ /\w+\:\w+\:\w+\:(?<KEYSENDER_UID>.*)/
     header      __ESP_KEYSENDER_RBL   eval:check_hashbl_tag('keysender.espbl.snb.it/A', 'raw', 'KEYSENDER_UID', '^127\.')
     meta        RBL_ESP_KEYSENDER     ( __ESP_KEYSENDER_EBS && __ESP_KEYSENDER_RBL )
     describe    RBL_ESP_KEYSENDER     Esp Keysender Id blacklist
