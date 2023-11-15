@@ -10,6 +10,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_FORDEM   net
   endif
 
+  header        ESP_ACELLE       eval:esp_acelle_check()
+  describe      ESP_ACELLE       Message from Acelle abused account
+  score         ESP_ACELLE       0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_ACELLE   _ACELLEID_.acelle.espbl.snb.it A 127.0.0.1
+    describe    RBL_ESP_ACELLE   Esp Acelle Id blacklist
+    tflags      RBL_ESP_ACELLE   net
+  endif
+
   header        ESP_AMAZON       eval:esp_amazonses_check('md5')
   describe      ESP_AMAZON       Message from Amazon SES abused account
   score         ESP_AMAZON       0.01
@@ -242,6 +252,13 @@ if (version >= 4.000000)
     describe    RBL_ESP_AMAZON        Esp Amazon SES Id blacklist
     tflags      RBL_ESP_AMAZON        net
 
+    header      __ESP_ACELLE_CID      X-Acelle-Customer-Id =~ /^(?<ACELLE_CID>.*)$/
+    header      __ESP_ACELLE_XMAIL    exists:X-Mailer
+    header      __ESP_ACELLE_RBL      eval:check_hashbl_tag('acelle.espbl.snb.it/A', 'raw', 'ACELLE_CID', '^127\.')
+    meta        RBL_ESP_ACELLE        ( __ESP_ACELLE_RBL && !__ESP_ACELLE_XMAIL )
+    describe    RBL_ESP_ACELLE        Esp Acelle Id blacklist
+    tflags      RBL_ESP_ACELLE        net
+
     header      __ESP_4DEM_SMTP       X-SMTPAPI =~ /unique_args/
     header      __ESP_4DEM_UID        X-UiD =~ /^(?<FORDEM_UID>\d+)$/
     header      __ESP_4DEM_RBL        eval:check_hashbl_tag('fordem.espbl.snb.it/A', 'raw', 'FORDEM_UID', '^127\.')
@@ -401,8 +418,9 @@ endif
 
 endif
 
-score       RBL_ESP_AMAZON        4.0
 score       RBL_ESP_FORDEM        4.0
+score       RBL_ESP_ACELLE        4.0
+score       RBL_ESP_AMAZON        4.0
 score       RBL_ESP_BEMAIL        4.0
 score       RBL_ESP_CONSTANTCONTACT  4.0
 score       RBL_ESP_ECMESSENGER   4.0

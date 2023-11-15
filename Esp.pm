@@ -58,6 +58,7 @@ sub new {
 
   $self->set_config($mailsaobject->{conf});
   $self->register_eval_rule('esp_4dem_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_acelle_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_amazonses_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_be_mail_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -103,6 +104,9 @@ Usage:
 
   esp_4dem_check()
     Checks for 4dem id abused accounts
+
+  esp_acelle_check()
+    Checks for Acelle id abused accounts
 
   esp_amazonses_check()
     Checks for Amazon SES id abused accounts
@@ -180,6 +184,11 @@ with a "_" in order to be possible to use the Esp id in dns records.
 =head1 ADMINISTRATOR SETTINGS
 
 =over 4
+
+=item acelle_feed [...]
+
+A list of files with abused Acelle accounts.
+Files can be separated by a comma.
 
 =item amazonses_feed [...]
 
@@ -318,6 +327,9 @@ Tags that the plugin could set are:
 =over
 
 =item *
+ACELLEID
+
+=item *
 AMAZONSESID
 
 =item *
@@ -388,6 +400,12 @@ sub set_config {
   my($self, $conf) = @_;
   my @cmds = ();
 
+  push(@cmds, {
+    setting => 'acelle_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   push(@cmds, {
     setting => 'amazonses_feed',
     is_admin => 1,
@@ -531,6 +549,7 @@ sub set_config {
 
 sub finish_parsing_end {
   my ($self, $opts) = @_;
+  $self->_read_configfile('acelle_feed', 'ACELLE');
   $self->_read_configfile('amazonses_feed', 'AMAZONSES');
   $self->_read_configfile('bemail_feed', 'BEMAIL');
   $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
@@ -633,6 +652,22 @@ sub esp_4dem_check {
   return if ($uid !~ /^\d+$/);
 
   return _hit_and_tag($self, $pms, $uid, 'FORDEM', '4Dem', 'FORDEMID', $opts);
+}
+
+sub esp_acelle_check {
+  my ($self, $pms, $opts) = @_;
+  my $cid;
+
+  # return if X-Mailer is defined
+  my $xmailer = $pms->get("X-Mailer", undef);
+  if(defined $xmailer) {
+    return;
+  }
+
+  $cid = $pms->get("X-Acelle-Customer-Id", 0);
+  return if not defined $cid;
+
+  return _hit_and_tag($self, $pms, $cid, 'ACELLE', 'Acelle', 'ACELLEID', $opts);
 }
 
 sub esp_amazonses_check {
@@ -1094,6 +1129,7 @@ sub esp_sparkpost_check {
 
 # Version features
 sub has_esp_4dem_check { 1 };
+sub has_esp_acelle_check { 1 };
 sub has_esp_amazonses_check { 1 };
 sub has_esp_be_mail_check { 1 };
 sub has_esp_constantcontact_check { 1 };

@@ -37,8 +37,15 @@ header		FORDEM		eval:esp_4dem_check()
 describe	FORDEM		Message from 4Dem abused account
 score		FORDEM		5.0
 
+# -------- ACELLE --------
+acelle_feed /etc/mail/spamassassin/acelle_id.txt
+
+header		ACELLE		eval:esp_acelle_check()
+describe	ACELLE		Message from Acelle abused account
+score		ACELLE		5.0
+
 # -------- AMAZON SES --------
-4dem_feed /etc/mail/spamassassin/amazonses_id.txt
+amazon_feed /etc/mail/spamassassin/amazonses_id.txt
 
 header		AMAZON		eval:esp_amazonses_check()
 describe	AMAZON		Message from Amazon SES abused account
