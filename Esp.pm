@@ -665,7 +665,7 @@ sub esp_acelle_check {
   }
 
   $cid = $pms->get("X-Acelle-Customer-Id", undef);
-  return if not defined $cid;
+  return if not $cid;
 
   return _hit_and_tag($self, $pms, $cid, 'ACELLE', 'Acelle', 'ACELLEID', $opts);
 }
