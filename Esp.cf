@@ -100,6 +100,13 @@ header		KEYSENDER	eval:esp_keysender_check()
 describe	KEYSENDER	Message from Keysender abused account
 score		KEYSENDER	5.0
 
+# -------- KLAVIYO --------
+klaviyo_feed /etc/mail/spamassassin/klaviyo_id.txt
+
+header		KLAVIYO		eval:esp_klaviyo_check()
+describe	KLAVIYO		Message from Klaviyo abused account
+score		KLAVIYO		5.0
+
 # -------- MAILCHIMP --------
 mailchimp_feed /etc/mail/spamassassin/mailchimp_id.txt
 

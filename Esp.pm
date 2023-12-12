@@ -67,6 +67,7 @@ sub new {
   $self->register_eval_rule('esp_exacttarget_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_fxyn_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_keysender_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_klaviyo_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -131,6 +132,9 @@ Usage:
 
   esp_keysender_check()
     Checks for Keysender abused accounts
+
+  esp_klaviyo_check()
+    Checks for Klaviyo abused accounts
 
   esp_mailchimp_check()
     Checks for Mailchimp abused accounts
@@ -233,6 +237,11 @@ Files can be separated by a comma.
 =item keysender_feed [...]
 
 A list of files with abused Keysender accounts.
+Files can be separated by a comma.
+
+=item klaviyo_feed [...]
+
+A list of files with abused Klaviyo accounts.
 Files can be separated by a comma.
 
 =item mailchimp_feed [...]
@@ -354,6 +363,9 @@ FXYNID
 KEYSENDERID
 
 =item *
+KLAVIYOID
+
+=item *
 MAILCHIMPID
 
 =item *
@@ -461,6 +473,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'klaviyo_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'mailchimp_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -559,6 +577,7 @@ sub finish_parsing_end {
   $self->_read_configfile('fordem_feed', 'FORDEM');
   $self->_read_configfile('fxyn_feed', 'FXYN');
   $self->_read_configfile('keysender_feed', 'KEYSENDER');
+  $self->_read_configfile('klaviyo_feed', 'KLAVIYO');
   $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
@@ -845,6 +864,23 @@ sub esp_keysender_check {
   return if not defined $uid;
 
   return _hit_and_tag($self, $pms, $uid, 'KEYSENDER', 'Keysender', 'KEYSENDERID', $opts);
+}
+
+sub esp_klaviyo_check {
+  my ($self, $pms, $opts) = @_;
+  my $uid;
+
+  # return if X-Kmail-Message is not set
+  my $xkm = $pms->get("X-Kmail-Message", undef);
+
+  if(not defined $xkm) {
+    return;
+  }
+
+  $uid = $pms->get("X-Kmail-Account", undef);
+  return if not defined $uid;
+
+  return _hit_and_tag($self, $pms, $uid, 'KLAVIYO', 'Klaviyo', 'KLAVIYOID', $opts);
 }
 
 sub esp_mailchimp_check {
@@ -1138,6 +1174,7 @@ sub has_esp_emarsys_check { 1 };
 sub has_esp_exacttarget_check { 1 };
 sub has_esp_fxyn_check { 1 };
 sub has_esp_keysender_check { 1 };
+sub has_esp_klaviyo_check { 1 };
 sub has_esp_mailchimp_check { 1 };
 sub has_esp_maildome_check { 1 };
 sub has_esp_mailgun_check { 1 };
