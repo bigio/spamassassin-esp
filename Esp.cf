@@ -94,7 +94,7 @@ describe	FXYN		Message from Fxyn abused account
 score		FXYN		5.0
 
 # -------- KEYSENDER --------
-fxyn_feed /etc/mail/spamassassin/keysender_id.txt
+keysender_feed /etc/mail/spamassassin/keysender_id.txt
 
 header		KEYSENDER	eval:esp_keysender_check()
 describe	KEYSENDER	Message from Keysender abused account
