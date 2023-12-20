@@ -83,6 +83,7 @@ sub new {
   $self->register_eval_rule('esp_sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_smtpcom_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sparkpost_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_turbosmtp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
 }
@@ -180,6 +181,9 @@ Usage:
 
   esp_sparkpost_check()
     Checks for Sparkpost abused accounts
+
+  esp_turbosmtp_check()
+    Checks for TurboSmtp abused accounts
 
 Every sub can be called with an options parameter which can contain the keywords "md5"
 to crypt the Esp id using md5 algorithm and "nodash" which will substitute the "-" char
@@ -313,6 +317,11 @@ Files can be separated by a comma.
 A list of files with abused Sparkpost accounts.
 Files can be separated by a comma.
 
+=item turbosmtp_feed [...]
+
+A list of files with abused TurboSmtp accounts.
+Files can be separated by a comma.
+
 =back
 
 =head1 TEMPLATE TAGS
@@ -403,6 +412,9 @@ SMTPCOMID
 
 =item *
 SPARKPOSTID
+
+=item *
+TURBOSMTPID
 
 =back
 
@@ -562,6 +574,12 @@ sub set_config {
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
+  push(@cmds, {
+    setting => 'turbosmtp_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   $conf->{parser}->register_commands(\@cmds);
 }
 
@@ -592,6 +610,7 @@ sub finish_parsing_end {
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
   $self->_read_configfile('smtpcom_feed', 'SMTPCOM');
   $self->_read_configfile('sparkpost_feed', 'SPARKPOST');
+  $self->_read_configfile('turbosmtp_feed', 'SPARKPOST');
 }
 
 sub _read_configfile {
@@ -1163,6 +1182,18 @@ sub esp_sparkpost_check {
   return _hit_and_tag($self, $pms, $sparkpost_id, 'SPARKPOST', 'Sparkpost', 'SPARKPOSTID', $opts);
 }
 
+sub esp_turbosmtp_check {
+  my ($self, $pms, $opts) = @_;
+
+  my $tid = $pms->get("X-TurboSMTP-Tracking", undef);
+  return if not defined $tid;
+
+  my $fid = $pms->get("Feedback-Id", undef);
+  return if not defined $fid;
+
+  return _hit_and_tag($self, $pms, $fid, 'TURBOSMTP', 'TurboSmtp', 'TURBOSMTPID', $opts);
+}
+
 # Version features
 sub has_esp_4dem_check { 1 };
 sub has_esp_acelle_check { 1 };
@@ -1188,5 +1219,6 @@ sub has_esp_sendgrid_check { 1 };
 sub has_esp_sendinblue_check { 1 };
 sub has_esp_smtpcom_check { 1 };
 sub has_esp_sparkpost_check { 1 };
+sub has_esp_turbosmtp_check { 1 };
 
 1;

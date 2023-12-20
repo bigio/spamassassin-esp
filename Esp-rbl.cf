@@ -250,6 +250,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_SPARKPOST net
   endif
 
+  header        ESP_TURBOSMTP  eval:esp_turbosmtp_check()
+  describe      ESP_TURBOSMTP  Message from TurboSmtp abused account
+  score         ESP_TURBOSMTP  0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_TURBOSMTP _TURBOSMTPID_.turbosmtp.espbl.snb.it A 127.0.0.1
+    describe    RBL_ESP_TURBOSMTP Esp TurboSmtp blacklist
+    tflags      RBL_ESP_TURBOSMTP net
+  endif
+
 else
 
 if (version >= 4.000000)
@@ -430,6 +440,13 @@ if (version >= 4.000000)
     describe    RBL_ESP_SPARKPOST     Esp Sparkpost Id blacklist
     tflags      RBL_ESP_SPARKPOST     net
 
+    header      __ESP_TURBOSMTP_TR    exists:X-TurboSMTP-Tracking
+    header      __ESP_TURBOSMTP_ID    Feedback-Id =~ /(?<TURBOSMTP_ID>.*)/
+    header      __ESP_TURBOSMTP_RBL   eval:check_hashbl_tag('turbosmtp.espbl.snb.it/A', 'raw', 'TURBOSMTP_ID', '^127\.')
+    meta        RBL_ESP_TURBOSMTP     ( __ESP_TURBOSMTP_TR && __ESP_TURBOSMTP_RBL )
+    describe    RBL_ESP_TURBOSMTP     Esp TurboSmtp Id blacklist
+    tflags      RBL_ESP_TURBOSMTP     net
+
   endif
 endif
 
@@ -460,3 +477,4 @@ score       RBL_ESP_SENDGRID      4.0
 score       RBL_ESP_SENDINBLUE    4.0
 score       RBL_ESP_SMTPCOM       4.0
 score       RBL_ESP_SPARKPOST     4.0
+score       RBL_ESP_TURBOSMTP     4.0

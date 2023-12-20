@@ -218,4 +218,11 @@ header		SPARKPOST		eval:esp_sparkpost_check()
 describe 	SPARKPOST		Message from Sparkpost abused account
 score	  	SPARKPOST		5.0
 
+# -------- TURBOSMTP --------
+turbosmtp_feed /etc/mail/spamassassin/turbosmtp_id.txt
+
+header		TURBOSMTP		eval:esp_turbosmtp_check()
+describe 	TURBOSMTP		Message from TurboSmtp abused account
+score	  	TURBOSMTP		5.0
+
 endif # Mail::SpamAssassin::Plugin::Esp
