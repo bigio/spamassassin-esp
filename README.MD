@@ -24,6 +24,7 @@ Instead of using your own txt files or your own rbl, you can just use the Esp-rb
 
 ESPs currently supported are:  
 - 4Dem
+- Acelle
 - Amazon SES
 - BeMail
 - Constant Contact
@@ -31,6 +32,8 @@ ESPs currently supported are:
 - EmarSYS
 - ExactTarget
 - Fxyn
+- Keysender
+- Klaviyo
 - Mailchimp
 - Maildome
 - MailGun
@@ -44,3 +47,4 @@ ESPs currently supported are:
 - SendinBlue
 - SmtpCOM
 - SparkPost
+- TurboSmtp
