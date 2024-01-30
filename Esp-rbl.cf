@@ -345,7 +345,7 @@ if (version >= 4.000000)
     describe    RBL_ESP_KLAVIYO       Esp Klaviyo Id blacklist
     tflags      RBL_ESP_KLAVIYO       net
 
-    header      __ESP_MAILCHIMP_XM    X-Mailer =~ /MailChimp\s+Mailer/
+    header      __ESP_MAILCHIMP_XM    X-Mailer =~ /MailChimp\s+Mailer/i
     header      __ESP_MAILCHIMP_ID    X-MC-User =~ /^(?<MAILCHIMP_ID>[0-9a-z]{25})$/
     header      __ESP_MAILCHIMP_RBL   eval:check_hashbl_tag('mailchimp.espbl.snb.it/A', 'raw', 'MAILCHIMP_ID', '^127\.')
     meta        RBL_ESP_MAILCHIMP     ( __ESP_MAILCHIMP_XM && __ESP_MAILCHIMP_RBL )
