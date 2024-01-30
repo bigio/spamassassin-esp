@@ -441,7 +441,7 @@ if (version >= 4.000000)
     tflags      RBL_ESP_SPARKPOST     net
 
     header      __ESP_TURBOSMTP_TR    exists:X-TurboSMTP-Tracking
-    header      __ESP_TURBOSMTP_ID    Feedback-Id =~ /(?<TURBOSMTP_ID>\d+)/
+    header      __ESP_TURBOSMTP_ID    Feedback-Id =~ /(?<TURBOSMTP_ID>\d+)$/
     header      __ESP_TURBOSMTP_RBL   eval:check_hashbl_tag('turbosmtp.espbl.snb.it/A', 'raw', 'TURBOSMTP_ID', '^127\.')
     meta        RBL_ESP_TURBOSMTP     ( __ESP_TURBOSMTP_TR && __ESP_TURBOSMTP_RBL )
     describe    RBL_ESP_TURBOSMTP     Esp TurboSmtp Id blacklist
