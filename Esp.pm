@@ -819,9 +819,12 @@ sub esp_exacttarget_check {
   # x-messageKey: undelivered+984411+551293975@pd25.com
   $fid = $pms->get("x-messageKey", undef);
   return if not defined $fid;
-  if($fid =~ /(\d+)\-(?:\d+)\-(?:\d+)/) {
+  my $envfrom = $pms->get("Return-Path", undef);
+  if(defined $fid and $fid =~ /(\d+)\-(?:\d+)\-(?:\d+)/) {
     $uid = $1;
-  } elsif ($fid =~ /undelivered\+(\d+)\+(?:\d+)\@pd25\.com/) {
+  } elsif (defined $fid and $fid =~ /undelivered\+(\d+)\+(?:\d+)\@pd25\.com/) {
+    $uid = $1;
+  } elsif (defined $envfrom and $envfrom =~ /bounce\-(?:\d+)_HTML\-(?:\d+)\-(\d+)\-(?:\d+)\-(?:\d+)\@/) {
     $uid = $1;
   }
   return if not defined $uid;

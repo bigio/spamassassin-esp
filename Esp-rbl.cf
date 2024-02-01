@@ -320,7 +320,9 @@ if (version >= 4.000000)
     header      __ESP_EXACTT_RBL      eval:check_hashbl_tag('exacttarget.espbl.snb.it/A', 'raw', 'EXACTTARGET_ID', '^127\.')
     header      __ESP_EXACTT_UID      x-messageKey =~ /undelivered\+(?<EXACTTARGET_UID>\d+)\+(?:\d+)\@pd25\.com/
     header      __ESP_EXACTT_URBL     eval:check_hashbl_tag('exacttarget.espbl.snb.it/A', 'raw', 'EXACTTARGET_UID', '^127\.')
-    meta        RBL_ESP_EXACTTARGET   ( __ESP_EXACTT_CSA && __ESP_EXACTT_SFMC && ( __ESP_EXACTT_RBL || __ESP_EXACTT_URBL ) )
+    header      __ESP_EXACTT_RET      EnvelopeFrom:addr =~ /bounce\-(?:\d+)_HTML\-(?:\d+)\-(?<EXACTTARGET_RID>\d+)\-(?:\d+)\-(?:\d+)\@/
+    header      __ESP_EXACTT_RRBL     eval:check_hashbl_tag('exacttarget.espbl.snb.it/A', 'raw', 'EXACTTARGET_RID', '^127\.')
+    meta        RBL_ESP_EXACTTARGET   ( __ESP_EXACTT_CSA && __ESP_EXACTT_SFMC && ( __ESP_EXACTT_RBL || __ESP_EXACTT_URBL || __ESP_EXACTT_RRBL ) )
     describe    RBL_ESP_EXACTTARGET   Esp ExactTarget Id blacklist
     tflags      RBL_ESP_EXACTTARGET   net
 
