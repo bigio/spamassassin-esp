@@ -1132,6 +1132,12 @@ sub esp_sendgrid_check_id {
   return if not defined $sg_eid;
 
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
+  my $authres = $pms->get("Authentication-Results", undef);
+  if(not defined $envfrom) {
+    if(defined $authres and ($authres =~ /smtp\.mailfrom=\<(bounces\+\d+\-[a-z0-9\-\_\=\.]+\@.*\>)/ix)) {
+      $envfrom = $1;
+    }
+  }
   return if not defined $envfrom;
 
   # Find the customer id from the Return-Path

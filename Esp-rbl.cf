@@ -420,8 +420,10 @@ if (version >= 4.000000)
     header      __ESP_SENDGRID_DOM    EnvelopeFrom:addr =~ /\@(?:\w+\.)?(?<SENDGRID_DOM>[\w\.]+)\>?$/
     header      __ESP_SENDGRID_RBL_D  eval:check_hashbl_tag('sendgrid.espbl.snb.it/A', 'raw', 'SENDGRID_DOM', '^127\.')
     header      __ESP_SENDGRID_ID     EnvelopeFrom:addr =~ /bounces\+(?<SENDGRID_ID>\d+)\-/
+    header      __ESP_SENDGRID_IDA    Authentication-Results =~ /smtp.mailfrom=\<bounces\+(?<SENDGRID_IDA>\d+)\-/
     header      __ESP_SENDGRID_RBL    eval:check_hashbl_tag('sendgrid.espbl.snb.it/A', 'raw', 'SENDGRID_ID', '^127\.')
-    meta        RBL_ESP_SENDGRID      ( __ESP_SENDGRID_EID && ( __ESP_SENDGRID_RBL_D || __ESP_SENDGRID_RBL ) )
+    header      __ESP_SENDGRID_RBL_A  eval:check_hashbl_tag('sendgrid.espbl.snb.it/A', 'raw', 'SENDGRID_IDA', '^127\.')
+    meta        RBL_ESP_SENDGRID      ( __ESP_SENDGRID_EID && ( __ESP_SENDGRID_RBL_D || __ESP_SENDGRID_RBL || __ESP_SENDGRID_RBL_A ) )
     describe    RBL_ESP_SENDGRID      Esp Sendgrid Id blacklist
     tflags      RBL_ESP_SENDGRID      net
 
