@@ -72,6 +72,7 @@ sub new {
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdengine_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdrctr_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_msdynamics_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -148,6 +149,9 @@ Usage:
 
   esp_mailup_check()
     Checks for Mailup abused accounts
+
+  esp_mcontact_check()
+    Checks for MContact abused accounts
 
   esp_mdengine_check()
     Checks for MDEngine abused accounts
@@ -266,6 +270,11 @@ Files can be separated by a comma.
 =item mailup_feed [...]
 
 A list of files with abused Mailup accounts.
+Files can be separated by a comma.
+
+=item mcontact_feed [...]
+
+A list of files with abused MContact accounts.
 Files can be separated by a comma.
 
 =item mdengine_feed [...]
@@ -515,6 +524,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'mcontact_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'mdengine_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -600,6 +615,7 @@ sub finish_parsing_end {
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
   $self->_read_configfile('mailup_feed', 'MAILUP');
+  $self->_read_configfile('mcontact_feed', 'MCONTACT');
   $self->_read_configfile('mdengine_feed', 'MDENGINE');
   $self->_read_configfile('mdrctr_feed', 'MDRCTR');
   $self->_read_configfile('msdynamics_feed', 'MSDYNAMICS');
@@ -1000,6 +1016,24 @@ sub esp_mailup_check {
   return _hit_and_tag($self, $pms, $mailup_id, 'MAILUP', 'Mailup', 'MAILUPID', $opts);
 }
 
+sub esp_mcontact_check {
+  my ($self, $pms, $opts) = @_;
+  my $mcontact_id;
+
+  my $xmailer = $pms->get("X-Mailer", undef);
+  return if (not defined $xmailer or ($xmailer !~ /aspNetEmail/));
+
+  my $fid = $pms->get("Feedback-ID", 0);
+  return if not defined $fid;
+
+  # Find the customer id from the Feedback-ID
+  if($fid =~ /(?:\d+):(\d+):(?:\d+):MCONTACT/i) {
+    $mcontact_id = $1;
+    return _hit_and_tag($self, $pms, $mcontact_id, 'MCONTACT', 'MContact', 'MCONTACTID', $opts);
+  }
+  return;
+}
+
 sub esp_mdengine_check {
   my ($self, $pms, $opts) = @_;
   my $mdengine_id;
@@ -1219,6 +1253,7 @@ sub has_esp_mailchimp_check { 1 };
 sub has_esp_maildome_check { 1 };
 sub has_esp_mailgun_check { 1 };
 sub has_esp_mailup_check { 1 };
+sub has_esp_mcontact_check { 1 };
 sub has_esp_mdengine_check { 1 };
 sub has_esp_mdrctr_check { 1 };
 sub has_esp_msdynamics_check { 1 };

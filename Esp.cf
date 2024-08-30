@@ -135,6 +135,13 @@ header		MAILUP			eval:esp_mailup_check()
 describe 	MAILUP			Message from Mailup abused account
 score  		MAILUP			5.0
 
+# -------- MCONTACT --------
+mdengine_feed /etc/mail/spamassassin/mcontact_id.txt
+
+header          MCONTACT                eval:esp_mcontact_check()
+describe        MCONTACT                Message from MContact abused account
+score           MCONTACT                5.0
+
 # -------- MDENGINE --------
 mdengine_feed /etc/mail/spamassassin/mdengine_id.txt
 

@@ -150,6 +150,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_MAILUP net
   endif
 
+  header        ESP_MCONTACT    eval:esp_mcontact_check()
+  describe      ESP_MCONTACT    Message from MContact abused account
+  score		ESP_MCONTACT    0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_MCONTACT _MCONTACTID_.mcontact.espbl.snb.it A 127.0.0.1
+    describe    RBL_ESP_MCONTACT Esp MContact id blacklist
+    tflags      RBL_ESP_MCONTACT net
+  endif
+
   header        ESP_MDENGINE    eval:esp_mdengine_check('md5')
   describe      ESP_MDENGINE    Message from MDEngine abused account
   score		ESP_MDENGINE    0.01
@@ -383,6 +393,13 @@ if (version >= 4.000000)
     describe    RBL_ESP_MAILUP        Esp Mailup Id blacklist
     tflags      RBL_ESP_MAILUP        net
 
+    header      __ESP_MCONTACT_XM     X-Mailer =~ /aspNetEmail/
+    header      __ESP_MCONTACT_ID     Feedback-ID =~ /(?:\d+):(?<MCONTACT_ID>\d+):(?:\d+):MCONTACT/i
+    header      __ESP_MCONTACT_RBL    eval:check_hashbl_tag('mcontact.espbl.snb.it/A', 'raw', 'MCONTACT_ID', '^127\.')
+    meta        RBL_ESP_MCONTACT      ( __ESP_MCONTACT_XM && __ESP_MCONTACT_RBL )
+    describe    RBL_ESP_MCONTACT      Esp MContact Id blacklist
+    tflags      RBL_ESP_MCONTACT      net
+
     header      __ESP_MDENGINE_XM     X-Mailer =~ /MDEngine/
     header      __ESP_MDENGINE_ID     Feedback-ID =~ /\@(?<MDENGINE_ID>.*)/i
     header      __ESP_MDENGINE_RBL    eval:check_hashbl_tag('mdengine.espbl.snb.it/A', 'case/md5', 'MDENGINE_ID', '^127\.')
@@ -472,6 +489,7 @@ score       RBL_ESP_MAILCHIMP_M   4.0
 score       RBL_ESP_MAILDOME      4.0
 score       RBL_ESP_MAILGUN       4.0
 score       RBL_ESP_MAILUP        4.0
+score       RBL_ESP_MCONTACT      4.0
 score       RBL_ESP_MDENGINE      4.0
 score       RBL_ESP_MDRCTR        4.0
 score       RBL_ESP_MSDYNAMICS    4.0
