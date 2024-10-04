@@ -70,6 +70,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_EMARSYS  net
   endif
 
+  header        ESP_EMLBEST      eval:esp_emlbest_check()
+  describe      ESP_EMLBEST      Message from Emlbest abused account
+  score         ESP_EMLBEST      0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_EMLBEST  _EMLBESTID_.emlbest.espbl.snb.it A 127.0.0.1
+    describe    RBL_ESP_EMLBEST  Esp Emlbest Id blacklist
+    tflags      RBL_ESP_EMLBEST  net
+  endif
+
   header        ESP_EXACTTARGET  eval:esp_exacttarget_check()
   describe      ESP_EXACTTARGET  Message from ExactTarget abused account
   score         ESP_EXACTTARGET  0.01
@@ -324,6 +334,13 @@ if (version >= 4.000000)
     describe    RBL_ESP_EMARSYS       Esp EMarSys Id blacklist
     tflags      RBL_ESP_EMARSYS       net
 
+    header      __ESP_EMLBEST_CSA     X-Complaints-To =~ /\@mail\.emlbest\.com/
+    header      __ESP_EMLBEST_ID      X-Feedback-ID =~ /\d+:(?<EMLBEST_ID>\d+):campaign:\w+/
+    header      __ESP_EMLBEST_RBL     eval:check_hashbl_tag('emlbest.espbl.snb.it/A', 'raw', 'EMLBEST_ID', '^127\.')
+    meta        RBL_ESP_EMLBEST       ( __ESP_EMLBEST_CSA && __ESP_EMLBEST_RBL )
+    describe    RBL_ESP_EMLBEST       Esp Emlbest Id blacklist
+    tflags      RBL_ESP_EMLBEST       net
+
     header      __ESP_EXACTT_CSA      X-CSA-Complaints =~ /\@eco\.de/
     header      __ESP_EXACTT_SFMC     exists:X-SFMC-Stack
     header      __ESP_EXACTT_ID       x-messageKey =~ /(?<EXACTTARGET_ID>\d+)\-(?:\d+)\-(?:\d+)/
@@ -480,6 +497,7 @@ score       RBL_ESP_BEMAIL        4.0
 score       RBL_ESP_CONSTANTCONTACT  4.0
 score       RBL_ESP_ECMESSENGER   4.0
 score       RBL_ESP_EMARSYS       4.0
+score       RBL_ESP_EMLBEST       4.0
 score       RBL_ESP_EXACTTARGET   4.0
 score       RBL_ESP_FXYN          4.0
 score       RBL_ESP_KEYSENDER     4.0

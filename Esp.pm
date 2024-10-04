@@ -64,6 +64,7 @@ sub new {
   $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_ecmessenger_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_emarsys_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_emlbest_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_exacttarget_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_fxyn_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_keysender_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -125,6 +126,9 @@ Usage:
 
   esp_emarsys_check()
     Checks for EMarSys abused accounts
+
+  esp_emlbest_check()
+    Checks for Emlbest abused accounts
 
   esp_exacttarget_check()
     Checks for ExactTarget abused accounts
@@ -225,6 +229,11 @@ Files can be separated by a comma.
 =item emarsys_feed [...]
 
 A list of files with abused EMarSys accounts.
+Files can be separated by a comma.
+
+=item emlbest_feed [...]
+
+A list of files with abused Eimlbest accounts.
 Files can be separated by a comma.
 
 =item exacttarget_feed [...]
@@ -470,6 +479,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'emlbest_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'exacttarget_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -606,6 +621,7 @@ sub finish_parsing_end {
   $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
   $self->_read_configfile('ecmessenger_feed', 'ECMESSENGER');
   $self->_read_configfile('emarsys_feed', 'EMARSYS');
+  $self->_read_configfile('emlbest_feed', 'EMLBEST');
   $self->_read_configfile('exacttarget_feed', 'EXACTTARGET');
   $self->_read_configfile('fordem_feed', 'FORDEM');
   $self->_read_configfile('fxyn_feed', 'FXYN');
@@ -816,6 +832,30 @@ sub esp_emarsys_check {
   return if not defined $uid;
 
   return _hit_and_tag($self, $pms, $uid, 'EMARSYS', 'EMarSys', 'EMARSYSID', $opts);
+}
+
+sub esp_emlbest_check {
+  my ($self, $pms, $opts) = @_;
+  my $fid;
+
+  # return if X-Complaints-To is not what we want
+  my $xc = $pms->get("X-Complaints-To", undef);
+
+  chomp($xc);
+  if((not defined $xc) or ($xc ne 'abuse@mail.emlbest.com')) {
+    return;
+  }
+
+  # Parse the X-Feedback-ID
+  # X-Feedback-ID: 332658814:5769873:campaign:US
+  $fid = $pms->get("X-Feedback-ID", undef);
+  return if not defined $fid;
+
+  if($fid =~ /\d+:(\d+):campaign:\w+/) {
+    $fid = $1;
+    return _hit_and_tag($self, $pms, $fid, 'EMLBEST', 'Emlbest', 'EMLBESTID', $opts);
+  }
+  return;
 }
 
 sub esp_exacttarget_check {
@@ -1245,6 +1285,7 @@ sub has_esp_be_mail_check { 1 };
 sub has_esp_constantcontact_check { 1 };
 sub has_esp_ecmessenger_check { 1 };
 sub has_esp_emarsys_check { 1 };
+sub has_esp_emlbest_check { 1 };
 sub has_esp_exacttarget_check { 1 };
 sub has_esp_fxyn_check { 1 };
 sub has_esp_keysender_check { 1 };

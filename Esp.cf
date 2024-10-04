@@ -79,6 +79,13 @@ header		EMARSYS			eval:esp_emarsys_check()
 describe	EMARSYS			Message from EMarSys abused account
 score		EMARSYS			5.0
 
+# -------- EMLBEST --------
+emarsys_feed /etc/mail/spamassassin/emlbest_id.txt
+
+header		EMLBEST			eval:esp_emlbest_check()
+describe	EMLBEST			Message from Emlbest abused account
+score		EMLBEST			5.0
+
 # -------- EXACTTARGET --------
 exacttarget_feed /etc/mail/spamassassin/exacttarget_id.txt
 
