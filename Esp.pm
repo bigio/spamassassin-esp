@@ -841,7 +841,9 @@ sub esp_emlbest_check {
   # return if X-Complaints-To is not what we want
   my $xc = $pms->get("X-Complaints-To", undef);
 
-  chomp($xc);
+  if(defined($xc)) {
+    chomp($xc);
+  }
   if((not defined $xc) or ($xc ne 'abuse@mail.emlbest.com')) {
     return;
   }
