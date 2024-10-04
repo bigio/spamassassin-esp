@@ -30,6 +30,7 @@ ESPs currently supported are:
 - Constant Contact
 - EcMessenger
 - EmarSYS
+- Emlbest
 - ExactTarget
 - Fxyn
 - Keysender
