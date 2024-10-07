@@ -1011,17 +1011,19 @@ sub esp_mailgun_check {
   my $mailgun_id;
 
   # Mailgun doesn't define an X-Mailer header
-  my $xmailer = $pms->get("X-Mailer", undef);
-  if(defined $xmailer) {
-    return;
-  }
-
+  my $xtrack = $pms->get("X-Mailgun-Track-Clicks", undef);
   my $xsendip = $pms->get("X-Mailgun-Sending-Ip", undef);
-  if(not defined $xsendip) {
+  if(not defined $xsendip and not defined $xtrack) {
     return;
   }
 
   my $envfrom = $pms->get("EnvelopeFrom:addr", undef);
+  my $authres = $pms->get("Authentication-Results", undef);
+  if(not defined $envfrom) {
+    if(defined $authres and ($authres =~ /smtp\.mailfrom=\<(bounce\+(\w+)\.(\w+)\-.*\@.*\>)/ix)) {
+      $envfrom = $1;
+    }
+  }
   return if not defined $envfrom;
   # Find the customer id from the Return-Path
   $envfrom =~ /bounce\+(?:\w+)\.(\w+)\-/;

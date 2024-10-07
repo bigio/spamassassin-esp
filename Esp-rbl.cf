@@ -395,8 +395,10 @@ if (version >= 4.000000)
 
     header      __ESP_MAILGUN_XM      exists:X-Mailgun-Sending-Ip
     header      __ESP_MAILGUN_ID      EnvelopeFrom:addr =~ /bounce\+(?:\w+)\.(?<MAILGUN_ID>\w+)\-/
+    header      __ESP_MAILGUN_IDA     Authentication-Results =~ /smtp.mailfrom=\<bounce\+(?:\w+)\.(?<MAILGUN_IDA>\w+)\-/
     header      __ESP_MAILGUN_RBL     eval:check_hashbl_tag('mailgun.espbl.snb.it/A', 'raw', 'MAILGUN_ID', '^127\.')
-    meta        RBL_ESP_MAILGUN       ( __ESP_MAILGUN_XM && __ESP_MAILGUN_RBL )
+    header      __ESP_MAILGUN_RBLA    eval:check_hashbl_tag('mailgun.espbl.snb.it/A', 'raw', 'MAILGUN_IDA', '^127\.')
+    meta        RBL_ESP_MAILGUN       ( __ESP_MAILGUN_XM && ( __ESP_MAILGUN_RBL || __ESP_MAILGUN_RBLA ) )
     describe    RBL_ESP_MAILGUN       Esp Mailgun Id blacklist
     tflags      RBL_ESP_MAILGUN       net
 
