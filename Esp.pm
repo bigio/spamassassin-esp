@@ -660,7 +660,7 @@ sub finish_parsing_end {
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
   $self->_read_configfile('smtpcom_feed', 'SMTPCOM');
   $self->_read_configfile('sparkpost_feed', 'SPARKPOST');
-  $self->_read_configfile('turbosmtp_feed', 'SPARKPOST');
+  $self->_read_configfile('turbosmtp_feed', 'TURBOSMTP');
   $self->_read_configfile('webtrk_feed', 'WEBTRK');
 }
 
