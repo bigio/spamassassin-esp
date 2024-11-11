@@ -86,6 +86,7 @@ sub new {
   $self->register_eval_rule('esp_smtpcom_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sparkpost_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_turbosmtp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_webtrk_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
 }
@@ -192,6 +193,9 @@ Usage:
 
   esp_turbosmtp_check()
     Checks for TurboSmtp abused accounts
+
+  esp_webtrk_check()
+    Checks for "Webtrk" abused accounts
 
 Every sub can be called with an options parameter which can contain the keywords "md5"
 to crypt the Esp id using md5 algorithm and "nodash" which will substitute the "-" char
@@ -340,6 +344,11 @@ Files can be separated by a comma.
 A list of files with abused TurboSmtp accounts.
 Files can be separated by a comma.
 
+=item webtrk_feed [...]
+
+A list of files with abused "Webtrk" accounts.
+Files can be separated by a comma.
+
 =back
 
 =head1 TEMPLATE TAGS
@@ -433,6 +442,9 @@ SPARKPOSTID
 
 =item *
 TURBOSMTPID
+
+=item *
+WEBTRKID
 
 =back
 
@@ -610,6 +622,12 @@ sub set_config {
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
+  push(@cmds, {
+    setting => 'webtrk_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   $conf->{parser}->register_commands(\@cmds);
 }
 
@@ -643,6 +661,7 @@ sub finish_parsing_end {
   $self->_read_configfile('smtpcom_feed', 'SMTPCOM');
   $self->_read_configfile('sparkpost_feed', 'SPARKPOST');
   $self->_read_configfile('turbosmtp_feed', 'SPARKPOST');
+  $self->_read_configfile('webtrk_feed', 'WEBTRK');
 }
 
 sub _read_configfile {
@@ -1281,6 +1300,23 @@ sub esp_turbosmtp_check {
   return _hit_and_tag($self, $pms, $fid, 'TURBOSMTP', 'TurboSmtp', 'TURBOSMTPID', $opts);
 }
 
+sub esp_webtrk_check {
+  my ($self, $pms, $opts) = @_;
+
+  my $cid = $pms->get("X-Campaign", undef);
+  return if not defined $cid;
+
+  my $lu = $pms->get("List-Unsubscribe", undef);
+  return if not defined $lu;
+  my $fid;
+  if($lu =~ /https?:\/\/.{3,32}\/u\/\w+\-(\w+)/) {
+    $fid = $1;
+  }
+  return if not defined $fid;
+
+  return _hit_and_tag($self, $pms, $fid, 'WEBTRK', 'Webtrk', 'WEBTRKID', $opts);
+}
+
 # Version features
 sub has_esp_4dem_check { 1 };
 sub has_esp_acelle_check { 1 };
@@ -1309,5 +1345,6 @@ sub has_esp_sendinblue_check { 1 };
 sub has_esp_smtpcom_check { 1 };
 sub has_esp_sparkpost_check { 1 };
 sub has_esp_turbosmtp_check { 1 };
+sub has_esp_webtrk_check { 1 };
 
 1;
