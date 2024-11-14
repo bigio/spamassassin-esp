@@ -49,4 +49,3 @@ ESPs currently supported are:
 - SmtpCOM
 - SparkPost
 - TurboSmtp
-- Webtrk (ESPs that uses webtrk24[.]com and similar tracking domains
