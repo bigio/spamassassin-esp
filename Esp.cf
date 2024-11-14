@@ -239,11 +239,4 @@ header		TURBOSMTP		eval:esp_turbosmtp_check()
 describe 	TURBOSMTP		Message from TurboSmtp abused account
 score	  	TURBOSMTP		5.0
 
-# -------- WEBTRK --------
-webtrk_feed /etc/mail/spamassassin/webtrk_id.txt
-
-header		WEBTRK			eval:esp_webtrk_check()
-describe 	WEBTRK			Message from "Webtrk" abused account
-score	  	WEBTRK			5.0
-
 endif # Mail::SpamAssassin::Plugin::Esp

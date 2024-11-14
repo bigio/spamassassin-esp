@@ -280,16 +280,6 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_TURBOSMTP net
   endif
 
-  header        ESP_WEBTRK  	eval:esp_webtrk_check()
-  describe      ESP_WEBTRK  	Message from "Webtrk" abused account
-  score         ESP_WEBTRK  	0.01
-
-  ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_WEBTRK _WEBTRKID_.webtrk.espbl.snb.it A 127.0.0.1
-    describe    RBL_ESP_WEBTRK Esp "Webtrk" blacklist
-    tflags      RBL_ESP_WEBTRK net
-  endif
-
 else
 
 if (version >= 4.000000)
@@ -497,13 +487,6 @@ if (version >= 4.000000)
     describe    RBL_ESP_TURBOSMTP     Esp TurboSmtp Id blacklist
     tflags      RBL_ESP_TURBOSMTP     net
 
-    header      __ESP_WEBTRK_CA       exists:X-Campaign
-    header      __ESP_WEBTRK_ID       List-Unsubscribe =~ /https?:\/\/.{3,32}\/u\/\w+\-(?<WEBTRK_ID>\w+)/
-    header      __ESP_WEBTRK_RBL      eval:check_hashbl_tag('webtrk.espbl.snb.it/A', 'raw', 'WEBTRK_ID', '^127\.')
-    meta        RBL_ESP_WEBTRK        ( __ESP_WEBTRK_CA && __ESP_WEBTRK_RBL )
-    describe    RBL_ESP_WEBTRK        Esp "Webtrk" Id blacklist
-    tflags      RBL_ESP_WEBTRK        net
-
   endif
 endif
 
@@ -537,4 +520,3 @@ score       RBL_ESP_SENDINBLUE    4.0
 score       RBL_ESP_SMTPCOM       4.0
 score       RBL_ESP_SPARKPOST     4.0
 score       RBL_ESP_TURBOSMTP     4.0
-score       RBL_ESP_WEBTRK        4.0
