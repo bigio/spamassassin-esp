@@ -22,6 +22,8 @@ Sample rule to enable the plugin (add the score you prefer to the rule):
 
 Instead of using your own txt files or your own rbl, you can just use the Esp-rbl.cf file to query an ESP rbl.  
 
+To submit more IDs to rbl just forward the email as attachment to submit+spam@bl[.]snb[.]it
+
 ESPs currently supported are:  
 - 4Dem
 - Acelle
