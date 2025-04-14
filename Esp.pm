@@ -1223,6 +1223,18 @@ sub esp_sendgrid_check_id {
     $sendgrid_id = $1;
     return _hit_and_tag($self, $pms, $sendgrid_id, 'SENDGRID', 'Sendgrid', 'SENDGRIDID', $opts);
   }
+
+  my $uris = $pms->get_uri_detail_list();
+  while (my($uri, $info) = each %{$uris}) {
+    next if ($uri =~ /^mailto:/i);
+    next unless ($info->{hosts});
+    if (($info->{types}->{a}) || ($info->{types}->{parsed})) {
+      if($uri =~ /https?:\/\/u(\d+)\.ct\.sendgrid\.net/) {
+        $sendgrid_id = $1;
+        return _hit_and_tag($self, $pms, $sendgrid_id, 'SENDGRID', 'Sendgrid', 'SENDGRIDID', $opts);
+      }
+    }
+  }
 }
 
 sub esp_sendinblue_check {
