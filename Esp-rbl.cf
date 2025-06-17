@@ -478,7 +478,11 @@ if (version >= 4.000000)
     tflags      RBL_ESP_SMTPCOM       net
 
     header      __ESP_SPARKPOST_ID    List-Id =~ /^<?[a-z]+\.(?<SPARKPOST_ID>[0-9]+)\.(?:[0-9]+)\.sparkpostmail\.com>?$/
-    header      RBL_ESP_SPARKPOST     eval:check_hashbl_tag('sparkpost.espbl.snb.it/A', 'raw', 'SPARKPOST_ID', '^127\.')
+    header      __ESP_SPARKPOST_BID   EnvelopeFrom:addr =~ /\=bounces\-(?<SPARKPOST_BID>\d+)\@/
+    header      __ESP_SPARKPOST_MS    exists:X-MSFBL
+    header      __ESP_SPARKPOST_RBL   eval:check_hashbl_tag('sparkpost.espbl.snb.it/A', 'raw', 'SPARKPOST_ID', '^127\.')
+    header      __ESP_SPARKPOST_BRBL  eval:check_hashbl_tag('sparkpost.espbl.snb.it/A', 'raw', 'SPARKPOST_BID', '^127\.')
+    meta        RBL_ESP_SPARKPOST     ( __ESP_SPARKPOST_RBL || ( __ESP_SPARKPOST_BRBL && __ESP_SPARKPOST_MS ) )
     describe    RBL_ESP_SPARKPOST     Esp Sparkpost Id blacklist
     tflags      RBL_ESP_SPARKPOST     net
 
