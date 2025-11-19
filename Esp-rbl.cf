@@ -260,6 +260,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_SMTPCOM net
   endif
 
+  header        ESP_SMTPPULSE   eval:esp_smtppulse_check()
+  describe      ESP_SMTPPULSE   Message from Smtp-Pulse abused account
+  score         ESP_SMTPPULSE   0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_SMTPPULSE _SMTPPULSEID_.smtppulse.espbl.snb.it A 127.0.0.1
+    describe    RBL_ESP_SMTPPULSE Esp Smtp-Pulse blacklist
+    tflags      RBL_ESP_SMTPPULSE net
+  endif
+
   header        ESP_SPARKPOST  eval:esp_sparkpost_check()
   describe      ESP_SPARKPOST  Message from Sparkpost abused account
   score         ESP_SPARKPOST  0.01
@@ -477,6 +487,13 @@ if (version >= 4.000000)
     describe    RBL_ESP_SMTPCOM       Esp Smtpcom Id blacklist
     tflags      RBL_ESP_SMTPCOM       net
 
+    header      __ESP_SMTPPULSE_CT    X-Complaints-To =~ /abuse\@smtp\-pulse\.com/
+    header      __ESP_SMTPPULSE_ID    Feedback-ID =~ /\d+:smtp:(?<SMTPPULSE_ID>.*)/
+    header      __ESP_SMTPPULSE_RBL   eval:check_hashbl_tag('smtppulse.espbl.snb.it/A', 'raw', 'SMTPPULSE_ID', '^127\.')
+    meta        RBL_ESP_SMTPPULSE     ( __ESP_SMTPPULSE_CT && __ESP_SMTPPULSE_RBL )
+    describe    RBL_ESP_SMTPPULSE     Esp Smtp-Pulse Id blacklist
+    tflags      RBL_ESP_SMTPPULSE     net
+
     header      __ESP_SPARKPOST_ID    List-Id =~ /^<?[a-z]+\.(?<SPARKPOST_ID>[0-9]+)\.(?:[0-9]+)\.sparkpostmail\.com>?$/
     header      __ESP_SPARKPOST_BID   EnvelopeFrom:addr =~ /\=bounces\-(?<SPARKPOST_BID>\d+)\@/
     header      __ESP_SPARKPOST_MS    exists:X-MSFBL
@@ -524,5 +541,6 @@ score       RBL_ESP_SALESFORCE    4.0
 score       RBL_ESP_SENDGRID      4.0
 score       RBL_ESP_SENDINBLUE    4.0
 score       RBL_ESP_SMTPCOM       4.0
+score       RBL_ESP_SMTPPULSE     4.0
 score       RBL_ESP_SPARKPOST     4.0
 score       RBL_ESP_TURBOSMTP     4.0

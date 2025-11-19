@@ -225,6 +225,13 @@ header		SMTPCOM			eval:esp_smtpcom_check()
 describe 	SMTPCOM			Message from SmtpCom abused account
 score	  	SMTPCOM			5.0
 
+# -------- SMTP-PULSE --------
+smtppulse_feed /etc/mail/spamassassin/smtppulse_id.txt
+
+header		SMTPPULSE		eval:esp_smtppulse_check()
+describe 	SMTPPULSE		Message from Smtp-Pulse abused account
+score	  	SMTPPULSE		5.0
+
 # -------- SPARKPOST --------
 sparkpost_feed /etc/mail/spamassassin/sparkpost_id.txt
 

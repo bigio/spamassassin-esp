@@ -84,6 +84,7 @@ sub new {
   $self->register_eval_rule('esp_sendgrid_check_id',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendinblue_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_smtpcom_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_smtppulse_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sparkpost_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_turbosmtp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
@@ -186,6 +187,9 @@ Usage:
 
   esp_smtpcom_check()
     Checks for SmtpCom abused accounts
+
+  esp_smtppulse_check()
+    Checks for Smtp-Pulse abused accounts
 
   esp_sparkpost_check()
     Checks for Sparkpost abused accounts
@@ -330,6 +334,11 @@ Files can be separated by a comma.
 A list of files with abused SmtpCom accounts.
 Files can be separated by a comma.
 
+=item smtppulse_feed [...]
+
+A list of files with abused Smtp-Pulse accounts.
+Files can be separated by a comma.
+
 =item sparkpost_feed [...]
 
 A list of files with abused Sparkpost accounts.
@@ -427,6 +436,9 @@ SENDINBLUEID
 
 =item *
 SMTPCOMID
+
+=item *
+SMTPPULSEID
 
 =item *
 SPARKPOSTID
@@ -599,6 +611,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'smtppulse_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'sparkpost_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -641,6 +659,7 @@ sub finish_parsing_end {
   $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
   $self->_read_configfile('sendinblue_feed', 'SENDINBLUE');
   $self->_read_configfile('smtpcom_feed', 'SMTPCOM');
+  $self->_read_configfile('smtppulse_feed', 'SMTPPULSE');
   $self->_read_configfile('sparkpost_feed', 'SPARKPOST');
   $self->_read_configfile('turbosmtp_feed', 'TURBOSMTP');
 }
@@ -1265,6 +1284,22 @@ sub esp_smtpcom_check {
   return _hit_and_tag($self, $pms, $smtpcom_id, 'SMTPCOM', 'Smtpcom', 'SMTPCOMID', $opts);
 }
 
+sub esp_smtppulse_check {
+  my ($self, $pms, $opts) = @_;
+  my $pulse_id;
+
+  my $feed_id = $pms->get("Feedback-ID", undef);
+  my $xcomplaintsto = $pms->get("X-Complaints-To", undef);
+
+  if($xcomplaintsto =~ /abuse\@smtp\-pulse\.com/) {
+    if($feed_id =~ /\d+:smtp:(.*)/) {
+      $pulse_id = $1;
+      return _hit_and_tag($self, $pms, $pulse_id, 'SMTPPULSE', 'Smtp-Pulse', 'SMTPPULSEID', $opts);
+    }
+  }
+  return;
+}
+
 sub esp_sparkpost_check {
   my ($self, $pms, $opts) = @_;
   my $sparkpost_id;
@@ -1319,6 +1354,7 @@ sub has_esp_salesforce_check { 1 };
 sub has_esp_sendgrid_check { 1 };
 sub has_esp_sendinblue_check { 1 };
 sub has_esp_smtpcom_check { 1 };
+sub has_esp_smtppulse_check { 1 };
 sub has_esp_sparkpost_check { 1 };
 sub has_esp_turbosmtp_check { 1 };
 
