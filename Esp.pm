@@ -984,16 +984,13 @@ sub esp_klaviyo_check {
 
 sub esp_mailchimp_check {
   my ($self, $pms, $opts) = @_;
-  my $mailchimp_id;
 
   # check some headers
-  my $xmailer = $pms->get("X-Mailer", undef);
   my $xmandrill = $pms->get("X-Mandrill-User", undef);
+  my $mailchimp_id = $pms->get("X-MC-User", undef);
 
-  if((defined $xmailer) and ($xmailer =~ /MailChimp Mailer/i)) {
-    $mailchimp_id = $pms->get("X-MC-User", undef);
-    return if not defined $mailchimp_id;
-    return if ($mailchimp_id !~ /^([0-9a-z]{25})$/);
+  if(defined $mailchimp_id) {
+    return if ($mailchimp_id !~ /^([0-9a-z]{11,25})$/);
   } elsif(defined $xmandrill) {
     return if ($xmandrill !~ /^md_([0-9a-z]{8})$/);
     $mailchimp_id = $xmandrill;
