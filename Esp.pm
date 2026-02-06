@@ -1041,9 +1041,17 @@ sub esp_mailgun_check {
     }
   }
   return if not defined $envfrom;
-  # Find the customer id from the Return-Path
-  $envfrom =~ /bounce\+(?:\w+)\.(\w+)\-/;
-  $mailgun_id = $1;
+
+  my $xmailgunvar = $pms->get("X-Mailgun-Variables");
+  if($xmailgunvar =~ /"user_id": "(\d+)"/) {
+    $mailgun_id = $1;
+  }
+  if(not defined $mailgun_id) {
+    # Find the customer id from the Return-Path
+    if($envfrom =~ /bounce\+(\w+)\.(\w+)\-/) {
+      $mailgun_id = $2;
+    }
+  }
 
   return _hit_and_tag($self, $pms, $mailgun_id, 'MAILGUN', 'Mailgun', 'MAILGUNID', $opts);
 }
