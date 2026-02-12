@@ -990,7 +990,7 @@ sub esp_mailchimp_check {
   my $mailchimp_id = $pms->get("X-MC-User", undef);
 
   if(defined $mailchimp_id) {
-    return if ($mailchimp_id !~ /^([0-9a-z]{11,25})$/);
+    return if ($mailchimp_id !~ /^([0-9a-z-]{11,25})$/);
   } elsif(defined $xmandrill) {
     return if ($xmandrill !~ /^md_([0-9a-z]{8})$/);
     $mailchimp_id = $xmandrill;
