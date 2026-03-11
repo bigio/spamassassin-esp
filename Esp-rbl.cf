@@ -5,7 +5,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_FORDEM       0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_FORDEM   _FORDEMID_.fordem.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_FORDEM   _FORDEMID_.fordem.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_FORDEM   Esp 4dem Id blacklist
     tflags      RBL_ESP_FORDEM   net
   endif
@@ -15,7 +15,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_ACELLE       0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_ACELLE   _ACELLEID_.acelle.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_ACELLE   _ACELLEID_.acelle.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_ACELLE   Esp Acelle Id blacklist
     tflags      RBL_ESP_ACELLE   net
   endif
@@ -25,7 +25,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_AMAZON       0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_AMAZON   _AMAZONSESID_.amazonses.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_AMAZON   _AMAZONSESID_.amazonses.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_AMAZON   Esp Amazon SES Id blacklist
     tflags      RBL_ESP_AMAZON   net
   endif
@@ -35,7 +35,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_BEMAIL       0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_BEMAIL   _BEMAILID_.bemail.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_BEMAIL   _BEMAILID_.bemail.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_BEMAIL   Esp Be-Mail Id blacklist
     tflags      RBL_ESP_BEMAIL   net
   endif
@@ -45,7 +45,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_CONSTANTCONTACT  0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_CONSTANTCONTACT _CONSTANTCONTACTID_.constantcontact.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_CONSTANTCONTACT _CONSTANTCONTACTID_.constantcontact.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_CONSTANTCONTACT Esp Constant Contact Id blacklist
     tflags      RBL_ESP_CONSTANTCONTACT net
   endif
@@ -55,7 +55,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_ECMESSENGER  0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_ECMESSENGER _ECMESSENGERID_.ecmessenger.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_ECMESSENGER _ECMESSENGERID_.ecmessenger.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_ECMESSENGER Esp Ec-Messenger Id blacklist
     tflags      RBL_ESP_ECMESSENGER net
   endif
@@ -65,7 +65,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_EMARSYS      0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_EMARSYS  _EMARSYSID_.emarsys.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_EMARSYS  _EMARSYSID_.emarsys.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_EMARSYS  Esp EMarSys Id blacklist
     tflags      RBL_ESP_EMARSYS  net
   endif
@@ -75,7 +75,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_EMLBEST      0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_EMLBEST  _EMLBESTID_.emlbest.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_EMLBEST  _EMLBESTID_.emlbest.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_EMLBEST  Esp Emlbest Id blacklist
     tflags      RBL_ESP_EMLBEST  net
   endif
@@ -85,7 +85,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_EXACTTARGET  0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_EXACTTARGET  _EXACTTARGETID_.exacttarget.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_EXACTTARGET  _EXACTTARGETID_.exacttarget.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_EXACTTARGET  Esp ExactTarget Id blacklist
     tflags      RBL_ESP_EXACTTARGET  net
   endif
@@ -95,7 +95,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_FXYN         0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_FXYN     _FXYNID_.fxyn.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_FXYN     _FXYNID_.fxyn.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_FXYN     Esp Fxyn Id blacklist
     tflags      RBL_ESP_FXYN     net
   endif
@@ -105,7 +105,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_KEYSENDER    0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_KEYSENDER	_KEYSENDERID_.keysender.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_KEYSENDER	_KEYSENDERID_.keysender.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_KEYSENDER     	Esp Keysender Id blacklist
     tflags      RBL_ESP_KEYSENDER	net
   endif
@@ -115,7 +115,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_KLAVIYO		0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_KLAVIYO		_KLAVIYOID_.klaviyo.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_KLAVIYO		_KLAVIYOID_.klaviyo.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_KLAVIYO		Esp Klaviyo Id blacklist
     tflags      RBL_ESP_KLAVIYO		net
   endif
@@ -125,7 +125,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score		ESP_MAILCHIMP    0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MAILCHIMP _MAILCHIMPID_.mailchimp.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_MAILCHIMP _MAILCHIMPID_.mailchimp.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MAILCHIMP Esp Mailchimp domain blacklist
     tflags      RBL_ESP_MAILCHIMP net
   endif
@@ -135,7 +135,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score		ESP_MAILDOME    0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MAILDOME _MAILDOMEID_.maildome.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_MAILDOME _MAILDOMEID_.maildome.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MAILDOME Esp MailDome domain blacklist
     tflags      RBL_ESP_MAILDOME net
   endif
@@ -145,7 +145,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score		ESP_MAILGUN     0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MAILGUN _MAILGUNID_.mailgun.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_MAILGUN _MAILGUNID_.mailgun.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MAILGUN Esp Mailgun domain blacklist
     tflags      RBL_ESP_MAILGUN net
   endif
@@ -155,7 +155,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score		ESP_MAILUP      0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MAILUP _MAILUPID_.mailup.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_MAILUP _MAILUPID_.mailup.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MAILUP Esp Mailup id blacklist
     tflags      RBL_ESP_MAILUP net
   endif
@@ -165,7 +165,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score		ESP_MCONTACT    0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MCONTACT _MCONTACTID_.mcontact.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_MCONTACT _MCONTACTID_.mcontact.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MCONTACT Esp MContact id blacklist
     tflags      RBL_ESP_MCONTACT net
   endif
@@ -175,7 +175,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score		ESP_MDENGINE    0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MDENGINE _MDENGINEID_.mdengine.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_MDENGINE _MDENGINEID_.mdengine.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MDENGINE Esp MDEngine id blacklist
     tflags      RBL_ESP_MDENGINE net
   endif
@@ -185,7 +185,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score		ESP_MDRCTR      0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MDRCTR _MDRCTRID_.mdrctr.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_MDRCTR _MDRCTRID_.mdrctr.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MDRCTR Esp Mdrctr id blacklist
     tflags      RBL_ESP_MDRCTR net
   endif
@@ -195,7 +195,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score		ESP_MSDYNAMICS  0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MSDYNAMICS _MSDYNAMICSID_.msdynamics.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_MSDYNAMICS _MSDYNAMICSID_.msdynamics.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MSDYNAMICS Esp Microsoft Dynamics blacklist
     tflags      RBL_ESP_MSDYNAMICS net
   endif
@@ -205,7 +205,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_MSND       0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MSND _MSNDID_.msnd.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_MSND _MSNDID_.msnd.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MSND Esp Msnd Id blacklist
     tflags      RBL_ESP_MSND net
   endif
@@ -215,7 +215,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_SALESFORCE 0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_SALESFORCE _SALESFORCEID_.salesforce.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_SALESFORCE _SALESFORCEID_.salesforce.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_SALESFORCE Esp Salesforce Id blacklist
     tflags      RBL_ESP_SALESFORCE net
   endif
@@ -225,7 +225,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_SENDGRID_ID  0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_SENDGRID_ID _SENDGRIDID_.sendgrid.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_SENDGRID_ID _SENDGRIDID_.sendgrid.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_SENDGRID_ID Esp Sendgrid Id blacklist
     tflags      RBL_ESP_SENDGRID_ID net
   endif
@@ -235,7 +235,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_SENDGRID_DOM 0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_SENDGRID_DOM _SENDGRIDDOM_.sendgrid.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_SENDGRID_DOM _SENDGRIDDOM_.sendgrid.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_SENDGRID_DOM Esp Sendgrid domain blacklist
     tflags      RBL_ESP_SENDGRID_DOM net
   endif
@@ -245,7 +245,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score 	ESP_SENDINBLUE	0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_SENDINBLUE _SENDINBLUEID_.sendinblue.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_SENDINBLUE _SENDINBLUEID_.sendinblue.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_SENDINBLUE Esp Sendinblue domain blacklist
     tflags      RBL_ESP_SENDINBLUE net
   endif
@@ -255,7 +255,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_SMTPCOM  0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_SMTPCOM _SMTPCOMID_.smtpcom.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_SMTPCOM _SMTPCOMID_.smtpcom.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_SMTPCOM Esp Smtpcom blacklist
     tflags      RBL_ESP_SMTPCOM net
   endif
@@ -265,7 +265,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_SMTPPULSE   0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_SMTPPULSE _SMTPPULSEID_.smtppulse.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_SMTPPULSE _SMTPPULSEID_.smtppulse.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_SMTPPULSE Esp Smtp-Pulse blacklist
     tflags      RBL_ESP_SMTPPULSE net
   endif
@@ -275,7 +275,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_SPARKPOST  0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_SPARKPOST _SPARKPOSTID_.sparkpost.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_SPARKPOST _SPARKPOSTID_.sparkpost.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_SPARKPOST Esp Sparkpost blacklist
     tflags      RBL_ESP_SPARKPOST net
   endif
@@ -285,7 +285,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
   score         ESP_TURBOSMTP  0.01
 
   ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_TURBOSMTP _TURBOSMTPID_.turbosmtp.espbl.snb.it A 127.0.0.1
+    askdns      RBL_ESP_TURBOSMTP _TURBOSMTPID_.turbosmtp.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_TURBOSMTP Esp TurboSmtp blacklist
     tflags      RBL_ESP_TURBOSMTP net
   endif
@@ -297,56 +297,56 @@ if (version >= 4.000000)
 
     header      __ESP_AMAZON_OUT      X-SES-Outgoing =~ /\d{4}\.\d{2}\.\d{2}\-/
     header      __ESP_AMAZON_FID      Feedback-ID =~ /\d+\.[a-z]+\-[a-z]+\-\d+\.(?<AMAZON_FID>.*)\:AmazonSES/
-    header      __ESP_AMAZON_RBL      eval:check_hashbl_tag('amazonses.espbl.snb.it/A', 'case/md5', 'AMAZON_FID', '^127\.')
+    header      __ESP_AMAZON_RBL      eval:check_hashbl_tag('amazonses.esp.btcblack.it/A', 'case/md5', 'AMAZON_FID', '^127\.')
     meta        RBL_ESP_AMAZON        ( __ESP_AMAZON_OUT && __ESP_AMAZON_RBL )
     describe    RBL_ESP_AMAZON        Esp Amazon SES Id blacklist
     tflags      RBL_ESP_AMAZON        net
 
     header      __ESP_ACELLE_CID      X-Acelle-Customer-Id =~ /^(?<ACELLE_CID>.*)$/
     header      __ESP_ACELLE_XMAIL    exists:X-Mailer
-    header      __ESP_ACELLE_RBL      eval:check_hashbl_tag('acelle.espbl.snb.it/A', 'raw', 'ACELLE_CID', '^127\.')
+    header      __ESP_ACELLE_RBL      eval:check_hashbl_tag('acelle.esp.btcblack.it/A', 'raw', 'ACELLE_CID', '^127\.')
     meta        RBL_ESP_ACELLE        ( __ESP_ACELLE_RBL && !__ESP_ACELLE_XMAIL )
     describe    RBL_ESP_ACELLE        Esp Acelle Id blacklist
     tflags      RBL_ESP_ACELLE        net
 
     header      __ESP_4DEM_SMTP       X-SMTPAPI =~ /unique_args/
     header      __ESP_4DEM_UID        X-UiD =~ /^(?<FORDEM_UID>\d+)$/
-    header      __ESP_4DEM_RBL        eval:check_hashbl_tag('fordem.espbl.snb.it/A', 'raw', 'FORDEM_UID', '^127\.')
+    header      __ESP_4DEM_RBL        eval:check_hashbl_tag('fordem.esp.btcblack.it/A', 'raw', 'FORDEM_UID', '^127\.')
     meta        RBL_ESP_FORDEM        ( __ESP_4DEM_SMTP && __ESP_4DEM_RBL )
     describe    RBL_ESP_FORDEM        Esp 4dem Id blacklist
     tflags      RBL_ESP_FORDEM        net
 
     header      __ESP_BEMAIL_CSA      X-CSA-Complaints =~ /\@eco\.de/
     header      __ESP_BEMAIL_FID      Feedback-ID =~ /(?:\d+)\:(?<BEMAIL_FID>\d+)\:(?:\d+)\:/
-    header      __ESP_BEMAIL_RBL      eval:check_hashbl_tag('bemail.espbl.snb.it/A', 'raw', 'BEMAIL_FID', '^127\.')
+    header      __ESP_BEMAIL_RBL      eval:check_hashbl_tag('bemail.esp.btcblack.it/A', 'raw', 'BEMAIL_FID', '^127\.')
     meta        RBL_ESP_BEMAIL        ( __ESP_BEMAIL_CSA && __ESP_BEMAIL_RBL )
     describe    RBL_ESP_BEMAIL        Esp Be-Mail Id blacklist
     tflags      RBL_ESP_BEMAIL        net
 
     header      __ESP_CONSTANT_XM     X-Mailer =~ /Roving\sConstant\sContact/
     header      __ESP_CONSTANT_RID    X-Roving-Id =~ /^(?<CONSTANT_RID>\d+)\.\d+$/
-    header      __ESP_CONSTANT_RBL    eval:check_hashbl_tag('constantcontact.espbl.snb.it/A', 'raw', 'CONSTANT_RID', '^127\.')
+    header      __ESP_CONSTANT_RBL    eval:check_hashbl_tag('constantcontact.esp.btcblack.it/A', 'raw', 'CONSTANT_RID', '^127\.')
     meta        RBL_ESP_CONSTANTCONTACT  ( __ESP_CONSTANT_XM && __ESP_CONSTANT_RBL )
     describe    RBL_ESP_CONSTANTCONTACT  Esp Constant Contact Id blacklist
     tflags      RBL_ESP_CONSTANTCONTACT  net
 
     header      __ESP_ECMESSENGER_XM  X-Mailer =~ /eC\-Messenger\sBuild\s\d/
     header      __ESP_ECMESSENGER_CID X-eC-messenger-cid =~ /^(?<ECMESSENGER_CID>\d+)$/
-    header      __ESP_ECMESSENGER_RBL eval:check_hashbl_tag('ecmessenger.espbl.snb.it/A', 'raw', 'ECMESSENGER_CID', '^127\.')
+    header      __ESP_ECMESSENGER_RBL eval:check_hashbl_tag('ecmessenger.esp.btcblack.it/A', 'raw', 'ECMESSENGER_CID', '^127\.')
     meta        RBL_ESP_ECMESSENGER   ( __ESP_ECMESSENGER_XM && __ESP_ECMESSENGER_RBL )
     describe    RBL_ESP_ECMESSENGER   Esp Ec-Messenger Id blacklist
     tflags      RBL_ESP_ECMESSENGER   net
 
     header      __ESP_EMARSYS_CSA     X-CSA-Complaints =~ /\@eco\.de/
     header      __ESP_EMARSYS_ID      X-EMarSys-Identify =~ /(?<EMARSYS_ID>\d+)_(?:\d+)_(?:\d+)/
-    header      __ESP_EMARSYS_RBL     eval:check_hashbl_tag('emarsys.espbl.snb.it/A', 'raw', 'EMARSYS_ID', '^127\.')
+    header      __ESP_EMARSYS_RBL     eval:check_hashbl_tag('emarsys.esp.btcblack.it/A', 'raw', 'EMARSYS_ID', '^127\.')
     meta        RBL_ESP_EMARSYS       ( __ESP_EMARSYS_CSA && __ESP_EMARSYS_RBL )
     describe    RBL_ESP_EMARSYS       Esp EMarSys Id blacklist
     tflags      RBL_ESP_EMARSYS       net
 
     header      __ESP_EMLBEST_CSA     X-Complaints-To =~ /\@mail\.emlbest\.com/
     header      __ESP_EMLBEST_ID      X-Feedback-ID =~ /\d+:(?<EMLBEST_ID>\d+):campaign:\w+/
-    header      __ESP_EMLBEST_RBL     eval:check_hashbl_tag('emlbest.espbl.snb.it/A', 'raw', 'EMLBEST_ID', '^127\.')
+    header      __ESP_EMLBEST_RBL     eval:check_hashbl_tag('emlbest.esp.btcblack.it/A', 'raw', 'EMLBEST_ID', '^127\.')
     meta        RBL_ESP_EMLBEST       ( __ESP_EMLBEST_CSA && __ESP_EMLBEST_RBL )
     describe    RBL_ESP_EMLBEST       Esp Emlbest Id blacklist
     tflags      RBL_ESP_EMLBEST       net
@@ -354,50 +354,50 @@ if (version >= 4.000000)
     header      __ESP_EXACTT_CSA      X-CSA-Complaints =~ /\@eco\.de/
     header      __ESP_EXACTT_SFMC     exists:X-SFMC-Stack
     header      __ESP_EXACTT_ID       x-messageKey =~ /(?<EXACTTARGET_ID>\d+)\-(?:\d+)\-(?:\d+)/
-    header      __ESP_EXACTT_RBL      eval:check_hashbl_tag('exacttarget.espbl.snb.it/A', 'raw', 'EXACTTARGET_ID', '^127\.')
+    header      __ESP_EXACTT_RBL      eval:check_hashbl_tag('exacttarget.esp.btcblack.it/A', 'raw', 'EXACTTARGET_ID', '^127\.')
     header      __ESP_EXACTT_UID      x-messageKey =~ /undelivered\+(?<EXACTTARGET_UID>\d+)\+(?:\d+)\@pd25\.com/
-    header      __ESP_EXACTT_URBL     eval:check_hashbl_tag('exacttarget.espbl.snb.it/A', 'raw', 'EXACTTARGET_UID', '^127\.')
+    header      __ESP_EXACTT_URBL     eval:check_hashbl_tag('exacttarget.esp.btcblack.it/A', 'raw', 'EXACTTARGET_UID', '^127\.')
     header      __ESP_EXACTT_RET      EnvelopeFrom:addr =~ /bounce\-(?:\d+)_HTML\-(?:\d+)\-(?<EXACTTARGET_RID>\d+)\-(?:\d+)\-(?:\d+)\@/
-    header      __ESP_EXACTT_RRBL     eval:check_hashbl_tag('exacttarget.espbl.snb.it/A', 'raw', 'EXACTTARGET_RID', '^127\.')
+    header      __ESP_EXACTT_RRBL     eval:check_hashbl_tag('exacttarget.esp.btcblack.it/A', 'raw', 'EXACTTARGET_RID', '^127\.')
     meta        RBL_ESP_EXACTTARGET   ( __ESP_EXACTT_CSA && __ESP_EXACTT_SFMC && ( __ESP_EXACTT_RBL || __ESP_EXACTT_URBL || __ESP_EXACTT_RRBL ) )
     describe    RBL_ESP_EXACTTARGET   Esp ExactTarget Id blacklist
     tflags      RBL_ESP_EXACTTARGET   net
 
     header      __ESP_FXYN_XM         X-Fxyn-Mailer =~ /SwiftMailer/
     header      __ESP_FXYN_UID        X-Fxyn-Customer-Uid =~ /(?<FXYN_UID>.*)\s+/
-    header      __ESP_FXYN_RBL        eval:check_hashbl_tag('fxyn.espbl.snb.it/A', 'raw', 'FXYN_UID', '^127\.')
+    header      __ESP_FXYN_RBL        eval:check_hashbl_tag('fxyn.esp.btcblack.it/A', 'raw', 'FXYN_UID', '^127\.')
     meta        RBL_ESP_FXYN          ( __ESP_FXYN_XM && __ESP_FXYN_RBL )
     describe    RBL_ESP_FXYN          Esp Fxyn Id blacklist
     tflags      RBL_ESP_FXYN          net
 
     header      __ESP_KEYSENDER_EBS   exists:X-EBS
     header      __ESP_KEYSENDER_UID   Feedback-ID =~ /\w+\:\w+\:\w+\:(?<KEYSENDER_UID>.*)/
-    header      __ESP_KEYSENDER_RBL   eval:check_hashbl_tag('keysender.espbl.snb.it/A', 'raw', 'KEYSENDER_UID', '^127\.')
+    header      __ESP_KEYSENDER_RBL   eval:check_hashbl_tag('keysender.esp.btcblack.it/A', 'raw', 'KEYSENDER_UID', '^127\.')
     meta        RBL_ESP_KEYSENDER     ( __ESP_KEYSENDER_EBS && __ESP_KEYSENDER_RBL )
     describe    RBL_ESP_KEYSENDER     Esp Keysender Id blacklist
     tflags      RBL_ESP_KEYSENDER     net
 
     header      __ESP_KLAVIYO_MSG     exists:X-Kmail-Message
     header      __ESP_KLAVIYO_UID     X-Kmail-Account =~ /(?<KLAVIYO_UID>.*)/
-    header      __ESP_KLAVIYO_RBL     eval:check_hashbl_tag('klaviyo.espbl.snb.it/A', 'raw', 'KLAVIYO_UID', '^127\.')
+    header      __ESP_KLAVIYO_RBL     eval:check_hashbl_tag('klaviyo.esp.btcblack.it/A', 'raw', 'KLAVIYO_UID', '^127\.')
     meta        RBL_ESP_KLAVIYO       ( __ESP_KLAVIYO_MSG && __ESP_KLAVIYO_RBL )
     describe    RBL_ESP_KLAVIYO       Esp Klaviyo Id blacklist
     tflags      RBL_ESP_KLAVIYO       net
 
     header      __ESP_MAILCHIMP_ID    X-MC-User =~ /^(?<MAILCHIMP_ID>[0-9a-z-]{11,25})$/
-    header      __ESP_MAILCHIMP_RBL   eval:check_hashbl_tag('mailchimp.espbl.snb.it/A', 'raw', 'MAILCHIMP_ID', '^127\.')
+    header      __ESP_MAILCHIMP_RBL   eval:check_hashbl_tag('mailchimp.esp.btcblack.it/A', 'raw', 'MAILCHIMP_ID', '^127\.')
     meta        RBL_ESP_MAILCHIMP     __ESP_MAILCHIMP_RBL
     describe    RBL_ESP_MAILCHIMP     Esp Mailchimp Id blacklist
     tflags      RBL_ESP_MAILCHIMP     net
 
     header      __ESP_MANDRILL_ID     X-Mandrill-User =~ /^(?<MANDRILL_ID>md_[0-9a-z]{8})$/
-    header      RBL_ESP_MAILCHIMP_M   eval:check_hashbl_tag('mailchimp.espbl.snb.it/A', 'raw', 'MANDRILL_ID', '^127\.')
+    header      RBL_ESP_MAILCHIMP_M   eval:check_hashbl_tag('mailchimp.esp.btcblack.it/A', 'raw', 'MANDRILL_ID', '^127\.')
     describe    RBL_ESP_MAILCHIMP_M   Esp Mailchimp Id blacklist
     tflags      RBL_ESP_MAILCHIMP_M   net
 
     header      __ESP_MAILDOME_XM     X-Mailer =~ /MaildomeMTA/
     header      __ESP_MAILDOME_ID     List-Unsubscribe =~ /subject=https?:\/\/.*\/unsubscribe\/(?:[0-9]+)\/(?<MAILDOME_ID>[0-9]+)\/.*\/(?:[0-9]+)\/(?:[0-9]+)\>/
-    header      __ESP_MAILDOME_RBL    eval:check_hashbl_tag('maildome.espbl.snb.it/A', 'raw', 'MAILDOME_ID', '^127\.')
+    header      __ESP_MAILDOME_RBL    eval:check_hashbl_tag('maildome.esp.btcblack.it/A', 'raw', 'MAILDOME_ID', '^127\.')
     meta        RBL_ESP_MAILDOME      ( __ESP_MAILDOME_XM && __ESP_MAILDOME_RBL )
     describe    RBL_ESP_MAILDOME      Esp Maildome Id blacklist
     tflags      RBL_ESP_MAILDOME      net
@@ -406,9 +406,9 @@ if (version >= 4.000000)
     header      __ESP_MAILGUN_ID      EnvelopeFrom:addr =~ /bounce\+(?:\w+)\.(?<MAILGUN_ID>\w+)\-/
     header      __ESP_MAILGUN_IDA     Authentication-Results =~ /smtp.mailfrom=\<bounce\+(?:\w+)\.(?<MAILGUN_IDA>\w+)\-/
     header      __ESP_MAILGUN_VAR     X-Mailgun-Variables =~ /"user_id": "(?<MAILGUN_VAR>\d+)"/
-    header      __ESP_MAILGUN_RBL     eval:check_hashbl_tag('mailgun.espbl.snb.it/A', 'raw', 'MAILGUN_ID', '^127\.')
-    header      __ESP_MAILGUN_RBLA    eval:check_hashbl_tag('mailgun.espbl.snb.it/A', 'raw', 'MAILGUN_IDA', '^127\.')
-    header      __ESP_MAILGUN_RBLV    eval:check_hashbl_tag('mailgun.espbl.snb.it/A', 'raw', 'MAILGUN_VAR', '^127\.')
+    header      __ESP_MAILGUN_RBL     eval:check_hashbl_tag('mailgun.esp.btcblack.it/A', 'raw', 'MAILGUN_ID', '^127\.')
+    header      __ESP_MAILGUN_RBLA    eval:check_hashbl_tag('mailgun.esp.btcblack.it/A', 'raw', 'MAILGUN_IDA', '^127\.')
+    header      __ESP_MAILGUN_RBLV    eval:check_hashbl_tag('mailgun.esp.btcblack.it/A', 'raw', 'MAILGUN_VAR', '^127\.')
     meta        RBL_ESP_MAILGUN       ( __ESP_MAILGUN_XM && ( __ESP_MAILGUN_RBL || __ESP_MAILGUN_RBLA || __ESP_MAILGUN_RBLV ) )
     describe    RBL_ESP_MAILGUN       Esp Mailgun Id blacklist
     tflags      RBL_ESP_MAILGUN       net
@@ -416,81 +416,81 @@ if (version >= 4.000000)
     header      __ESP_MAILUP_CSA      X-CSA-Complaints =~ /\@eco\.de/
     header	__ESP_MAILUP_BPS1     exists:X-BPS1
     header      __ESP_MAILUP_ABID     X-Abuse =~ /Please report abuse here: https?:\/\/.*\.musvc(?:[0-9]+)\.net\/p\?c=(?<MAILUP_ID>[0-9]+)/
-    header      __ESP_MAILUP_RBL_AB   eval:check_hashbl_tag('mailup.espbl.snb.it/A', 'raw', 'MAILUP_ABID', '^127\.')
+    header      __ESP_MAILUP_RBL_AB   eval:check_hashbl_tag('mailup.esp.btcblack.it/A', 'raw', 'MAILUP_ABID', '^127\.')
     header      __ESP_MAILUP_ID       list-id =~ /\<(?<MAILUP_ID>\d+)\.\d+\>/
-    header      __ESP_MAILUP_RBL      eval:check_hashbl_tag('mailup.espbl.snb.it/A', 'raw', 'MAILUP_ID', '^127\.')
+    header      __ESP_MAILUP_RBL      eval:check_hashbl_tag('mailup.esp.btcblack.it/A', 'raw', 'MAILUP_ID', '^127\.')
     meta        RBL_ESP_MAILUP        ( ( __ESP_MAILUP_CSA || __ESP_MAILUP_BPS1 ) && ( __ESP_MAILUP_RBL_AB || __ESP_MAILUP_RBL ) )
     describe    RBL_ESP_MAILUP        Esp Mailup Id blacklist
     tflags      RBL_ESP_MAILUP        net
 
     header      __ESP_MCONTACT_XM     X-Mailer =~ /aspNetEmail/
     header      __ESP_MCONTACT_ID     Feedback-ID =~ /(?:\d+):(?<MCONTACT_ID>\d+):(?:\d+):MCONTACT/i
-    header      __ESP_MCONTACT_RBL    eval:check_hashbl_tag('mcontact.espbl.snb.it/A', 'raw', 'MCONTACT_ID', '^127\.')
+    header      __ESP_MCONTACT_RBL    eval:check_hashbl_tag('mcontact.esp.btcblack.it/A', 'raw', 'MCONTACT_ID', '^127\.')
     meta        RBL_ESP_MCONTACT      ( __ESP_MCONTACT_XM && __ESP_MCONTACT_RBL )
     describe    RBL_ESP_MCONTACT      Esp MContact Id blacklist
     tflags      RBL_ESP_MCONTACT      net
 
     header      __ESP_MDENGINE_XM     X-Mailer =~ /MDEngine/
     header      __ESP_MDENGINE_ID     Feedback-ID =~ /\@(?<MDENGINE_ID>.*)/i
-    header      __ESP_MDENGINE_RBL    eval:check_hashbl_tag('mdengine.espbl.snb.it/A', 'case/md5', 'MDENGINE_ID', '^127\.')
+    header      __ESP_MDENGINE_RBL    eval:check_hashbl_tag('mdengine.esp.btcblack.it/A', 'case/md5', 'MDENGINE_ID', '^127\.')
     meta        RBL_ESP_MDENGINE      ( __ESP_MDENGINE_XM && __ESP_MDENGINE_RBL )
     describe    RBL_ESP_MDENGINE      Esp Mdengine Id blacklist
     tflags      RBL_ESP_MDENGINE      net
 
     header      __ESP_MDRCTR_LI       List-ID =~ /\.mdrctr\.com/
     header      __ESP_MDRCTR_ID       Feedback-ID =~ /(?<MDRCTR_ID>\d+):(?:\d+):(?:[a-z]+)/i
-    header      __ESP_MDRCTR_RBL      eval:check_hashbl_tag('mdrctr.espbl.snb.it/A', 'raw', 'MDRCTR_ID', '^127\.')
+    header      __ESP_MDRCTR_RBL      eval:check_hashbl_tag('mdrctr.esp.btcblack.it/A', 'raw', 'MDRCTR_ID', '^127\.')
     meta        RBL_ESP_MDRCTR        ( __ESP_MDRCTR_LI && __ESP_MDRCTR_RBL )
     describe    RBL_ESP_MDRCTR        Esp Mdrctr Id blacklist
     tflags      RBL_ESP_MDRCTR        net
 
     header      __ESP_MSDYNAMICS_ID   X-MS-Dynamics-Instance =~ /(?<MSDYNAMICS_ID>.*)/i
-    header      RBL_ESP_MSDYNAMICS    eval:check_hashbl_tag('msdynamics.espbl.snb.it/A', 'raw', 'MSDYNAMICS_ID', '^127\.')
+    header      RBL_ESP_MSDYNAMICS    eval:check_hashbl_tag('msdynamics.esp.btcblack.it/A', 'raw', 'MSDYNAMICS_ID', '^127\.')
     describe    RBL_ESP_MSDYNAMICS    Esp Microsoft Dynamics blacklist
     tflags      RBL_ESP_MSDYNAMICS    net
 
     header      __ESP_MSND_XM         X-Mailer =~ /Msnd\s+Mailer/
     header      __ESP_MSND_ID         X-MID =~ /(?<MSND_ID>.*)/
-    header      __ESP_MSND_RBL        eval:check_hashbl_tag('msnd.espbl.snb.it/A', 'case/md5', 'MSND_ID', '^127\.')
+    header      __ESP_MSND_RBL        eval:check_hashbl_tag('msnd.esp.btcblack.it/A', 'case/md5', 'MSND_ID', '^127\.')
     meta        RBL_ESP_MSND          ( __ESP_MSND_XM && __ESP_MSND_RBL )
     describe    RBL_ESP_MSND          Esp Msnd Id blacklist
     tflags      RBL_ESP_MSND          net
 
     header      __ESP_SALESFORCE_XS   X-Sender =~ /postmaster\@salesforce.com/
     header      __ESP_SALESFORCE_ID   X-SFDC-User =~ /(?<SALESFORCE_ID>.*)/
-    header      __ESP_SALESFORCE_RBL  eval:check_hashbl_tag('salesforce.espbl.snb.it/A', 'raw', 'SALESFORCE_ID', '^127\.')
+    header      __ESP_SALESFORCE_RBL  eval:check_hashbl_tag('salesforce.esp.btcblack.it/A', 'raw', 'SALESFORCE_ID', '^127\.')
     meta        RBL_ESP_SALESFORCE    ( __ESP_SALESFORCE_XS && __ESP_SALESFORCE_RBL )
     describe    RBL_ESP_SALESFORCE    Esp Salesforce Id blacklist
     tflags      RBL_ESP_SALESFORCE    net
 
     header      __ESP_SENDGRID_EID    exists:X-SG-EID
     header      __ESP_SENDGRID_DOM    EnvelopeFrom:addr =~ /\@(?:\w+\.)?(?<SENDGRID_DOM>[\w\.]+)\>?$/
-    header      __ESP_SENDGRID_RBL_D  eval:check_hashbl_tag('sendgrid.espbl.snb.it/A', 'raw', 'SENDGRID_DOM', '^127\.')
+    header      __ESP_SENDGRID_RBL_D  eval:check_hashbl_tag('sendgrid.esp.btcblack.it/A', 'raw', 'SENDGRID_DOM', '^127\.')
     header      __ESP_SENDGRID_ID     EnvelopeFrom:addr =~ /bounces\+(?<SENDGRID_ID>\d+)\-/
     header      __ESP_SENDGRID_IDA    Authentication-Results =~ /smtp.mailfrom=\<bounces\+(?<SENDGRID_IDA>\d+)\-/
     uri         __ESP_SENDGRID_IDU    /https?:\/\/u(?<SENDGRID_IDU>\d+)\.ct\.sendgrid\.net/
-    header      __ESP_SENDGRID_RBL    eval:check_hashbl_tag('sendgrid.espbl.snb.it/A', 'raw', 'SENDGRID_ID', '^127\.')
-    header      __ESP_SENDGRID_RBL_A  eval:check_hashbl_tag('sendgrid.espbl.snb.it/A', 'raw', 'SENDGRID_IDA', '^127\.')
-    header      __ESP_SENDGRID_RBL_U  eval:check_hashbl_tag('sendgrid.espbl.snb.it/A', 'raw', 'SENDGRID_IDU', '^127\.')
+    header      __ESP_SENDGRID_RBL    eval:check_hashbl_tag('sendgrid.esp.btcblack.it/A', 'raw', 'SENDGRID_ID', '^127\.')
+    header      __ESP_SENDGRID_RBL_A  eval:check_hashbl_tag('sendgrid.esp.btcblack.it/A', 'raw', 'SENDGRID_IDA', '^127\.')
+    header      __ESP_SENDGRID_RBL_U  eval:check_hashbl_tag('sendgrid.esp.btcblack.it/A', 'raw', 'SENDGRID_IDU', '^127\.')
     meta        RBL_ESP_SENDGRID      ( ( __ESP_SENDGRID_EID && ( __ESP_SENDGRID_RBL_D || __ESP_SENDGRID_RBL || __ESP_SENDGRID_RBL_A ) ) || __ESP_SENDGRID_RBL_U )
     describe    RBL_ESP_SENDGRID      Esp Sendgrid Id blacklist
     tflags      RBL_ESP_SENDGRID      net
 
     header      __ESP_SENDINBLUE_ID   Feedback-ID =~ /^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}:(?<SENDINBLUE_ID>\d+)_(?:-1|\d+):(?:\d+):Sendinblue$/
-    header      RBL_ESP_SENDINBLUE    eval:check_hashbl_tag('sendinblue.espbl.snb.it/A', 'raw', 'SENDINBLUE_ID', '^127\.')
+    header      RBL_ESP_SENDINBLUE    eval:check_hashbl_tag('sendinblue.esp.btcblack.it/A', 'raw', 'SENDINBLUE_ID', '^127\.')
     describe    RBL_ESP_SENDINBLUE    Esp Sendinblue Id blacklist
     tflags      RBL_ESP_SENDINBLUE    net
 
     header      __ESP_SMTPCOM_SP      exists:X-SMTPCOM-Payload
     header      __ESP_SMTPCOM_ID      X-SMTPCOM-Sender-ID =~ /(?<SMTPCOM_ID>.*)/
-    header      __ESP_SMTPCOM_RBL     eval:check_hashbl_tag('smtpcom.espbl.snb.it/A', 'raw', 'SMTPCOM_ID', '^127\.')
+    header      __ESP_SMTPCOM_RBL     eval:check_hashbl_tag('smtpcom.esp.btcblack.it/A', 'raw', 'SMTPCOM_ID', '^127\.')
     meta        RBL_ESP_SMTPCOM       ( __ESP_SMTPCOM_SP && __ESP_SMTPCOM_RBL )
     describe    RBL_ESP_SMTPCOM       Esp Smtpcom Id blacklist
     tflags      RBL_ESP_SMTPCOM       net
 
     header      __ESP_SMTPPULSE_CT    X-Complaints-To =~ /abuse\@smtp\-pulse\.com/
     header      __ESP_SMTPPULSE_ID    Feedback-ID =~ /\d+:smtp:(?<SMTPPULSE_ID>.*)/
-    header      __ESP_SMTPPULSE_RBL   eval:check_hashbl_tag('smtppulse.espbl.snb.it/A', 'raw', 'SMTPPULSE_ID', '^127\.')
+    header      __ESP_SMTPPULSE_RBL   eval:check_hashbl_tag('smtppulse.esp.btcblack.it/A', 'raw', 'SMTPPULSE_ID', '^127\.')
     meta        RBL_ESP_SMTPPULSE     ( __ESP_SMTPPULSE_CT && __ESP_SMTPPULSE_RBL )
     describe    RBL_ESP_SMTPPULSE     Esp Smtp-Pulse Id blacklist
     tflags      RBL_ESP_SMTPPULSE     net
@@ -498,15 +498,15 @@ if (version >= 4.000000)
     header      __ESP_SPARKPOST_ID    List-Id =~ /^<?[a-z]+\.(?<SPARKPOST_ID>[0-9]+)\.(?:[0-9]+)\.sparkpostmail\.com>?$/
     header      __ESP_SPARKPOST_BID   EnvelopeFrom:addr =~ /\=bounces\-(?<SPARKPOST_BID>\d+)\@/
     header      __ESP_SPARKPOST_MS    exists:X-MSFBL
-    header      __ESP_SPARKPOST_RBL   eval:check_hashbl_tag('sparkpost.espbl.snb.it/A', 'raw', 'SPARKPOST_ID', '^127\.')
-    header      __ESP_SPARKPOST_BRBL  eval:check_hashbl_tag('sparkpost.espbl.snb.it/A', 'raw', 'SPARKPOST_BID', '^127\.')
+    header      __ESP_SPARKPOST_RBL   eval:check_hashbl_tag('sparkpost.esp.btcblack.it/A', 'raw', 'SPARKPOST_ID', '^127\.')
+    header      __ESP_SPARKPOST_BRBL  eval:check_hashbl_tag('sparkpost.esp.btcblack.it/A', 'raw', 'SPARKPOST_BID', '^127\.')
     meta        RBL_ESP_SPARKPOST     ( __ESP_SPARKPOST_RBL || ( __ESP_SPARKPOST_BRBL && __ESP_SPARKPOST_MS ) )
     describe    RBL_ESP_SPARKPOST     Esp Sparkpost Id blacklist
     tflags      RBL_ESP_SPARKPOST     net
 
     header      __ESP_TURBOSMTP_TR    exists:X-TurboSMTP-Tracking
     header      __ESP_TURBOSMTP_ID    Feedback-Id =~ /(?<TURBOSMTP_ID>\d+)$/
-    header      __ESP_TURBOSMTP_RBL   eval:check_hashbl_tag('turbosmtp.espbl.snb.it/A', 'raw', 'TURBOSMTP_ID', '^127\.')
+    header      __ESP_TURBOSMTP_RBL   eval:check_hashbl_tag('turbosmtp.esp.btcblack.it/A', 'raw', 'TURBOSMTP_ID', '^127\.')
     meta        RBL_ESP_TURBOSMTP     ( __ESP_TURBOSMTP_TR && __ESP_TURBOSMTP_RBL )
     describe    RBL_ESP_TURBOSMTP     Esp TurboSmtp Id blacklist
     tflags      RBL_ESP_TURBOSMTP     net
