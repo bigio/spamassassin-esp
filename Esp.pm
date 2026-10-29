@@ -73,6 +73,7 @@ sub new {
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mailwizz_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdengine_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdrctr_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -87,6 +88,7 @@ sub new {
   $self->register_eval_rule('esp_smtppulse_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sparkpost_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_turbosmtp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_verticalresponse_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
 
   return $self;
 }
@@ -155,6 +157,9 @@ Usage:
   esp_mailup_check()
     Checks for Mailup abused accounts
 
+  esp_mailwizz_check()
+    Checks for MailWizz abused tracking hosts
+
   esp_mcontact_check()
     Checks for MContact abused accounts
 
@@ -196,6 +201,9 @@ Usage:
 
   esp_turbosmtp_check()
     Checks for TurboSmtp abused accounts
+
+  esp_verticalresponse_check()
+    Checks for VerticalResponse abused accounts
 
 Every sub can be called with an options parameter which can contain the keywords "md5"
 to crypt the Esp id using md5 algorithm and "nodash" which will substitute the "-" char
@@ -285,6 +293,11 @@ Files can be separated by a comma.
 A list of files with abused Mailup accounts.
 Files can be separated by a comma.
 
+=item mailwizz_feed [...]
+
+A list of files with abused MailWizz tracking hosts.
+Files can be separated by a comma.
+
 =item mcontact_feed [...]
 
 A list of files with abused MContact accounts.
@@ -347,6 +360,11 @@ Files can be separated by a comma.
 =item turbosmtp_feed [...]
 
 A list of files with abused TurboSmtp accounts.
+Files can be separated by a comma.
+
+=item verticalresponse_feed [...]
+
+A list of files with abused VerticalResponse accounts.
 Files can be separated by a comma.
 
 =back
@@ -414,6 +432,9 @@ MAILGUNID
 MAILUPID
 
 =item *
+MAILWIZZHOST
+
+=item *
 MDENGINEID
 
 =item *
@@ -445,6 +466,9 @@ SPARKPOSTID
 
 =item *
 TURBOSMTPID
+
+=item *
+VERTICALRESPONSEID
 
 =back
 
@@ -551,6 +575,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'mailwizz_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'mcontact_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -628,6 +658,12 @@ sub set_config {
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
   );
+  push(@cmds, {
+    setting => 'verticalresponse_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
   $conf->{parser}->register_commands(\@cmds);
 }
 
@@ -649,6 +685,7 @@ sub finish_parsing_end {
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
   $self->_read_configfile('mailup_feed', 'MAILUP');
+  $self->_read_configfile('mailwizz_feed', 'MAILWIZZ');
   $self->_read_configfile('mcontact_feed', 'MCONTACT');
   $self->_read_configfile('mdengine_feed', 'MDENGINE');
   $self->_read_configfile('mdrctr_feed', 'MDRCTR');
@@ -662,6 +699,7 @@ sub finish_parsing_end {
   $self->_read_configfile('smtppulse_feed', 'SMTPPULSE');
   $self->_read_configfile('sparkpost_feed', 'SPARKPOST');
   $self->_read_configfile('turbosmtp_feed', 'TURBOSMTP');
+  $self->_read_configfile('verticalresponse_feed', 'VERTICALRESPONSE');
 }
 
 sub _read_configfile {
@@ -1084,6 +1122,41 @@ sub esp_mailup_check {
   return _hit_and_tag($self, $pms, $mailup_id, 'MAILUP', 'Mailup', 'MAILUPID', $opts);
 }
 
+sub esp_mailwizz_check {
+  my ($self, $pms, $opts) = @_;
+  my ($campaign_uid, $mailwizz_host);
+
+  # Keysender and Fxyn use the same Feedback-ID format, skip them
+  my $xebs = $pms->get("X-EBS", undef);
+  my $xfxyn = $pms->get("X-Fxyn-Mailer", undef);
+  return if (defined $xebs or defined $xfxyn);
+
+  # Feedback-ID: campaign_uid:campaign_type:list_uid:customer_uid
+  # Feedback-ID: xr2304v9qoc46:regular:gw434j8349e62:bh816f98jq306
+  my $fid = $pms->get("Feedback-ID", undef);
+  return if not defined $fid;
+
+  if($fid =~ /^\s*([a-z0-9]{13}):(?:regular|autoresponder):[a-z0-9]{13}:[a-z0-9]{13}\s*$/) {
+    $campaign_uid = $1;
+  }
+  return if not defined $campaign_uid;
+
+  # MailWizz is self hosted, use the host of the campaign tracking urls
+  # https://basfco.com/index.php/campaigns/xr2304v9qoc46/track-opening/...
+  my $uris = $pms->get_uri_detail_list();
+  foreach my $uri (keys %{$uris}) {
+    next if ($uri =~ /^mailto:/i);
+    if($uri =~ /^https?:\/\/([a-z0-9\.\-]+)(?::\d+)?\/(?:index\.php\/)?campaigns\/$campaign_uid\/track\-(?:opening|url)\//i) {
+      $mailwizz_host = lc($1);
+      last;
+    }
+  }
+  return if not defined $mailwizz_host;
+
+  return _hit_and_tag($self, $pms, $mailwizz_host, 'MAILWIZZ', 'MailWizz', 'MAILWIZZHOST', $opts);
+}
+
+
 sub esp_mcontact_check {
   my ($self, $pms, $opts) = @_;
   my $mcontact_id;
@@ -1333,6 +1406,30 @@ sub esp_turbosmtp_check {
   return _hit_and_tag($self, $pms, $fid, 'TURBOSMTP', 'TurboSmtp', 'TURBOSMTPID', $opts);
 }
 
+sub esp_verticalresponse_check {
+  my ($self, $pms, $opts) = @_;
+  my $uid;
+
+  # return if X-vrfbldomain is not what we want
+  my $xvrfbl = $pms->get("X-vrfbldomain", undef);
+  if((not defined $xvrfbl) or ($xvrfbl !~ /\.verticalresponse\.com/)) {
+    return;
+  }
+
+  # X-Company_ID: 483284
+  my $cid = $pms->get("X-Company_ID", undef);
+  # X-Feedback-ID: 734757ea04:483284:vr1
+  my $fid = $pms->get("X-Feedback-ID", undef);
+  if(defined $cid and $cid =~ /^\s*(\d+)\s*$/) {
+    $uid = $1;
+  } elsif(defined $fid and $fid =~ /^[0-9a-f]+:(\d+):vr\d+/) {
+    $uid = $1;
+  }
+  return if not defined $uid;
+
+  return _hit_and_tag($self, $pms, $uid, 'VERTICALRESPONSE', 'VerticalResponse', 'VERTICALRESPONSEID', $opts);
+}
+
 # Version features
 sub has_esp_4dem_check { 1 };
 sub has_esp_acelle_check { 1 };
@@ -1350,6 +1447,7 @@ sub has_esp_mailchimp_check { 1 };
 sub has_esp_maildome_check { 1 };
 sub has_esp_mailgun_check { 1 };
 sub has_esp_mailup_check { 1 };
+sub has_esp_mailwizz_check { 1 };
 sub has_esp_mcontact_check { 1 };
 sub has_esp_mdengine_check { 1 };
 sub has_esp_mdrctr_check { 1 };
@@ -1362,5 +1460,6 @@ sub has_esp_smtpcom_check { 1 };
 sub has_esp_smtppulse_check { 1 };
 sub has_esp_sparkpost_check { 1 };
 sub has_esp_turbosmtp_check { 1 };
+sub has_esp_verticalresponse_check { 1 };
 
 1;

@@ -160,6 +160,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_MAILUP net
   endif
 
+  header        ESP_MAILWIZZ    eval:esp_mailwizz_check()
+  describe      ESP_MAILWIZZ    Message from MailWizz abused tracking host
+  score		ESP_MAILWIZZ    0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_MAILWIZZ _MAILWIZZHOST_.mailwizz.esp.btcblack.it A 127.0.0.1
+    describe    RBL_ESP_MAILWIZZ Esp MailWizz host blacklist
+    tflags      RBL_ESP_MAILWIZZ net
+  endif
+
   header        ESP_MCONTACT    eval:esp_mcontact_check()
   describe      ESP_MCONTACT    Message from MContact abused account
   score		ESP_MCONTACT    0.01
@@ -288,6 +298,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     askdns      RBL_ESP_TURBOSMTP _TURBOSMTPID_.turbosmtp.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_TURBOSMTP Esp TurboSmtp blacklist
     tflags      RBL_ESP_TURBOSMTP net
+  endif
+
+  header        ESP_VERTICALRESPONSE  eval:esp_verticalresponse_check()
+  describe      ESP_VERTICALRESPONSE  Message from VerticalResponse abused account
+  score         ESP_VERTICALRESPONSE  0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_VERTICALRESPONSE _VERTICALRESPONSEID_.verticalresponse.esp.btcblack.it A 127.0.0.1
+    describe    RBL_ESP_VERTICALRESPONSE Esp VerticalResponse blacklist
+    tflags      RBL_ESP_VERTICALRESPONSE net
   endif
 
 else
@@ -423,6 +443,15 @@ if (version >= 4.000000)
     describe    RBL_ESP_MAILUP        Esp Mailup Id blacklist
     tflags      RBL_ESP_MAILUP        net
 
+    header      __ESP_MAILWIZZ_EBS    exists:X-EBS
+    header      __ESP_MAILWIZZ_FXYN   exists:X-Fxyn-Mailer
+    header      __ESP_MAILWIZZ_FID    Feedback-ID =~ /^\s*[a-z0-9]{13}:(?:regular|autoresponder):[a-z0-9]{13}:[a-z0-9]{13}\s*$/
+    uri         __ESP_MAILWIZZ_URI    m{^https?://(?<MAILWIZZ_HOST>[a-z0-9.-]+)(?::\d+)?/(?:index\.php/)?campaigns/[a-z0-9]{13}/track-(?:opening|url)/}i
+    header      __ESP_MAILWIZZ_RBL    eval:check_hashbl_tag('mailwizz.esp.btcblack.it/A', 'raw', 'MAILWIZZ_HOST', '^127\.')
+    meta        RBL_ESP_MAILWIZZ      ( __ESP_MAILWIZZ_FID && !__ESP_MAILWIZZ_EBS && !__ESP_MAILWIZZ_FXYN && __ESP_MAILWIZZ_RBL )
+    describe    RBL_ESP_MAILWIZZ      Esp MailWizz tracking host blacklist
+    tflags      RBL_ESP_MAILWIZZ      net
+
     header      __ESP_MCONTACT_XM     X-Mailer =~ /aspNetEmail/
     header      __ESP_MCONTACT_ID     Feedback-ID =~ /(?:\d+):(?<MCONTACT_ID>\d+):(?:\d+):MCONTACT/i
     header      __ESP_MCONTACT_RBL    eval:check_hashbl_tag('mcontact.esp.btcblack.it/A', 'raw', 'MCONTACT_ID', '^127\.')
@@ -511,6 +540,15 @@ if (version >= 4.000000)
     describe    RBL_ESP_TURBOSMTP     Esp TurboSmtp Id blacklist
     tflags      RBL_ESP_TURBOSMTP     net
 
+    header      __ESP_VR_FBL          X-vrfbldomain =~ /\.verticalresponse\.com/
+    header      __ESP_VR_ID           X-Company_ID =~ /^\s*(?<VERTICALRESPONSE_ID>\d+)\s*$/
+    header      __ESP_VR_FID          X-Feedback-ID =~ /^[0-9a-f]+:(?<VERTICALRESPONSE_FID>\d+):vr\d+/
+    header      __ESP_VR_RBL          eval:check_hashbl_tag('verticalresponse.esp.btcblack.it/A', 'raw', 'VERTICALRESPONSE_ID', '^127\.')
+    header      __ESP_VR_RBL_F        eval:check_hashbl_tag('verticalresponse.esp.btcblack.it/A', 'raw', 'VERTICALRESPONSE_FID', '^127\.')
+    meta        RBL_ESP_VERTICALRESPONSE  ( __ESP_VR_FBL && ( __ESP_VR_RBL || __ESP_VR_RBL_F ) )
+    describe    RBL_ESP_VERTICALRESPONSE  Esp VerticalResponse Id blacklist
+    tflags      RBL_ESP_VERTICALRESPONSE  net
+
   endif
 endif
 
@@ -533,6 +571,7 @@ score       RBL_ESP_MAILCHIMP_M   4.0
 score       RBL_ESP_MAILDOME      4.0
 score       RBL_ESP_MAILGUN       4.0
 score       RBL_ESP_MAILUP        4.0
+score       RBL_ESP_MAILWIZZ      4.0
 score       RBL_ESP_MCONTACT      4.0
 score       RBL_ESP_MDENGINE      4.0
 score       RBL_ESP_MDRCTR        4.0
@@ -545,3 +584,4 @@ score       RBL_ESP_SMTPCOM       4.0
 score       RBL_ESP_SMTPPULSE     4.0
 score       RBL_ESP_SPARKPOST     4.0
 score       RBL_ESP_TURBOSMTP     4.0
+score       RBL_ESP_VERTICALRESPONSE  4.0
