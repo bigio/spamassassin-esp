@@ -31,7 +31,7 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
 # any, let us know.
 
 # -------- 4DEM --------
-4dem_feed /etc/mail/spamassassin/4dem_id.txt
+fordem_feed /etc/mail/spamassassin/4dem_id.txt
 
 header		FORDEM		eval:esp_4dem_check()
 describe	FORDEM		Message from 4Dem abused account
@@ -45,14 +45,14 @@ describe	ACELLE		Message from Acelle abused account
 score		ACELLE		5.0
 
 # -------- AMAZON SES --------
-amazon_feed /etc/mail/spamassassin/amazonses_id.txt
+amazonses_feed /etc/mail/spamassassin/amazonses_id.txt
 
 header		AMAZON		eval:esp_amazonses_check()
 describe	AMAZON		Message from Amazon SES abused account
 score		AMAZON		5.0
 
 # -------- BEMAIL --------
-4dem_feed /etc/mail/spamassassin/be-mail_id.txt
+bemail_feed /etc/mail/spamassassin/be-mail_id.txt
 
 header		BEMAIL		eval:esp_be_mail_check()
 describe	BEMAIL		Message from Be-Mail abused account
@@ -80,7 +80,7 @@ describe	EMARSYS			Message from EMarSys abused account
 score		EMARSYS			5.0
 
 # -------- EMLBEST --------
-emarsys_feed /etc/mail/spamassassin/emlbest_id.txt
+emlbest_feed /etc/mail/spamassassin/emlbest_id.txt
 
 header		EMLBEST			eval:esp_emlbest_check()
 describe	EMLBEST			Message from Emlbest abused account
@@ -142,8 +142,15 @@ header		MAILUP			eval:esp_mailup_check()
 describe 	MAILUP			Message from Mailup abused account
 score  		MAILUP			5.0
 
+# -------- MAILWIZZ --------
+mailwizz_feed /etc/mail/spamassassin/mailwizz_host.txt
+
+header		MAILWIZZ		eval:esp_mailwizz_check()
+describe 	MAILWIZZ		Message from MailWizz abused tracking host
+score  		MAILWIZZ		5.0
+
 # -------- MCONTACT --------
-mdengine_feed /etc/mail/spamassassin/mcontact_id.txt
+mcontact_feed /etc/mail/spamassassin/mcontact_id.txt
 
 header          MCONTACT                eval:esp_mcontact_check()
 describe        MCONTACT                Message from MContact abused account
@@ -245,5 +252,12 @@ turbosmtp_feed /etc/mail/spamassassin/turbosmtp_id.txt
 header		TURBOSMTP		eval:esp_turbosmtp_check()
 describe 	TURBOSMTP		Message from TurboSmtp abused account
 score	  	TURBOSMTP		5.0
+
+# -------- VERTICALRESPONSE --------
+verticalresponse_feed /etc/mail/spamassassin/verticalresponse_id.txt
+
+header		VERTICALRESPONSE	eval:esp_verticalresponse_check()
+describe 	VERTICALRESPONSE	Message from VerticalResponse abused account
+score	  	VERTICALRESPONSE	5.0
 
 endif # Mail::SpamAssassin::Plugin::Esp
