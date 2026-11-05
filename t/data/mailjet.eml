@@ -1,0 +1,18 @@
+Return-Path: <b6d2875d.AVwAACVH45QAAAAAAAAAAQ9hccYAAPiEbYoAAAAAAAgNLwBlCDOA@a12345.bnc3.mailjet.com>
+Received: from o79.p8.mailjet.com (o79.p8.mailjet.com [87.253.233.79])
+	by mx.example.com (Postfix) with ESMTPS id 88F9525000C9
+	for <info@example.com>; Mon, 18 Sep 2023 13:24:49 +0200 (CEST)
+From: Example <info@example.net>
+To: info@example.com
+Subject: test
+Date: Mon, 18 Sep 2023 13:24:48 +0200
+Message-Id: <b6d2875d.AVwAACVH45QAAAAAAAAAAQ9hccYAAPiEbYoAAAAAAAgNLwBlCDOA@mailjet.com>
+MIME-Version: 1.0
+Feedback-Id: 42.12345.180072:MJ
+X-CSA-Complaints: csa-complaints@eco.de
+X-MJ-Mid: 
+X-MJ-SMTPGUID: 67c27437-6bda-423c-aada-feb58a77b1c8
+X-REPORT-ABUSE-TO: Message sent by Mailjet please report to abuse@mailjet.com with a copy of the message
+Content-Type: text/plain; charset=utf-8
+
+Hello, this is a test message.

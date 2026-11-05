@@ -72,6 +72,13 @@ header		ECMESSENGER		eval:esp_ecmessenger_check()
 describe	ECMESSENGER		Message from Ec Messanger abused account
 score		ECMESSENGER		5.0
 
+# -------- EMAILIT --------
+emailit_feed /etc/mail/spamassassin/emailit_id.txt
+
+header		EMAILIT		eval:esp_emailit_check()
+describe	EMAILIT		Message from Emailit abused account
+score		EMAILIT		5.0
+
 # -------- EMARSYS --------
 emarsys_feed /etc/mail/spamassassin/emarsys_id.txt
 
@@ -135,6 +142,13 @@ header		MAILGUN  		eval:esp_mailgun_check()
 describe 	MAILGUN 		Message from Mailgun abused account
 score  		MAILGUN			5.0
 
+# -------- MAILJET --------
+mailjet_feed /etc/mail/spamassassin/mailjet_id.txt
+
+header		MAILJET		eval:esp_mailjet_check()
+describe	MAILJET		Message from Mailjet abused account
+score		MAILJET		5.0
+
 # -------- MAILUP --------
 mailup_feed /etc/mail/spamassassin/mailup_id.txt
 
@@ -148,6 +162,13 @@ mailwizz_feed /etc/mail/spamassassin/mailwizz_host.txt
 header		MAILWIZZ		eval:esp_mailwizz_check()
 describe 	MAILWIZZ		Message from MailWizz abused tracking host
 score  		MAILWIZZ		5.0
+
+# -------- MANDRILL --------
+mandrill_feed /etc/mail/spamassassin/mandrill_id.txt
+
+header		MANDRILL		eval:esp_mandrill_check()
+describe	MANDRILL		Message from Mandrill abused account
+score		MANDRILL		5.0
 
 # -------- MCONTACT --------
 mcontact_feed /etc/mail/spamassassin/mcontact_id.txt
@@ -176,6 +197,13 @@ msnd_feed /etc/mail/spamassassin/msnd_id.txt
 header          MSND                  eval:esp_msnd_check()
 describe        MSND                  Message from Msnd abused account
 score           MSND                  5.0
+
+# -------- POSTMARK --------
+postmark_feed /etc/mail/spamassassin/postmark_id.txt
+
+header		POSTMARK		eval:esp_postmark_check()
+describe	POSTMARK		Message from Postmark abused account
+score		POSTMARK		5.0
 
 # -------- SALESFORCE --------
 salesforce_feed /etc/mail/spamassassin/salesforce_id.txt

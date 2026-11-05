@@ -1,0 +1,92 @@
+# This is the right place to customize your installation of SpamAssassin.
+#
+# See 'perldoc Mail::SpamAssassin::Conf' for details of what can be
+# tweaked.
+#
+# This file was installed during the installation of SpamAssassin 4.0.0,
+# and contains plugin loading commands for the new plugins added in that
+# release.  It will not be overwritten during future SpamAssassin installs,
+# so you can modify it to enable some disabled-by-default plugins below,
+# if you so wish.
+#
+# There are now multiple files read to enable plugins in the
+# /etc/mail/spamassassin directory; previously only one, "init.pre" was
+# read.  Now both "init.pre", "v310.pre", and any other files ending in
+# ".pre" will be read.  As future releases are made, new plugins will be
+# added to new files, named according to the release they're added in.
+###########################################################################
+
+if (version >= 4.000003)
+# ARC - perform ARC (Authenticated Received Chain) verification
+#
+# Mail::DKIM version 0.50 or later required for use.
+#
+loadplugin Mail::SpamAssassin::Plugin::ARC
+
+# NeuralNetwork - Experimental plugin that checks emails using Neural Network algorithm
+#
+# loadplugin Mail::SpamAssassin::Plugin::NeuralNetwork
+
+# HTML Handler - render text/html parts and surface inline data such as
+# images and javascript for other handlers to process.
+#
+if can(Mail::SpamAssassin::Conf::feature_handlers)
+loadhandler Mail::SpamAssassin::Handler::HTML
+endif
+
+# JavaScript Handler - analyze JavaScript parts and match it with 'script' rules.
+#
+if can(Mail::SpamAssassin::Conf::feature_handlers)
+loadhandler Mail::SpamAssassin::Handler::JavaScript
+endif
+
+# SVG Handler - analyse image/svg+xml attachments: match SVG text with 'svgtext' rules,
+# and surface embedded script for the JavaScript handler.
+#
+if can(Mail::SpamAssassin::Conf::feature_handlers)
+loadhandler Mail::SpamAssassin::Handler::SVG
+endif
+
+# ICS Handler - parse text/calendar (iCalendar) invites: match event SUMMARY/DESCRIPTION
+# text with 'icstext' rules, add URLs found in URL/ATTACH/LOCATION properties to the URI
+# detail list, and expose the check_ics_attendee_count / check_ics_random_start_time
+# eval rules.
+#
+if can(Mail::SpamAssassin::Conf::feature_handlers)
+loadhandler Mail::SpamAssassin::Handler::ICS
+endif
+
+# Image Handler - OCR image parts with tesseract so body rules can match text that is
+# hidden inside images.
+#
+# Requires the 'tesseract' executable.  Set image_tesseract_path if it is not on
+# the PATH.  OCR of HEIF/HEIC images additionally needs 'heif-dec' (from
+# libheif; named 'heif-convert' before libheif 1.18) -- without it HEIF images
+# are skipped and every other image type is still OCR'd.  Both have substantial
+# recursive dependencies.  Disabled by default; uncomment to enable.
+#
+if can(Mail::SpamAssassin::Conf::feature_handlers)
+# loadhandler Mail::SpamAssassin::Handler::Image
+endif
+
+# PDF - parse PDF attachments and expose their metadata (page/image/link counts,
+# encryption flags, and document details) to the pdf2_* eval rules,
+# and add URLs found inside the PDF to the URI detail list.
+#
+# Requires Crypt::RC4, Crypt::Mode::CBC and Convert::Ascii85.  Disabled by
+# default; uncomment to enable.
+#
+if can(Mail::SpamAssassin::Conf::feature_handlers)
+# loadhandler Mail::SpamAssassin::Handler::PDF
+endif
+
+# Archive - open archive attachments and surface the inner files as sub-parts
+# so the other handlers (HTML, JavaScript, PDF, Image) and body rules can inspect
+# them.  rar requires the 'unrar' executable (set archive_unrar_path if not on
+# PATH).  Disabled by default; uncomment to enable.
+#
+if can(Mail::SpamAssassin::Conf::feature_handlers)
+# loadhandler Mail::SpamAssassin::Handler::Archive
+endif
+
+endif

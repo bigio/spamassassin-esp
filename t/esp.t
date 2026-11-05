@@ -3,7 +3,7 @@
 use lib '.'; use lib 't';
 
 use Test::More;
-plan tests => 9;
+plan tests => 15;
 
 sub tstprefs {
   my $rules = shift;
@@ -45,6 +45,22 @@ tstprefs("
   header   MDRCTR_ID   eval:esp_mdrctr_check()
   describe MDRCTR_ID   Check Mdrctr id
 
+  mandrill_feed t/data/mandrill.txt
+  header   MANDRILL_ID   eval:esp_mandrill_check()
+  describe MANDRILL_ID   Check Mandrill id
+
+  mailjet_feed t/data/mailjet.txt
+  header   MAILJET_ID   eval:esp_mailjet_check()
+  describe MAILJET_ID   Check Mailjet id
+
+  postmark_feed t/data/postmark.txt
+  header   POSTMARK_ID   eval:esp_postmark_check()
+  describe POSTMARK_ID   Check Postmark id
+
+  emailit_feed t/data/emailit.txt
+  header   EMAILIT_ID   eval:esp_emailit_check()
+  describe EMAILIT_ID   Check Emailit id
+
   sendgrid_feed t/data/sendgrid_id.txt
   header   SENDGRID_ID   eval:esp_sendgrid_check_id()
   describe SENDGRID_ID   Check Sendgrid id
@@ -81,5 +97,19 @@ like($test, "/SENDGRID_ID/");
 
 $test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/sendgrid_dom.eml);
 like($test, "/SENDGRID_DOM/");
+
+$test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/mandrill.eml);
+like($test, "/MANDRILL_ID/");
+unlike($test, "/MAILJET_ID/");
+
+$test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/mailjet.eml);
+like($test, "/MAILJET_ID/");
+unlike($test, "/POSTMARK_ID/");
+
+$test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/postmark.eml);
+like($test, "/POSTMARK_ID/");
+
+$test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/emailit.eml);
+like($test, "/EMAILIT_ID/");
 
 tstcleanup();

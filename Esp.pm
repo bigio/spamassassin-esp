@@ -63,6 +63,7 @@ sub new {
   $self->register_eval_rule('esp_be_mail_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_constantcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_ecmessenger_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_emailit_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_emarsys_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_emlbest_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_exacttarget_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -72,13 +73,16 @@ sub new {
   $self->register_eval_rule('esp_mailchimp_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_maildome_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailgun_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mailjet_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailwizz_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_mandrill_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdengine_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdrctr_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_msdynamics_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_msnd_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
+  $self->register_eval_rule('esp_postmark_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_salesforce_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_sendgrid_check_domain',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -127,6 +131,9 @@ Usage:
   esp_ecmessenger_check()
     Checks for Ec-Messenger abused accounts
 
+  esp_emailit_check()
+    Checks for Emailit abused accounts
+
   esp_emarsys_check()
     Checks for EMarSys abused accounts
 
@@ -154,11 +161,17 @@ Usage:
   esp_mailgun_check()
     Checks for Mailgun abused accounts
 
+  esp_mailjet_check()
+    Checks for Mailjet abused accounts
+
   esp_mailup_check()
     Checks for Mailup abused accounts
 
   esp_mailwizz_check()
     Checks for MailWizz abused tracking hosts
+
+  esp_mandrill_check()
+    Checks for Mandrill abused accounts
 
   esp_mcontact_check()
     Checks for MContact abused accounts
@@ -174,6 +187,9 @@ Usage:
 
   esp_msnd_check()
     Checks for Msnd id abused accounts
+
+  esp_postmark_check()
+    Checks for Postmark abused accounts
 
   esp_salesforce_check()
     Checks for Salesforce id abused accounts
@@ -238,6 +254,11 @@ Files can be separated by a comma.
 A list of files with abused EcMessenger accounts.
 Files can be separated by a comma.
 
+=item emailit_feed [...]
+
+A list of files with abused Emailit accounts.
+Files can be separated by a comma.
+
 =item emarsys_feed [...]
 
 A list of files with abused EMarSys accounts.
@@ -288,6 +309,11 @@ Files can be separated by a comma.
 A list of files with abused Mailgun accounts.
 Files can be separated by a comma.
 
+=item mailjet_feed [...]
+
+A list of files with abused Mailjet accounts.
+Files can be separated by a comma.
+
 =item mailup_feed [...]
 
 A list of files with abused Mailup accounts.
@@ -296,6 +322,11 @@ Files can be separated by a comma.
 =item mailwizz_feed [...]
 
 A list of files with abused MailWizz tracking hosts.
+Files can be separated by a comma.
+
+=item mandrill_feed [...]
+
+A list of files with abused Mandrill accounts.
 Files can be separated by a comma.
 
 =item mcontact_feed [...]
@@ -321,6 +352,11 @@ Files can be separated by a comma.
 =item msnd_feed [...]
 
 A list of files with abused Msnd accounts.
+Files can be separated by a comma.
+
+=item postmark_feed [...]
+
+A list of files with abused Postmark accounts.
 Files can be separated by a comma.
 
 =item salesforce_feed [...]
@@ -405,6 +441,9 @@ CONSTANTCONTACTID
 ECMESSENGERID
 
 =item *
+EMAILITID
+
+=item *
 EMARSYSID
 
 =item *
@@ -429,10 +468,16 @@ MAILDOMEID
 MAILGUNID
 
 =item *
+MAILJETID
+
+=item *
 MAILUPID
 
 =item *
 MAILWIZZHOST
+
+=item *
+MANDRILLID
 
 =item *
 MDENGINEID
@@ -442,6 +487,9 @@ MDRCTRID
 
 =item *
 MSNDID
+
+=item *
+POSTMARKID
 
 =item *
 SALESFORCEID
@@ -509,6 +557,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'emailit_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'emarsys_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -569,6 +623,12 @@ sub set_config {
     }
   );
   push(@cmds, {
+    setting => 'mailjet_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
     setting => 'mailup_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -576,6 +636,12 @@ sub set_config {
   );
   push(@cmds, {
     setting => 'mailwizz_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'mandrill_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -606,6 +672,12 @@ sub set_config {
   );
   push(@cmds, {
     setting => 'msnd_feed',
+    is_admin => 1,
+    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
+    }
+  );
+  push(@cmds, {
+    setting => 'postmark_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
     }
@@ -674,6 +746,7 @@ sub finish_parsing_end {
   $self->_read_configfile('bemail_feed', 'BEMAIL');
   $self->_read_configfile('constantcontact_feed', 'CONSTANTCONTACT');
   $self->_read_configfile('ecmessenger_feed', 'ECMESSENGER');
+  $self->_read_configfile('emailit_feed', 'EMAILIT');
   $self->_read_configfile('emarsys_feed', 'EMARSYS');
   $self->_read_configfile('emlbest_feed', 'EMLBEST');
   $self->_read_configfile('exacttarget_feed', 'EXACTTARGET');
@@ -684,13 +757,16 @@ sub finish_parsing_end {
   $self->_read_configfile('mailchimp_feed', 'MAILCHIMP');
   $self->_read_configfile('maildome_feed', 'MAILDOME');
   $self->_read_configfile('mailgun_feed', 'MAILGUN');
+  $self->_read_configfile('mailjet_feed', 'MAILJET');
   $self->_read_configfile('mailup_feed', 'MAILUP');
   $self->_read_configfile('mailwizz_feed', 'MAILWIZZ');
+  $self->_read_configfile('mandrill_feed', 'MANDRILL');
   $self->_read_configfile('mcontact_feed', 'MCONTACT');
   $self->_read_configfile('mdengine_feed', 'MDENGINE');
   $self->_read_configfile('mdrctr_feed', 'MDRCTR');
   $self->_read_configfile('msdynamics_feed', 'MSDYNAMICS');
   $self->_read_configfile('msnd_feed', 'MSND');
+  $self->_read_configfile('postmark_feed', 'POSTMARK');
   $self->_read_configfile('salesforce_feed', 'SALESFORCE');
   $self->_read_configfile('sendgrid_feed', 'SENDGRID');
   $self->_read_configfile('sendgrid_domains_feed', 'SENDGRID_DOMAINS');
@@ -867,6 +943,26 @@ sub esp_constantcontact_check {
   return if ($contact_id !~ /^(\d+)\.\d+$/);
 
   return _hit_and_tag($self, $pms, $contact_id, 'CONSTANTCONTACT', 'Constant Contact', 'CONSTANTCONTACTID', $opts);
+}
+
+sub esp_emailit_check {
+  my ($self, $pms, $opts) = @_;
+  my $wid;
+
+  # return if X-Emailit-ID is not set
+  my $xeid = $pms->get("X-Emailit-ID", undef);
+  return if not defined $xeid;
+
+  # Feedback-ID: :campaign-id:workspace-id:Emailit
+  my $fid = $pms->get("Feedback-ID", undef);
+  return if not defined $fid;
+
+  if($fid =~ /^\s*[^:]*:[^:]*:([^:\s]+):Emailit\s*$/i) {
+    $wid = $1;
+  }
+  return if not defined $wid;
+
+  return _hit_and_tag($self, $pms, $wid, 'EMAILIT', 'Emailit', 'EMAILITID', $opts);
 }
 
 sub esp_emarsys_check {
@@ -1094,6 +1190,24 @@ sub esp_mailgun_check {
   return _hit_and_tag($self, $pms, $mailgun_id, 'MAILGUN', 'Mailgun', 'MAILGUNID', $opts);
 }
 
+sub esp_mailjet_check {
+  my ($self, $pms, $opts) = @_;
+  my $uid;
+
+  # Feedback-Id: 42.527663.180072:MJ
+  # the second number is the account id, it is the same used in the
+  # return-path domain (a527663.bnc3.mailjet.com)
+  my $fid = $pms->get("Feedback-ID", undef);
+  return if not defined $fid;
+
+  if($fid =~ /^\s*\d+\.(\d+)\.\d+:MJ\s*$/) {
+    $uid = $1;
+  }
+  return if not defined $uid;
+
+  return _hit_and_tag($self, $pms, $uid, 'MAILJET', 'Mailjet', 'MAILJETID', $opts);
+}
+
 sub esp_mailup_check {
   my ($self, $pms, $opts) = @_;
   my ($mailup_id, $xabuse, $listid);
@@ -1156,6 +1270,22 @@ sub esp_mailwizz_check {
   return _hit_and_tag($self, $pms, $mailwizz_host, 'MAILWIZZ', 'MailWizz', 'MAILWIZZHOST', $opts);
 }
 
+
+sub esp_mandrill_check {
+  my ($self, $pms, $opts) = @_;
+  my $uid;
+
+  # X-Mandrill-User: md_30000046
+  my $xmu = $pms->get("X-Mandrill-User", undef);
+  return if not defined $xmu;
+
+  if($xmu =~ /^\s*md_(\d+)\s*$/) {
+    $uid = $1;
+  }
+  return if not defined $uid;
+
+  return _hit_and_tag($self, $pms, $uid, 'MANDRILL', 'Mandrill', 'MANDRILLID', $opts);
+}
 
 sub esp_mcontact_check {
   my ($self, $pms, $opts) = @_;
@@ -1243,6 +1373,23 @@ sub esp_msnd_check {
   return if not defined $uid;
 
   return _hit_and_tag($self, $pms, $uid, 'MSND', 'Msnd', 'MSNDID', $opts);
+}
+
+sub esp_postmark_check {
+  my ($self, $pms, $opts) = @_;
+  my $aid;
+
+  # Feedback-ID: s9356667-_:s9356667:a142788:postmark
+  # fields are: server-stream:server:account:postmark
+  my $fid = $pms->get("Feedback-ID", undef);
+  return if not defined $fid;
+
+  if($fid =~ /^\s*s\d+-[^:]*:s\d+:a(\d+):postmark\s*$/i) {
+    $aid = $1;
+  }
+  return if not defined $aid;
+
+  return _hit_and_tag($self, $pms, $aid, 'POSTMARK', 'Postmark', 'POSTMARKID', $opts);
 }
 
 sub esp_salesforce_check {
@@ -1437,6 +1584,7 @@ sub has_esp_amazonses_check { 1 };
 sub has_esp_be_mail_check { 1 };
 sub has_esp_constantcontact_check { 1 };
 sub has_esp_ecmessenger_check { 1 };
+sub has_esp_emailit_check { 1 };
 sub has_esp_emarsys_check { 1 };
 sub has_esp_emlbest_check { 1 };
 sub has_esp_exacttarget_check { 1 };
@@ -1446,13 +1594,16 @@ sub has_esp_klaviyo_check { 1 };
 sub has_esp_mailchimp_check { 1 };
 sub has_esp_maildome_check { 1 };
 sub has_esp_mailgun_check { 1 };
+sub has_esp_mailjet_check { 1 };
 sub has_esp_mailup_check { 1 };
 sub has_esp_mailwizz_check { 1 };
+sub has_esp_mandrill_check { 1 };
 sub has_esp_mcontact_check { 1 };
 sub has_esp_mdengine_check { 1 };
 sub has_esp_mdrctr_check { 1 };
 sub has_esp_msdynamics_check { 1 };
 sub has_esp_msnd_check { 1 };
+sub has_esp_postmark_check { 1 };
 sub has_esp_salesforce_check { 1 };
 sub has_esp_sendgrid_check { 1 };
 sub has_esp_sendinblue_check { 1 };

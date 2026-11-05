@@ -60,6 +60,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_ECMESSENGER net
   endif
 
+  header        ESP_EMAILIT      eval:esp_emailit_check()
+  describe      ESP_EMAILIT      Message from Emailit abused account
+  score         ESP_EMAILIT      0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_EMAILIT _EMAILITID_.emailit.esp.btcblack.it A 127.0.0.1
+    describe    RBL_ESP_EMAILIT Esp Emailit Id blacklist
+    tflags      RBL_ESP_EMAILIT net
+  endif
+
   header        ESP_EMARSYS      eval:esp_emarsys_check()
   describe      ESP_EMARSYS      Message from Emarsys abused account
   score         ESP_EMARSYS      0.01
@@ -150,6 +160,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_MAILGUN net
   endif
 
+  header        ESP_MAILJET      eval:esp_mailjet_check()
+  describe      ESP_MAILJET      Message from Mailjet abused account
+  score         ESP_MAILJET      0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_MAILJET _MAILJETID_.mailjet.esp.btcblack.it A 127.0.0.1
+    describe    RBL_ESP_MAILJET Esp Mailjet Id blacklist
+    tflags      RBL_ESP_MAILJET net
+  endif
+
   header        ESP_MAILUP      eval:esp_mailup_check()
   describe      ESP_MAILUP      Message from Mailup abused account
   score		ESP_MAILUP      0.01
@@ -168,6 +188,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     askdns      RBL_ESP_MAILWIZZ _MAILWIZZHOST_.mailwizz.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MAILWIZZ Esp MailWizz host blacklist
     tflags      RBL_ESP_MAILWIZZ net
+  endif
+
+  header        ESP_MANDRILL      eval:esp_mandrill_check()
+  describe      ESP_MANDRILL      Message from Mandrill abused account
+  score         ESP_MANDRILL      0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_MANDRILL _MANDRILLID_.mandrill.esp.btcblack.it A 127.0.0.1
+    describe    RBL_ESP_MANDRILL Esp Mandrill Id blacklist
+    tflags      RBL_ESP_MANDRILL net
   endif
 
   header        ESP_MCONTACT    eval:esp_mcontact_check()
@@ -218,6 +248,16 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     askdns      RBL_ESP_MSND _MSNDID_.msnd.esp.btcblack.it A 127.0.0.1
     describe    RBL_ESP_MSND Esp Msnd Id blacklist
     tflags      RBL_ESP_MSND net
+  endif
+
+  header        ESP_POSTMARK      eval:esp_postmark_check()
+  describe      ESP_POSTMARK      Message from Postmark abused account
+  score         ESP_POSTMARK      0.01
+
+  ifplugin Mail::SpamAssassin::Plugin::AskDNS
+    askdns      RBL_ESP_POSTMARK _POSTMARKID_.postmark.esp.btcblack.it A 127.0.0.1
+    describe    RBL_ESP_POSTMARK Esp Postmark Id blacklist
+    tflags      RBL_ESP_POSTMARK net
   endif
 
   header        ESP_SALESFORCE eval:esp_salesforce_check()
@@ -357,6 +397,13 @@ if (version >= 4.000000)
     describe    RBL_ESP_ECMESSENGER   Esp Ec-Messenger Id blacklist
     tflags      RBL_ESP_ECMESSENGER   net
 
+    header      __ESP_EMAILIT_XID     exists:X-Emailit-ID
+    header      __ESP_EMAILIT_ID      Feedback-ID =~ /^\s*[^:]*:[^:]*:(?<EMAILIT_ID>[^:\s]+):Emailit\s*$/i
+    header      __ESP_EMAILIT_RBL     eval:check_hashbl_tag('emailit.esp.btcblack.it/A', 'raw', 'EMAILIT_ID', '^127\.')
+    meta        RBL_ESP_EMAILIT      ( __ESP_EMAILIT_XID && __ESP_EMAILIT_RBL )
+    describe    RBL_ESP_EMAILIT      Esp Emailit Id blacklist
+    tflags      RBL_ESP_EMAILIT      net
+
     header      __ESP_EMARSYS_CSA     X-CSA-Complaints =~ /\@eco\.de/
     header      __ESP_EMARSYS_ID      X-EMarSys-Identify =~ /(?<EMARSYS_ID>\d+)_(?:\d+)_(?:\d+)/
     header      __ESP_EMARSYS_RBL     eval:check_hashbl_tag('emarsys.esp.btcblack.it/A', 'raw', 'EMARSYS_ID', '^127\.')
@@ -433,6 +480,12 @@ if (version >= 4.000000)
     describe    RBL_ESP_MAILGUN       Esp Mailgun Id blacklist
     tflags      RBL_ESP_MAILGUN       net
 
+    header      __ESP_MAILJET_ID      Feedback-ID =~ /^\s*\d+\.(?<MAILJET_ID>\d+)\.\d+:MJ\s*$/
+    header      __ESP_MAILJET_RBL     eval:check_hashbl_tag('mailjet.esp.btcblack.it/A', 'raw', 'MAILJET_ID', '^127\.')
+    meta        RBL_ESP_MAILJET       ( __ESP_MAILJET_ID && __ESP_MAILJET_RBL )
+    describe    RBL_ESP_MAILJET       Esp Mailjet Id blacklist
+    tflags      RBL_ESP_MAILJET       net
+
     header      __ESP_MAILUP_CSA      X-CSA-Complaints =~ /\@eco\.de/
     header	__ESP_MAILUP_BPS1     exists:X-BPS1
     header      __ESP_MAILUP_ABID     X-Abuse =~ /Please report abuse here: https?:\/\/.*\.musvc(?:[0-9]+)\.net\/p\?c=(?<MAILUP_ID>[0-9]+)/
@@ -451,6 +504,12 @@ if (version >= 4.000000)
     meta        RBL_ESP_MAILWIZZ      ( __ESP_MAILWIZZ_FID && !__ESP_MAILWIZZ_EBS && !__ESP_MAILWIZZ_FXYN && __ESP_MAILWIZZ_RBL )
     describe    RBL_ESP_MAILWIZZ      Esp MailWizz tracking host blacklist
     tflags      RBL_ESP_MAILWIZZ      net
+
+    header      __ESP_MANDRILL_ID     X-Mandrill-User =~ /^\s*md_(?<MANDRILL_ID>\d+)\s*$/
+    header      __ESP_MANDRILL_RBL    eval:check_hashbl_tag('mandrill.esp.btcblack.it/A', 'raw', 'MANDRILL_ID', '^127\.')
+    meta        RBL_ESP_MANDRILL      ( __ESP_MANDRILL_ID && __ESP_MANDRILL_RBL )
+    describe    RBL_ESP_MANDRILL      Esp Mandrill Id blacklist
+    tflags      RBL_ESP_MANDRILL      net
 
     header      __ESP_MCONTACT_XM     X-Mailer =~ /aspNetEmail/
     header      __ESP_MCONTACT_ID     Feedback-ID =~ /(?:\d+):(?<MCONTACT_ID>\d+):(?:\d+):MCONTACT/i
@@ -484,6 +543,12 @@ if (version >= 4.000000)
     meta        RBL_ESP_MSND          ( __ESP_MSND_XM && __ESP_MSND_RBL )
     describe    RBL_ESP_MSND          Esp Msnd Id blacklist
     tflags      RBL_ESP_MSND          net
+
+    header      __ESP_POSTMARK_ID     Feedback-ID =~ /^\s*s\d+-[^:]*:s\d+:a(?<POSTMARK_ID>\d+):postmark\s*$/i
+    header      __ESP_POSTMARK_RBL    eval:check_hashbl_tag('postmark.esp.btcblack.it/A', 'raw', 'POSTMARK_ID', '^127\.')
+    meta        RBL_ESP_POSTMARK      ( __ESP_POSTMARK_ID && __ESP_POSTMARK_RBL )
+    describe    RBL_ESP_POSTMARK      Esp Postmark Id blacklist
+    tflags      RBL_ESP_POSTMARK      net
 
     header      __ESP_SALESFORCE_XS   X-Sender =~ /postmaster\@salesforce.com/
     header      __ESP_SALESFORCE_ID   X-SFDC-User =~ /(?<SALESFORCE_ID>.*)/
@@ -560,6 +625,7 @@ score       RBL_ESP_AMAZON        4.0
 score       RBL_ESP_BEMAIL        4.0
 score       RBL_ESP_CONSTANTCONTACT  4.0
 score       RBL_ESP_ECMESSENGER   4.0
+score       RBL_ESP_EMAILIT      4.0
 score       RBL_ESP_EMARSYS       4.0
 score       RBL_ESP_EMLBEST       4.0
 score       RBL_ESP_EXACTTARGET   4.0
@@ -570,13 +636,16 @@ score       RBL_ESP_MAILCHIMP     4.0
 score       RBL_ESP_MAILCHIMP_M   4.0
 score       RBL_ESP_MAILDOME      4.0
 score       RBL_ESP_MAILGUN       4.0
+score       RBL_ESP_MAILJET      4.0
 score       RBL_ESP_MAILUP        4.0
 score       RBL_ESP_MAILWIZZ      4.0
+score       RBL_ESP_MANDRILL      4.0
 score       RBL_ESP_MCONTACT      4.0
 score       RBL_ESP_MDENGINE      4.0
 score       RBL_ESP_MDRCTR        4.0
 score       RBL_ESP_MSDYNAMICS    4.0
 score       RBL_ESP_MSND          4.0
+score       RBL_ESP_POSTMARK      4.0
 score       RBL_ESP_SALESFORCE    4.0
 score       RBL_ESP_SENDGRID      4.0
 score       RBL_ESP_SENDINBLUE    4.0

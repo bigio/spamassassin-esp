@@ -1,0 +1,16 @@
+Return-Path: <bounce-md_12345.5f76a0d9.v1-1ea4a4c0bd9a4344b1af975c94e32592@mandrillapp.com>
+Received: from mail186-21.suw21.mandrillapp.com (mail186-21.suw21.mandrillapp.com [198.2.186.21])
+	by mx.example.com (Postfix) with ESMTPS id BC3D91FC17
+	for <info@example.com>; Fri, 02 Oct 2020 03:39:06 +0000 (UTC)
+From: Example <info@example.net>
+Sender: info@mail186-21.suw21.mandrillapp.com
+To: info@example.com
+Subject: test
+Message-Id: <12345.20201002033905.5f76a0d9.1ea4a4c0bd9a4344b1af975c94e32592@mail186-21.suw21.mandrillapp.com>
+X-Report-Abuse: Please forward a copy of this message, including all headers, to abuse@mandrill.com
+X-Mandrill-User: md_12345
+Date: Fri, 02 Oct 2020 03:39:05 +0000
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hello, this is a test message.

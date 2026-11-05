@@ -31,6 +31,7 @@ ESPs currently supported are:
 - BeMail
 - Constant Contact
 - EcMessenger
+- Emailit
 - EmarSYS
 - Emlbest
 - ExactTarget
@@ -40,11 +41,14 @@ ESPs currently supported are:
 - Mailchimp
 - Maildome
 - MailGun
+- Mailjet
 - MailUP
+- Mandrill
 - MDEngine
 - Mdrctr
 - Microsoft Dynamics
 - Msnd
+- Postmark
 - SalesForce
 - Sendgrid
 - SendinBlue

@@ -1,0 +1,15 @@
+Return-Path: <bounce@emailit.example.net>
+Received: from mta.emailit.example (mta.emailit.example [192.0.2.10])
+	by mx.example.com (Postfix) with ESMTPS id 5E4D3C2B1A
+	for <info@example.com>; Tue, 03 Nov 2026 10:00:01 +0000 (UTC)
+From: Example <info@example.net>
+To: info@example.com
+Subject: test
+Date: Tue, 03 Nov 2026 10:00:00 +0000
+Message-ID: <abcdef123456@example.net>
+X-Emailit-ID: em_abcdef123456
+Feedback-ID: :cmp789:ws12345:Emailit
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hello, this is a test message.

@@ -1,0 +1,17 @@
+Return-Path: <pm_bounces@pm-bounces.example.net>
+Received: from sc-mta-45.mtasv.net (sc-mta-45.mtasv.net [50.31.156.45])
+	by mx.example.com (Postfix) with ESMTPS id 1A2B3C4D5E
+	for <info@example.com>; Fri, 30 Dec 2022 18:36:13 +0000 (UTC)
+From: Example <info@example.net>
+Date: Fri, 30 Dec 2022 18:36:12 +0000
+Subject: Hello from Postmark!
+Message-Id: <3fbdfb17-ea98-4f19-bf90-b763aad3c7fd@example.net>
+To: info@example.com
+Feedback-ID: s1234567-_:s1234567:a98765:postmark
+X-Complaints-To: abuse@postmarkapp.com
+X-PM-Message-Id: 3fbdfb17-ea98-4f19-bf90-b763aad3c7fd
+X-PM-MTA-Pool: transactional-3
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+
+Hello, this is a test message.
