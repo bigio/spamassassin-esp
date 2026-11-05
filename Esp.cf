@@ -163,13 +163,6 @@ header		MAILWIZZ		eval:esp_mailwizz_check()
 describe 	MAILWIZZ		Message from MailWizz abused tracking host
 score  		MAILWIZZ		5.0
 
-# -------- MANDRILL --------
-mandrill_feed /etc/mail/spamassassin/mandrill_id.txt
-
-header		MANDRILL		eval:esp_mandrill_check()
-describe	MANDRILL		Message from Mandrill abused account
-score		MANDRILL		5.0
-
 # -------- MCONTACT --------
 mcontact_feed /etc/mail/spamassassin/mcontact_id.txt
 

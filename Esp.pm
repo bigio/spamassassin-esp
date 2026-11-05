@@ -76,7 +76,6 @@ sub new {
   $self->register_eval_rule('esp_mailjet_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailup_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mailwizz_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
-  $self->register_eval_rule('esp_mandrill_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mcontact_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdengine_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
   $self->register_eval_rule('esp_mdrctr_check',  $Mail::SpamAssassin::Conf::TYPE_HEAD_EVALS);
@@ -169,9 +168,6 @@ Usage:
 
   esp_mailwizz_check()
     Checks for MailWizz abused tracking hosts
-
-  esp_mandrill_check()
-    Checks for Mandrill abused accounts
 
   esp_mcontact_check()
     Checks for MContact abused accounts
@@ -324,11 +320,6 @@ Files can be separated by a comma.
 A list of files with abused MailWizz tracking hosts.
 Files can be separated by a comma.
 
-=item mandrill_feed [...]
-
-A list of files with abused Mandrill accounts.
-Files can be separated by a comma.
-
 =item mcontact_feed [...]
 
 A list of files with abused MContact accounts.
@@ -475,9 +466,6 @@ MAILUPID
 
 =item *
 MAILWIZZHOST
-
-=item *
-MANDRILLID
 
 =item *
 MDENGINEID
@@ -641,12 +629,6 @@ sub set_config {
     }
   );
   push(@cmds, {
-    setting => 'mandrill_feed',
-    is_admin => 1,
-    type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
-    }
-  );
-  push(@cmds, {
     setting => 'mcontact_feed',
     is_admin => 1,
     type => $Mail::SpamAssassin::Conf::CONF_TYPE_STRING,
@@ -760,7 +742,6 @@ sub finish_parsing_end {
   $self->_read_configfile('mailjet_feed', 'MAILJET');
   $self->_read_configfile('mailup_feed', 'MAILUP');
   $self->_read_configfile('mailwizz_feed', 'MAILWIZZ');
-  $self->_read_configfile('mandrill_feed', 'MANDRILL');
   $self->_read_configfile('mcontact_feed', 'MCONTACT');
   $self->_read_configfile('mdengine_feed', 'MDENGINE');
   $self->_read_configfile('mdrctr_feed', 'MDRCTR');
@@ -1271,22 +1252,6 @@ sub esp_mailwizz_check {
 }
 
 
-sub esp_mandrill_check {
-  my ($self, $pms, $opts) = @_;
-  my $uid;
-
-  # X-Mandrill-User: md_30000046
-  my $xmu = $pms->get("X-Mandrill-User", undef);
-  return if not defined $xmu;
-
-  if($xmu =~ /^\s*md_(\d+)\s*$/) {
-    $uid = $1;
-  }
-  return if not defined $uid;
-
-  return _hit_and_tag($self, $pms, $uid, 'MANDRILL', 'Mandrill', 'MANDRILLID', $opts);
-}
-
 sub esp_mcontact_check {
   my ($self, $pms, $opts) = @_;
   my $mcontact_id;
@@ -1597,7 +1562,6 @@ sub has_esp_mailgun_check { 1 };
 sub has_esp_mailjet_check { 1 };
 sub has_esp_mailup_check { 1 };
 sub has_esp_mailwizz_check { 1 };
-sub has_esp_mandrill_check { 1 };
 sub has_esp_mcontact_check { 1 };
 sub has_esp_mdengine_check { 1 };
 sub has_esp_mdrctr_check { 1 };

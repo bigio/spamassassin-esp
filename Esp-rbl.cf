@@ -190,16 +190,6 @@ ifplugin Mail::SpamAssassin::Plugin::Esp
     tflags      RBL_ESP_MAILWIZZ net
   endif
 
-  header        ESP_MANDRILL      eval:esp_mandrill_check()
-  describe      ESP_MANDRILL      Message from Mandrill abused account
-  score         ESP_MANDRILL      0.01
-
-  ifplugin Mail::SpamAssassin::Plugin::AskDNS
-    askdns      RBL_ESP_MANDRILL _MANDRILLID_.mandrill.esp.btcblack.it A 127.0.0.1
-    describe    RBL_ESP_MANDRILL Esp Mandrill Id blacklist
-    tflags      RBL_ESP_MANDRILL net
-  endif
-
   header        ESP_MCONTACT    eval:esp_mcontact_check()
   describe      ESP_MCONTACT    Message from MContact abused account
   score		ESP_MCONTACT    0.01
@@ -505,12 +495,6 @@ if (version >= 4.000000)
     describe    RBL_ESP_MAILWIZZ      Esp MailWizz tracking host blacklist
     tflags      RBL_ESP_MAILWIZZ      net
 
-    header      __ESP_MANDRILL_ID     X-Mandrill-User =~ /^\s*md_(?<MANDRILL_ID>\d+)\s*$/
-    header      __ESP_MANDRILL_RBL    eval:check_hashbl_tag('mandrill.esp.btcblack.it/A', 'raw', 'MANDRILL_ID', '^127\.')
-    meta        RBL_ESP_MANDRILL      ( __ESP_MANDRILL_ID && __ESP_MANDRILL_RBL )
-    describe    RBL_ESP_MANDRILL      Esp Mandrill Id blacklist
-    tflags      RBL_ESP_MANDRILL      net
-
     header      __ESP_MCONTACT_XM     X-Mailer =~ /aspNetEmail/
     header      __ESP_MCONTACT_ID     Feedback-ID =~ /(?:\d+):(?<MCONTACT_ID>\d+):(?:\d+):MCONTACT/i
     header      __ESP_MCONTACT_RBL    eval:check_hashbl_tag('mcontact.esp.btcblack.it/A', 'raw', 'MCONTACT_ID', '^127\.')
@@ -639,7 +623,6 @@ score       RBL_ESP_MAILGUN       4.0
 score       RBL_ESP_MAILJET      4.0
 score       RBL_ESP_MAILUP        4.0
 score       RBL_ESP_MAILWIZZ      4.0
-score       RBL_ESP_MANDRILL      4.0
 score       RBL_ESP_MCONTACT      4.0
 score       RBL_ESP_MDENGINE      4.0
 score       RBL_ESP_MDRCTR        4.0

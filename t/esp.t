@@ -3,7 +3,7 @@
 use lib '.'; use lib 't';
 
 use Test::More;
-plan tests => 15;
+plan tests => 13;
 
 sub tstprefs {
   my $rules = shift;
@@ -44,10 +44,6 @@ tstprefs("
   mdrctr_feed t/data/mdrctr.txt
   header   MDRCTR_ID   eval:esp_mdrctr_check()
   describe MDRCTR_ID   Check Mdrctr id
-
-  mandrill_feed t/data/mandrill.txt
-  header   MANDRILL_ID   eval:esp_mandrill_check()
-  describe MANDRILL_ID   Check Mandrill id
 
   mailjet_feed t/data/mailjet.txt
   header   MAILJET_ID   eval:esp_mailjet_check()
@@ -97,10 +93,6 @@ like($test, "/SENDGRID_ID/");
 
 $test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/sendgrid_dom.eml);
 like($test, "/SENDGRID_DOM/");
-
-$test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/mandrill.eml);
-like($test, "/MANDRILL_ID/");
-unlike($test, "/MAILJET_ID/");
 
 $test = qx($sarun -L -t --siteconfigpath=t/rules < t/data/mailjet.eml);
 like($test, "/MAILJET_ID/");

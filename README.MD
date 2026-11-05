@@ -43,7 +43,6 @@ ESPs currently supported are:
 - MailGun
 - Mailjet
 - MailUP
-- Mandrill
 - MDEngine
 - Mdrctr
 - Microsoft Dynamics
