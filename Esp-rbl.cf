@@ -346,9 +346,11 @@ if (version >= 4.000000)
   if can(Mail::SpamAssassin::Plugin::HashBL::has_hashbl_tag)
 
     header      __ESP_AMAZON_OUT      X-SES-Outgoing =~ /\d{4}\.\d{2}\.\d{2}\-/
+    header      __ESP_AMAZON_MSGID    Message-ID =~ /\@(?:[a-z0-9-]+\.)*amazonses\.com>?\s*$/i
+    header      __ESP_AMAZON_RCVD     Received =~ /^from\s+\S+\.smtp-out\.amazonses\.com\b/im
     header      __ESP_AMAZON_FID      Feedback-ID =~ /\d+\.[a-z]+\-[a-z]+\-\d+\.(?<AMAZON_FID>.*)\:AmazonSES/
     header      __ESP_AMAZON_RBL      eval:check_hashbl_tag('amazonses.esp.btcblack.it/A', 'case/md5', 'AMAZON_FID', '^127\.')
-    meta        RBL_ESP_AMAZON        ( __ESP_AMAZON_OUT && __ESP_AMAZON_RBL )
+    meta        RBL_ESP_AMAZON        ( (__ESP_AMAZON_OUT || __ESP_AMAZON_MSGID || __ESP_AMAZON_RCVD) && __ESP_AMAZON_RBL )
     describe    RBL_ESP_AMAZON        Esp Amazon SES Id blacklist
     tflags      RBL_ESP_AMAZON        net
 

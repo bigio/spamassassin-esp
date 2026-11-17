@@ -863,12 +863,16 @@ sub esp_amazonses_check {
     $opts .= "nobase64";
   }
 
-  # return if X-SES-Outgoing is not what we want
+  # Require some evidence the message went through Amazon SES:
+  # X-SES-Outgoing (may be stripped by forwarding relays, e.g. Exchange Online),
+  # or a Message-ID / Received header from amazonses.com
   my $xses = $pms->get("X-SES-Outgoing", undef);
-
-  if((not defined $xses) or ($xses !~ /\d{4}\.\d{2}\.\d{2}\-/)) {
-    return;
-  }
+  my $msgid = $pms->get("Message-ID", undef) // '';
+  my $rcvd = $pms->get("Received", undef) // '';
+  my $is_ses = (defined $xses and $xses =~ /\d{4}\.\d{2}\.\d{2}\-/)
+    || ($msgid =~ /\@(?:[a-z0-9-]+\.)*amazonses\.com>?\s*$/im)
+    || ($rcvd =~ /^from\s+\S+\.smtp-out\.amazonses\.com\b/im);
+  return if not $is_ses;
 
   # Parse the Feedback-ID
   # Feedback-ID: 1.eu-west-3.lw6TDfPoSha17XiO+mc7ZtIOCZEcjZHgwdWo1vcloYU=:AmazonSES
@@ -1480,6 +1484,7 @@ sub esp_smtppulse_check {
 
   my $feed_id = $pms->get("Feedback-ID", undef);
   my $xcomplaintsto = $pms->get("X-Complaints-To", undef);
+  return if not defined $xcomplaintsto or not defined $feed_id;
 
   if($xcomplaintsto =~ /abuse\@smtp\-pulse\.com/) {
     if($feed_id =~ /\d+:smtp:(.*)/) {
